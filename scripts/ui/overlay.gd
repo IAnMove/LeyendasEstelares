@@ -26,6 +26,7 @@ func _init() -> void:
 	add_child(_panel)
 	_scroll = ScrollContainer.new()
 	_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_scroll.scroll_deadzone = 8
 	_scroll.follow_focus = true
 	_panel.add_child(_scroll)
 	_box = VBoxContainer.new()
