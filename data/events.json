@@ -1069,6 +1069,17 @@
 						"fuel": -1
 					}
 				}
+			},
+			{
+				"requires": {
+					"flag": "draeth_respeto"
+				},
+				"result": {
+					"effects": {
+						"fuel": 1,
+						"morale": 1
+					}
+				}
 			}
 		]
 	},
@@ -1130,6 +1141,25 @@
 					},
 					"fail": {
 						"effects": {}
+					}
+				}
+			},
+			{
+				"requires": {
+					"flag": "gremio_amigo"
+				},
+				"risk": {
+					"chance": 0.9,
+					"success": {
+						"effects": {
+							"fuel": 3,
+							"data": 1
+						}
+					},
+					"fail": {
+						"effects": {
+							"fuel": 1
+						}
 					}
 				}
 			}

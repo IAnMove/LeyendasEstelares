@@ -15,7 +15,7 @@ func _ready() -> void:
 	var cfg := ConfigFile.new()
 	cfg.load(T.SETTINGS_PATH)
 	muted = bool(cfg.get_value("audio", "muted", false))
-	for cue in ["click", "scan", "jump", "signal", "supply", "trade", "warning", "step"]:
+	for cue in ["click", "tick", "scan", "jump", "signal", "supply", "trade", "warning", "step"]:
 		_streams[cue] = load("res://audio/%s.wav" % cue)
 	for i in 6:
 		var player := AudioStreamPlayer.new()

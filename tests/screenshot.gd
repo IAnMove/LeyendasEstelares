@@ -92,4 +92,6 @@ func _planet_of(camp: Campaign, pid: String) -> Dictionary:
 
 func _shot(shot_name: String) -> void:
 	await get_tree().create_timer(0.45).timeout
+	get_tree().call_group("typewriter", "finish_typing")
+	await get_tree().process_frame
 	get_viewport().get_texture().get_image().save_png("%s/%s.png" % [_out, shot_name])

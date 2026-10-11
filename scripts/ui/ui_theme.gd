@@ -139,6 +139,10 @@ static func button(text: String) -> Button:
 	b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	b.mouse_filter = Control.MOUSE_FILTER_PASS
 	b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	if not touch_mode():
+		b.mouse_entered.connect(func():
+			if not b.disabled:
+				Sound.play("tick"))
 	b.pressed.connect(func():
 		Sound.play("click")
 		b.get_tree().call_group("checkpoint_owner", "queue_checkpoint"))

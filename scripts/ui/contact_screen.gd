@@ -21,10 +21,14 @@ var _speech: Label
 var _extra: Label
 var _options: VBoxContainer
 var _outcome: Dictionary = {}
+var _typing: Tween
+
+const TYPE_CHARS_PER_SECOND := 60.0
 
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(PRESET_FULL_RECT)
+	add_to_group("typewriter")
 	_species = Content.species_by_id(species_id)
 	_color = Color(_species["color"])
 	runner = ContactRunner.new(GameState, _species, Content.encounter_for(species_id))
@@ -113,6 +117,10 @@ func _build_right() -> void:
 	v.add_child(HSeparator.new())
 	_speech = UITheme.label("", _color, 14)
 	_speech.custom_minimum_size = Vector2(360, 58)
+	_speech.mouse_filter = Control.MOUSE_FILTER_STOP
+	_speech.gui_input.connect(func(event: InputEvent):
+		if event is InputEventMouseButton and event.pressed or event is InputEventScreenTouch and event.pressed:
+			finish_typing())
 	v.add_child(_speech)
 	_extra = UITheme.label("", UITheme.DIM, 11)
 	_extra.custom_minimum_size = Vector2(360, 30)
@@ -121,6 +129,22 @@ func _build_right() -> void:
 	_options = VBoxContainer.new()
 	_options.add_theme_constant_override("separation", 6)
 	v.add_child(_options)
+
+
+## La transmisión aparece letra a letra; tocarla la completa. Las respuestas se pueden elegir desde el principio
+## y el texto entero ya está en la etiqueta (lectores de pantalla y pruebas no esperan).
+func _type(text: String) -> void:
+	finish_typing()
+	_speech.text = text
+	_speech.visible_ratio = 0.0
+	_typing = create_tween()
+	_typing.tween_property(_speech, "visible_ratio", 1.0, text.length() / TYPE_CHARS_PER_SECOND)
+
+
+func finish_typing() -> void:
+	if _typing != null and _typing.is_valid():
+		_typing.kill()
+	_speech.visible_ratio = 1.0
 
 
 func _refresh_bars() -> void:
@@ -148,7 +172,7 @@ func _add_option(text: String, cb: Callable, disabled := false) -> Button:
 
 func _show_intro() -> void:
 	_clear_options()
-	_speech.text = T.t("contact.%s.intro" % runner.encounter["id"])
+	_type(T.t("contact.%s.intro" % runner.encounter["id"]))
 	_speech.add_theme_color_override("font_color", UITheme.TEXT)
 	_extra.text = ""
 	_add_option(T.t("ui.continue"), _show_prompt).grab_focus()
@@ -160,7 +184,7 @@ func _show_prompt() -> void:
 	var eid: String = runner.encounter["id"]
 	var x := runner.index
 	_speech.add_theme_color_override("font_color", _color)
-	_speech.text = T.t("contact.%s.x%d.prompt" % [eid, x])
+	_type(T.t("contact.%s.x%d.prompt" % [eid, x]))
 	_extra.text = T.t("contact.%s.x%d.context" % [eid, x]) + "\n" + T.t("ui.contact.repetition")
 	var first: Button = null
 	var opts: Array = runner.exchange()["options"]
@@ -196,7 +220,7 @@ func _show_reply() -> void:
 	_refresh_bars()
 	_clear_options()
 	_speech.add_theme_color_override("font_color", _color)
-	_speech.text = T.t(res["key"])
+	_type(T.t(res["key"]))
 	_extra.text = "%s: %s\n%s" % [T.t("ui.contact.you"), T.show(_reply["mine"]), T.join(res["lines"])]
 	_add_option(T.t("ui.continue"), _after_reply).grab_focus()
 
@@ -215,7 +239,7 @@ func _show_outcome() -> void:
 	_outcome = out
 	var colors := {"alliance": UITheme.GOOD, "deal": UITheme.ACCENT, "wary": UITheme.DIM, "hostile": UITheme.BAD}
 	_speech.add_theme_color_override("font_color", colors[out["id"]])
-	_speech.text = "%s\n\n%s" % [T.t("ui.contact.result." + out["id"]), T.t(out["key"])]
+	_type("%s\n\n%s" % [T.t("ui.contact.result." + out["id"]), T.t(out["key"])])
 	_extra.text = T.join(out["lines"])
 	_add_option(T.t("ui.contact.close"), func(): finished.emit({"result": out["id"]})).grab_focus()
 	if out["id"] in ["alliance", "deal"]:

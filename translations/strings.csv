@@ -214,6 +214,9 @@ event.campo_de_asteroides.c1.ok,The Meridiana comes through whole and ahead of s
 event.campo_de_asteroides.c1.fail,The impacts cost you fuel and confidence.,Los impactos te cuestan combustible y confianza.
 event.campo_de_asteroides.c2.text,Go around it cautiously,Rodearlo con precaución
 event.campo_de_asteroides.c2.res,"It takes longer, but there are no incidents.","Tardas más, pero no hay incidentes."
+event.campo_de_asteroides.c3.text,Request a cleared corridor from a Draeth patrol,Pedir un pasillo despejado a una patrulla Draeth
+event.campo_de_asteroides.c3.hint,Requires the respect of the Draeth Dominion,Requiere el respeto del Dominio Draeth
+event.campo_de_asteroides.c3.res,A Draeth patrol clears the field for you without a word. Respect has its uses.,Una patrulla Draeth despeja el campo para ti sin decir palabra. El respeto tiene sus ventajas.
 event.nave_a_la_deriva.title,Drifting ship,Nave a la deriva
 event.nave_a_la_deriva.text,"A civilian ship with no power drifts in silence. Its systems seem dormant, not destroyed.","Una nave civil sin energía deriva en silencio. Sus sistemas parecen dormidos, no destruidos."
 event.nave_a_la_deriva.c0.text,Board it and look for supplies,Abordarla y buscar suministros
@@ -225,6 +228,10 @@ event.nave_a_la_deriva.c1.fail,It shuts down completely. Nothing more can be don
 event.nave_a_la_deriva.c2.text,Broadcast a distress call on its behalf,Emitir una llamada de auxilio en su nombre
 event.nave_a_la_deriva.c2.ok,A nearby tug answers and thanks you for the alert.,Un remolcador cercano responde y te agradece el aviso.
 event.nave_a_la_deriva.c2.fail,No one answers.,Nadie responde.
+event.nave_a_la_deriva.c3.text,Claim salvage under Hallen Guild terms,Reclamar el salvamento según los términos del Gremio de Hallen
+event.nave_a_la_deriva.c3.hint,Requires the friendship of the Hallen Guild,Requiere la amistad del Gremio de Hallen
+event.nave_a_la_deriva.c3.ok,The Guild's salvage code is respected here: you strip the ship of its fuel reserves.,El código de salvamento del Gremio se respeta aquí: dejas la nave sin sus reservas de combustible.
+event.nave_a_la_deriva.c3.fail,"The claim is registered, but there is little left to salvage.","La reclamación queda registrada, pero apenas hay nada que salvar."
 event.nebulosa_ionizada.title,Ionized nebula,Nebulosa ionizada
 event.nebulosa_ionizada.text,An ionized nebula crosses the sector in impossible colors. Sensors saturate but record internal structures.,Una nebulosa ionizada cruza el sector con colores imposibles. Los sensores se saturan pero registran estructuras internas.
 event.nebulosa_ionizada.c0.text,Enter it to take readings,Adentrarse para tomar lecturas

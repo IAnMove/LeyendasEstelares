@@ -26,7 +26,8 @@ El juego tiene tres capas:
    antes de volver a la nave.
 
 Lo que haces en una capa afecta a las otras: banderas y reputación (Concordato, Vael) abren o cierran opciones
-más adelante y cambian el epílogo.
+más adelante y cambian el epílogo. Un acuerdo con el Gremio de Hallen o el respeto del Dominio Draeth
+desbloquean opciones propias en anomalías (salvamento de pecios, paso por campos de asteroides).
 
 **Tripulación y bodega.** Vance y Okafor viajan juntos. Desde **Equipo y bodega**, en el mapa estelar,
 eliges quién lidera la expedición: su especialidad aporta +20 puntos porcentuales a las acciones
@@ -188,7 +189,8 @@ y la bitácora se guardan junto con la expedición.
 Las preferencias culturales son una orientación. Cada intercambio introduce una situación distinta:
 privacidad, pruebas, ofertas o compromisos. Repetir una postura reduce la confianza y puede aumentar
 la tensión. Las respuestas muestran sus efectos y el coste en datos antes de elegirlas; el motor
-rechaza pagos que no se pueden afrontar. El historial de posturas forma parte del guardado. Los resultados y el registro guardan claves de
+rechaza pagos que no se pueden afrontar. La transmisión aparece letra a letra (tocarla la completa)
+y las respuestas se pueden elegir desde el principio. El historial de posturas forma parte del guardado. Los resultados y el registro guardan claves de
 texto, no frases traducidas: al continuar en otro idioma todo se muestra en el idioma elegido.
 
 ## Interfaz táctil
@@ -235,6 +237,8 @@ y claves sin uso.
 godot --headless --path . res://tests/run_tests.tscn   # lógica, datos, traducciones y bots de campaña
 godot --headless --path . res://tests/save_test.tscn    # recuperación e idempotencia del guardado
 godot --headless --path . res://tests/ui_test.tscn      # recorre la interfaz con clics y teclas reales
+godot --headless --path . res://tests/layout_test.tscn  # texto partido o controles fuera de pantalla (en/es)
+godot --headless --path . res://tests/layout_test.tscn -- --touch-ui   # lo mismo con botones táctiles
 ```
 
 `run_tests` valida datos y traducciones, genera cientos de mapas y sectores, comprueba las conversaciones y

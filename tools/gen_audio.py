@@ -47,6 +47,7 @@ def main():
     ))
     save("signal", 2.4, motif)
     save("click", 0.08, lambda t: 0.13 * tone(t, 880) * math.sin(math.pi * t / 0.08) ** 2)
+    save("tick", 0.03, lambda t: 0.06 * tone(t, 1760) * math.sin(math.pi * t / 0.03) ** 2)
     save("scan", 0.7, lambda t: 0.15 * math.sin(math.tau * (360 * t + 500 * t * t)) * math.sin(math.pi * t / 0.7) ** 2)
     save("jump", 1.1, lambda t: 0.18 * math.sin(math.tau * (50 * t + 160 * t * t)) * math.sin(math.pi * t / 1.1) ** 2)
     save("supply", 0.5, lambda t: 0.13 * tone(t, 440 if t < 0.25 else 660) * math.sin(math.pi * (t % 0.25) / 0.25) ** 2)
@@ -54,7 +55,7 @@ def main():
     save("warning", 0.8, lambda t: 0.16 * (tone(t, 165) + 0.2 * tone(t, 175)) * math.sin(math.pi * t / 0.8) ** 2)
     rng = random.Random(42)
     save("step", 0.09, lambda t: rng.uniform(-0.12, 0.12) * math.sin(math.pi * t / 0.09) ** 2)
-    print(f"Generated 9 original WAV files in {OUT}")
+    print(f"Generated 10 original WAV files in {OUT}")
 
 
 if __name__ == "__main__":
