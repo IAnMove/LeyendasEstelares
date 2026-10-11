@@ -141,7 +141,23 @@ func text_keys() -> Array[String]:
 				keys.append("contact.%s.x%d.o%d.reply" % [id, x, i])
 				if opt.has("requires"):
 					keys.append("contact.%s.x%d.o%d.hint" % [id, x, i])
+	for flag in _known_flags():
+		keys.append("flag." + flag)
 	return keys
+
+
+func _known_flags() -> Array:
+	var flags := {}
+	for event in events.values():
+		for choice in event["choices"]:
+			for branch in _branches(choice):
+				for flag in branch[1].get("effects", {}).get("set_flags", []):
+					flags[flag] = true
+	for encounter in encounters:
+		for outcome in encounter["outcomes"].values():
+			for flag in outcome.get("effects", {}).get("set_flags", []):
+				flags[flag] = true
+	return flags.keys()
 
 
 ## Lista de problemas de coherencia en los datos (vacía si todo está bien).

@@ -150,6 +150,7 @@ func _build_hud() -> void:
 	ship.add_theme_font_size_override("font_size", 11)
 	ship.pressed.connect(_open_ship)
 	row.add_child(ship)
+	row.add_child(UITheme.help_button())
 	row.add_child(UITheme.pause_button())
 
 

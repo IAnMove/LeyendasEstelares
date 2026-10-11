@@ -6,6 +6,8 @@ signal cell_clicked(cell: Vector2i)
 
 var expedition: Expedition
 var enabled := true
+var return_route: Array[Vector2i] = []
+var return_at_risk := false
 var _hover := Vector2i(-1, -1)
 var _time := 0.0
 
@@ -64,6 +66,13 @@ func _draw() -> void:
 	for c in map.terrain:
 		var tile: String = "tile_fog" if not map.revealed.has(c) else "tile_%s_%s" % [biome, map.terrain[c]]
 		draw_texture_rect(Cartography.tex(tile), Rect2(HexGrid.center(c) - _HEX_OFFSET, Vector2(HexGrid.W, HexGrid.H)), false)
+
+	var previous := HexGrid.center(expedition.player)
+	for cell in return_route:
+		var next := HexGrid.center(cell)
+		draw_line(previous, next, Color(0.07, 0.17, 0.2, 0.7), 3.0, true)
+		draw_dashed_line(previous, next, UITheme.BAD if return_at_risk else UITheme.PAPER, 1.2, 3.0, true)
+		previous = next
 
 	for p in map.pois:
 		if map.revealed.has(p["cell"]):

@@ -14,6 +14,8 @@ var _step_buttons: Array[Button] = []
 
 var _view: PlanetMapView
 var _log: RichTextLabel
+var _return_label: Label
+var _return_warning: Label
 var _o2_label: Label
 var _o2_bar: ProgressBar
 var _morale_label: Label
@@ -106,6 +108,7 @@ func _build_hud() -> void:
 	var title := UITheme.label(T.t("planet.%s.name" % planet["id"]), UITheme.ACCENT, 16)
 	title.size_flags_horizontal = SIZE_EXPAND_FILL
 	head.add_child(title)
+	head.add_child(UITheme.help_button())
 	head.add_child(UITheme.pause_button())
 	v.add_child(UITheme.label(T.t("avatar.%s.name" % GameState.avatar["id"]), UITheme.TEXT, 12))
 	v.add_child(HSeparator.new())
@@ -113,6 +116,10 @@ func _build_hud() -> void:
 	v.add_child(_o2_label)
 	_o2_bar = UITheme.bar(Color("4fc3e8"))
 	v.add_child(_o2_bar)
+	_return_label = UITheme.label("", UITheme.DIM, 11)
+	v.add_child(_return_label)
+	_return_warning = UITheme.label("", UITheme.WARN, 11)
+	v.add_child(_return_warning)
 	_morale_label = UITheme.label("", UITheme.TEXT, 11)
 	v.add_child(_morale_label)
 	_morale_bar = UITheme.bar(Color("e8b45c"))
@@ -154,6 +161,14 @@ func _refresh_hud() -> void:
 	_o2_label.text = T.t("ui.hud.oxygen", {"cur": GameState.oxygen, "max": GameState.max_oxygen})
 	_o2_bar.max_value = GameState.max_oxygen
 	_o2_bar.value = GameState.oxygen
+	var return_cost := expedition.return_cost()
+	_return_label.text = T.t("ui.map.return_cost", {"n": return_cost}) if return_cost >= 0 else T.t("ui.map.return_unknown")
+	_view.return_route = expedition.return_path()
+	_view.return_at_risk = return_cost < 0 or GameState.oxygen <= return_cost
+	_return_warning.visible = _view.return_at_risk or GameState.oxygen - return_cost <= 5
+	_return_warning.text = T.t("ui.map.return_danger" if _view.return_at_risk else "ui.map.return_margin")
+	_return_warning.add_theme_color_override("font_color", UITheme.BAD if _view.return_at_risk else UITheme.WARN)
+	_view.queue_redraw()
 	_morale_label.text = T.t("ui.hud.morale", {"cur": GameState.morale, "max": GameState.max_morale})
 	_morale_bar.max_value = GameState.max_morale
 	_morale_bar.value = GameState.morale

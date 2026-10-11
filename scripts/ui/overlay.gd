@@ -102,6 +102,7 @@ func present_event(event_id: String, resolve: Callable, on_done: Callable) -> vo
 			label += "   [%s]" % lock
 		elif choice.has("risk"):
 			label += "   (%s)" % _chance_text(choice)
+		label += "\n" + EventRunner.preview(choice, GameState)
 		var b := button(label, _on_pick.bind(event_id, i, resolve, on_done), lock != "")
 		if first == null and lock == "":
 			first = b

@@ -107,6 +107,13 @@ software presenta incompatibilidades. Para contrastarlo, usar un emulador con GP
 de generar el APK; el script falla ante errores gráficos. La validación de una partida completa,
 reanudar tras interrupciones y el consumo en un teléfono se documentan por separado.
 
+## Ayuda para decidir
+
+La superficie dibuja la ruta de menor coste de vuelta a la nave usando únicamente terreno descubierto.
+El HUD muestra su coste de oxígeno y avisa cuando queda poco margen; los eventos pueden cambiar
+ese cálculo. Las decisiones anticipan recursos, probabilidades y consecuencias narrativas. El botón
+**?** abre una guía de terrenos, recursos y contactos mientras la partida queda en pausa.
+
 ## Cartografía de tinta y papel
 
 La superficie y el mapa estelar usan símbolos SVG propios en `art/cartography/`, con líneas nítidas,

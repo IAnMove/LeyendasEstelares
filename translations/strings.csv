@@ -612,3 +612,42 @@ ui.story.pending,Transmissions expected: {n}. They arrive after later jumps.,Tra
 ui.story.empty,Decisions with later consequences will appear here.,Aquí aparecerán las decisiones que tengan consecuencias posteriores.
 ui.story.pending_end,Unanswered transmissions: {n}. The expedition ended before the rendezvous.,Transmisiones sin responder: {n}. La expedición terminó antes del encuentro.
 ui.crew.discovery,Vance: +1 research data,Vance: +1 dato de investigación
+ui.map.return_cost,Known route home: {n} O₂ · events excluded,Vuelta por terreno conocido: {n} O₂ · sin eventos
+ui.map.return_unknown,No known return route,No hay una ruta de vuelta conocida
+ui.map.return_danger,No oxygen margin. Return or use supplies.,Sin margen de oxígeno. Regresa o usa suministros.
+ui.map.return_margin,Low reserve for the return journey.,Queda poca reserva para el regreso.
+ui.help.title,Field guide,Guía de expedición
+ui.help.route,"Reach the eastern objective, resolve it and return to the ship. The dotted line is the cheapest known return route. Its oxygen estimate excludes events and undiscovered shortcuts.","Alcanza el objetivo del este, resuélvelo y vuelve a la nave. La línea discontinua marca la vuelta más barata por terreno conocido. Su estimación de oxígeno excluye eventos y atajos sin descubrir."
+ui.help.terrain,Plain: 1 oxygen. Rock and ice: 2. Crater: 3. Rifts are impassable. Entering a hex pays its terrain cost; time spent reading uses no oxygen.,Llanura: 1 de oxígeno. Roca y hielo: 2. Cráter: 3. Las grietas son infranqueables. Pagas el terreno al entrar en un hexágono; leer no consume oxígeno.
+ui.help.resources,Oxygen is refilled on descent. Fuel pays for jumps; scans reveal nearby destinations. Data buys supplies and funds decisions. Morale persists between planets; reaching zero ends the expedition. Cargo items are used from Crew & cargo or Supplies & equipment.,El oxígeno se repone al descender. El combustible paga los saltos; los escaneos revelan destinos cercanos. Los datos compran suministros y financian decisiones. La moral persiste entre planetas; llegar a cero termina la expedición. Usa los objetos desde Equipo y bodega o Suministros y equipo.
+ui.help.contacts,"Read each context before responding. Cultural preferences help, but repeated stances lose credibility. Alliances and agreements open trade; reputation and promises can unlock future decisions.","Lee el contexto antes de responder. Las preferencias culturales orientan, pero repetir posturas resta credibilidad. Las alianzas y acuerdos abren el comercio; la reputación y las promesas pueden desbloquear decisiones futuras."
+ui.help.controls,"Tap or click a highlighted hex to move. On touch screens, direction buttons show each step cost; swipe panels to reveal more options. On a keyboard use Q/E, A/D and Z/C. Back or Esc opens pause and saves your progress.","Toca o pulsa un hexágono resaltado para moverte. En pantallas táctiles, los botones de dirección muestran el coste; desliza los paneles para ver más opciones. Con teclado usa Q/E, A/D y Z/C. Atrás o Esc abre la pausa y guarda el progreso."
+ui.choice.preview_risk,Success: {success} / Setback: {fail},Éxito: {success} / Revés: {fail}
+ui.choice.no_change,No resource change,Sin cambios de recursos
+ui.story.later,Later transmission,Transmisión posterior
+ui.resource.oxygen,O₂,O₂
+ui.resource.morale,Morale,Moral
+ui.resource.data,Data,Datos
+ui.resource.fuel,Fuel,Combustible
+ui.resource.scans,Scans,Escaneos
+flag.archivo_preservado,Archive preserved,Archivo preservado
+flag.archivo_testigo,Witness to the archive,Testigo del archivo
+flag.baliza_apagada,Beacon silenced,Baliza apagada
+flag.baliza_dialogo,Dialogue with the beacon,Diálogo con la baliza
+flag.baliza_mapa,Beacon charted,Baliza cartografiada
+flag.colonia_danada,Colony damaged,Colonia dañada
+flag.convoy_autonomo,Convoy keeps its supplies,El convoy conserva sus suministros
+flag.convoy_guiado,Convoy guided,Convoy guiado
+flag.diagrama_baliza,Beacon diagram,Diagrama de la baliza
+flag.draeth_respeto,Draeth respect,Respeto Draeth
+flag.gremio_amigo,Guild friendship,Amistad del gremio
+flag.gremio_reparacion,Guild repair agreement,Acuerdo de reparación con el gremio
+flag.guia_baliza,Beacon guide,Guía de la baliza
+flag.jardin_cosechado,Garden harvested,Jardín cosechado
+flag.jardin_protegido,Garden protected,Jardín protegido
+flag.mapa_vael,Vael charts,Cartas Vael
+flag.respeto_vael,Vael respect,Respeto Vael
+flag.torre_reparada,Tower repaired,Torre reparada
+flag.torre_saqueada,Tower stripped,Torre saqueada
+flag.vael_contacto,Vael connection,Contacto Vael
+flag.vael_transformacion,Vael transformation understood,Transformación Vael comprendida

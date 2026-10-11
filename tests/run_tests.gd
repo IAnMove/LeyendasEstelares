@@ -17,6 +17,7 @@ func _ready() -> void:
 	_test_contacts()
 	_test_contact_context()
 	_test_stories()
+	_test_return_guidance()
 	_test_campaign_rules()
 	_test_crew_and_items()
 	_test_leader_specialties()
@@ -87,6 +88,8 @@ func _dynamic_keys() -> Array[String]:
 		keys.append("ui.value." + s)
 	for o in Content.OUTCOMES:
 		keys.append("ui.contact.result." + o)
+	for stat in ["oxygen", "morale", "data", "fuel", "scans"]:
+		keys.append("ui.resource." + stat)
 	for fx in ["oxygen", "morale", "fuel", "scans", "data", "rep", "trust", "tension"]:
 		keys.append("fx." + fx)
 	for e in ["victory", "abort", "fuel", "oxygen", "morale"]:
@@ -647,3 +650,23 @@ func _test_leader_specialties() -> void:
 			break
 	science.free()
 	diplomacy.free()
+
+
+func _test_return_guidance() -> void:
+	print("ruta de vuelta sin revelar niebla y vista previa sin efectos")
+	var gs = _new_state("vance")
+	var ex := Expedition.new(gs, Content.planets[0], Content.events, 32)
+	ex.map.terrain = {Vector2i(0, 0): "llanura", Vector2i(1, 0): "roca", Vector2i(2, 0): "hielo"}
+	ex.map.ship_cell = Vector2i.ZERO
+	ex.player = Vector2i(2, 0)
+	ex.map.revealed = {Vector2i(0, 0): true, Vector2i(2, 0): true}
+	_check(ex.return_cost() == -1, "no inventa una ruta a través de terreno oculto")
+	ex.map.revealed[Vector2i(1, 0)] = true
+	_check(ex.return_cost() == 3, "vuelta paga destino, no casilla de salida")
+	_check(ex.map.path_costs(Vector2i.ZERO)[Vector2i(2, 0)] == 4, "ida y vuelta pueden costar distinto")
+	ex.player = Vector2i.ZERO
+	_check(ex.return_cost() == 0 and ex.return_path().is_empty(), "en la nave la vuelta cuesta cero")
+	var before: Dictionary = gs.snapshot()
+	var preview := EventRunner.preview(Content.events["senal_periodica"]["choices"][0], gs)
+	_check(preview.contains("Data +3") and gs.snapshot() == before, "anticipa el bonus científico sin mutar el estado")
+	gs.free()

@@ -108,6 +108,16 @@ static func scrolling(parent: Control) -> ScrollContainer:
 	return scroll
 
 
+static func help_button() -> Button:
+	var b := button("?")
+	b.custom_minimum_size.x = 48
+	b.tooltip_text = T.t("ui.help.title")
+	b.accessibility_name = T.t("ui.help.title")
+	b.alignment = HORIZONTAL_ALIGNMENT_CENTER
+	b.pressed.connect(func(): b.get_tree().call_group("checkpoint_owner", "_open_help"))
+	return b
+
+
 static func pause_button() -> Button:
 	var b := button("Ⅱ")
 	b.tooltip_text = T.t("ui.pause.title")

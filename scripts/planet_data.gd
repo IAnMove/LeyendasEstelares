@@ -50,13 +50,13 @@ func poi_at(c: Vector2i) -> Dictionary:
 
 
 ## Coste mínimo de oxígeno desde `from` a cada casilla alcanzable.
-func path_costs(from: Vector2i) -> Dictionary:
-	return _dijkstra(from)["dist"]
+func path_costs(from: Vector2i, known_only := false) -> Dictionary:
+	return _dijkstra(from, known_only)["dist"]
 
 
 ## Ruta (sin incluir `from`) de menor coste; vacía si no hay.
-func find_path(from: Vector2i, to: Vector2i) -> Array[Vector2i]:
-	var res := _dijkstra(from)
+func find_path(from: Vector2i, to: Vector2i, known_only := false) -> Array[Vector2i]:
+	var res := _dijkstra(from, known_only)
 	var prev: Dictionary = res["prev"]
 	var path: Array[Vector2i] = []
 	if not res["dist"].has(to):
@@ -68,7 +68,7 @@ func find_path(from: Vector2i, to: Vector2i) -> Array[Vector2i]:
 	return path
 
 
-func _dijkstra(from: Vector2i) -> Dictionary:
+func _dijkstra(from: Vector2i, known_only := false) -> Dictionary:
 	var dist := {from: 0}
 	var prev := {}
 	var open: Array[Vector2i] = [from]
@@ -80,7 +80,7 @@ func _dijkstra(from: Vector2i) -> Dictionary:
 		var cur: Vector2i = open[best]
 		open.remove_at(best)
 		for n in HexGrid.neighbors(cur):
-			if not is_passable(n):
+			if not is_passable(n) or (known_only and not revealed.has(n)):
 				continue
 			var nd: int = dist[cur] + move_cost(n)
 			if not dist.has(n) or nd < dist[n]:

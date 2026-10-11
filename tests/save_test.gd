@@ -30,6 +30,10 @@ func _ready() -> void:
 	main._go_back()
 	await frames()
 	check(not Sound.suspended, "Atrás reanuda")
+	main._open_help()
+	check(main._current.process_mode == Node.PROCESS_MODE_DISABLED, "guía bloquea las acciones de fondo")
+	main._go_back()
+	await frames()
 	var muted := Sound.muted
 	main._notification(Node.NOTIFICATION_APPLICATION_PAUSED)
 	check(Sound.suspended, "segundo plano suspende audio")

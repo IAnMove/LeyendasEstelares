@@ -62,3 +62,12 @@ func restore(saved: Dictionary) -> void:
 	map.restore(saved["map"])
 	player = saved["player"]
 	objective_done = saved["objective_done"]
+
+
+## Solo terreno ya descubierto; los eventos pueden alterar el consumo posterior.
+func return_cost() -> int:
+	return int(map.path_costs(player, true).get(map.ship_cell, -1))
+
+
+func return_path() -> Array[Vector2i]:
+	return map.find_path(player, map.ship_cell, true)

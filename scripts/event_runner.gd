@@ -58,3 +58,41 @@ static func resolve(event_id: String, index: int, choice: Dictionary, state, rng
 	if branch.has("follow_up") or not state.story_active.is_empty():
 		state.journal.append({"event": event_id, "choice": index, "suffix": suffix})
 	return {"text": T.ev(event_id, "c%d.%s" % [index, suffix]), "lines": lines, "success": success}
+
+
+static func preview(choice: Dictionary, state) -> String:
+	var bonus := 1 if choice.get("tag", "") == "ciencia" and state.has_trait("ciencia") else 0
+	if choice.has("risk"):
+		return T.t("ui.choice.preview_risk", {
+			"success": describe_branch(choice["risk"]["success"], state, bonus),
+			"fail": describe_branch(choice["risk"]["fail"], state)})
+	return describe_branch(choice["result"], state, bonus)
+
+
+static func describe_branch(branch: Dictionary, state, science_bonus := 0) -> String:
+	var effects: Dictionary = branch.get("effects", {}).duplicate(true)
+	if science_bonus > 0:
+		effects["data"] = int(effects.get("data", 0)) + science_bonus
+	var parts: Array[String] = []
+	for stat in ["oxygen", "morale", "data", "fuel", "scans"]:
+		var delta := int(effects.get(stat, 0))
+		if delta == 0:
+			continue
+		var current: int = state.get(stat)
+		var limit: int = current + maxi(delta, 0) if stat == "data" else state.get("max_" + stat)
+		delta = clampi(current + delta, 0, limit) - current
+		if delta != 0:
+			parts.append("%s %+d" % [T.t("ui.resource." + stat), delta])
+	for faction in effects.get("rep", {}):
+		parts.append("%s %+d" % [T.t("faction." + faction), effects["rep"][faction]])
+	for id in effects.get("items", {}):
+		var count: int = state.item_count(id)
+		var delta := clampi(count + int(effects["items"][id]), 0, int(Content.item_by_id(id)["capacity"])) - count
+		if delta != 0:
+			parts.append("%s %+d" % [T.t("item.%s.name" % id), delta])
+	for flag in effects.get("set_flags", []):
+		if not state.has_flag(flag):
+			parts.append(T.t("flag." + flag))
+	if branch.has("follow_up") and not state.story_seen.has(branch["follow_up"]["event"]):
+		parts.append(T.t("ui.story.later"))
+	return " · ".join(parts) if not parts.is_empty() else T.t("ui.choice.no_change")

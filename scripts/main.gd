@@ -271,6 +271,7 @@ func _open_pause() -> void:
 	_pause_menu.title(T.t("ui.pause.title"))
 	_pause_menu.body(T.t("ui.pause.body"))
 	_pause_menu.button(T.t("ui.pause.resume"), _close_pause).grab_focus()
+	_pause_menu.button(T.t("ui.help.title"), _open_help)
 	_pause_menu.button(T.t("ui.pause.title_menu"), func():
 		_close_pause()
 		_show_title())
@@ -328,3 +329,15 @@ func _show_story(destination: String, event_id: String, restored: Dictionary) ->
 		else:
 			_on_jumped(destination))
 	_swap(screen)
+
+
+func _open_help() -> void:
+	_open_pause()
+	if not is_instance_valid(_pause_menu):
+		return
+	_pause_menu.open()
+	_pause_menu.title(T.t("ui.help.title"))
+	for key in ["ui.help.route", "ui.help.terrain", "ui.help.resources", "ui.help.contacts", "ui.help.controls"]:
+		_pause_menu.body(T.t(key))
+		_pause_menu.separator()
+	_pause_menu.button(T.t("ui.pause.resume"), _close_pause).grab_focus()
