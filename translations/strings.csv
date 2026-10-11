@@ -93,11 +93,11 @@ event.baliza_central.c3.fail,The beacon resists and releases a discharge.,La bal
 avatar.vance.name,Dr. Iria Vance,Dra. Iria Vance
 avatar.vance.role,Xenobiologist and analyst,Xenobióloga y analista
 avatar.vance.desc,"She analyzes before acting. Complex systems are legible to her, though she struggles to yield to what she does not understand.","Analiza antes de actuar. Los sistemas complejos le resultan legibles, aunque le cuesta ceder ante lo que no entiende."
-avatar.vance.perk,+20% on scientific actions,+20% en acciones científicas
+avatar.vance.perk,Science +20%; successes yield +1 data,Ciencia +20%; los éxitos dan +1 dato
 avatar.okafor.name,Cmdr. Tomás Okafor,Cmdte. Tomás Okafor
 avatar.okafor.role,First-contact officer,Oficial de primer contacto
 avatar.okafor.desc,Twenty years negotiating on frontiers without maps. He prefers to listen twice before speaking once.,Veinte años negociando en fronteras sin mapa. Prefiere escuchar dos veces antes de hablar una.
-avatar.okafor.perk,+20% on diplomatic actions,+20% en acciones diplomáticas
+avatar.okafor.perk,"Diplomacy +20%; trust +1, tension gain −1","Diplomacia +20%; confianza +1, tensión ganada −1"
 faction.concordato,Concordat,Concordato
 faction.vael,Vael,Vael
 event.campamento_minero.title,Mining camp,Campamento minero
@@ -474,7 +474,7 @@ ui.title.intro,Three tones. An unknown sector. A crew counting on you.,Tres tono
 ui.title.footer,EXPLORE · MAKE CONTACT · FIND THE SOURCE    /    F11 Fullscreen · M Sound,EXPLORA · ESTABLECE CONTACTO · ENCUENTRA EL ORIGEN    /    F11 Pantalla · M Sonido
 ui.sound.on,Sound: on,Sonido: activado
 ui.sound.off,Sound: off,Sonido: desactivado
-ui.crew.selection_hint,Both officers travel with you. Change the surface leader aboard the ship.,Ambos oficiales viajan contigo. Puedes cambiar de líder a bordo.
+ui.crew.selection_hint,Both officers travel with you. The selected leader provides the active abilities.,Ambos oficiales viajan contigo. El líder elegido aporta las capacidades activas.
 ui.ship.title,Meridiana / Crew & cargo,Meridiana / Tripulación y bodega
 ui.ship.open,Crew & cargo,Equipo y bodega
 ui.ship.back,Return,Volver
@@ -482,7 +482,7 @@ ui.ship.brief,Assign the next surface leader. Supplies and equipment stay with t
 ui.ship.surface,Surface expedition: leadership is fixed until you return to the ship.,En superficie: el líder se mantiene hasta regresar a la nave.
 ui.ship.leader,Expedition leader,Líder de expedición
 ui.ship.assign,Assign leader,Asignar líder
-ui.ship.team_perks,"On comms: Vance analyzes species; Okafor reduces tension. On the surface, your leader provides the action bonus.","En comunicaciones: Vance analiza especies y Okafor reduce tensión. En superficie, el líder aporta su bonificación."
+ui.ship.team_perks,Shared crew morale. Only the assigned leader grants science and diplomacy abilities; change leaders aboard before the next encounter.,Moral compartida. Solo el líder asignado aporta capacidades de ciencia o diplomacia; cambia de líder a bordo antes del siguiente encuentro.
 ui.cargo.open,Supplies & equipment,Suministros y equipo
 ui.cargo.use,Use,Usar
 ui.cargo.equipped,Passive,Pasivo
@@ -611,3 +611,4 @@ ui.story.journal,Logbook,Bitácora
 ui.story.pending,Transmissions expected: {n}. They arrive after later jumps.,Transmisiones pendientes: {n}. Llegarán tras futuros saltos.
 ui.story.empty,Decisions with later consequences will appear here.,Aquí aparecerán las decisiones que tengan consecuencias posteriores.
 ui.story.pending_end,Unanswered transmissions: {n}. The expedition ended before the rendezvous.,Transmisiones sin responder: {n}. La expedición terminó antes del encuentro.
+ui.crew.discovery,Vance: +1 research data,Vance: +1 dato de investigación

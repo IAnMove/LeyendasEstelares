@@ -19,6 +19,7 @@ func _ready() -> void:
 	_test_stories()
 	_test_campaign_rules()
 	_test_crew_and_items()
+	_test_leader_specialties()
 	_test_trade()
 	for avatar in ["vance", "okafor"]:
 		_test_bot_campaigns(avatar)
@@ -275,7 +276,6 @@ func _test_contacts() -> void:
 	# El rasgo diplomático templa la tensión.
 	var dip = _new_state("okafor")
 	var sci = _new_state("vance")
-	sci.crew = [Content.avatar_by_id("vance")]
 	var dr := ContactRunner.new(dip, Content.species_by_id("draeth"), Content.encounter_for("draeth"))
 	var sr := ContactRunner.new(sci, Content.species_by_id("draeth"), Content.encounter_for("draeth"))
 	dr.choose(0)  # open: tensión +1 base
@@ -618,3 +618,32 @@ func _test_stories() -> void:
 	_check(EventRunner.lock_reason(promise, gs) != "", "sin aquella decisión no se abre la ruta")
 	_check(gs.journal.size() == 1, "consecuencia registrada en bitácora")
 	gs.free()
+
+
+func _test_leader_specialties() -> void:
+	print("capacidades activas del líder")
+	var science = _new_state("vance")
+	var diplomacy = _new_state("okafor")
+	_check(science.max_oxygen == diplomacy.max_oxygen, "misma autonomía de exploración")
+	var sp := Content.species_by_id("draeth")
+	var a := ContactRunner.new(science, sp, Content.encounter_for("draeth"))
+	var b := ContactRunner.new(diplomacy, sp, Content.encounter_for("draeth"))
+	_check(b.trust == a.trust + 1, "Okafor aporta confianza inicial")
+	_check(b.preview(0)["tension"] == a.preview(0)["tension"] - 1, "solo el líder diplomático amortigua tensión")
+	var rng := RandomNumberGenerator.new()
+	var choice := {"tag": "ciencia", "result": {"effects": {"data": 2}}}
+	EventRunner.resolve("senal_periodica", 2, choice, science, rng)
+	EventRunner.resolve("senal_periodica", 2, choice, diplomacy, rng)
+	_check(science.data == 3 and diplomacy.data == 2, "solo Vance aporta el dato adicional")
+	var failure := {"tag": "ciencia", "risk": {"chance": -1, "success": {"effects": {}}, "fail": {"effects": {}}}}
+	# Fixture sin azar: 95% mínimo de fallo, busca una tirada fallida y verifica su recompensa.
+	var before: int = science.data
+	for seed_value in 20:
+		rng.seed = seed_value
+		if rng.randf() >= EventRunner.success_chance(failure, science):
+			rng.seed = seed_value
+			var result := EventRunner.resolve("senal_periodica", 0, failure, science, rng)
+			_check(not result["success"] and science.data == before, "un fallo científico no concede datos")
+			break
+	science.free()
+	diplomacy.free()

@@ -83,7 +83,7 @@ func _build_left() -> void:
 
 func _hint_text() -> String:
 	var value := T.t("ui.value." + runner.best_stance())
-	if GameState.has_crew_trait("ciencia"):
+	if GameState.has_trait("ciencia"):
 		return T.t("ui.contact.analysis", {"value": value})
 	if GameState.has_flag("met_" + species_id):
 		return T.t("ui.contact.experience", {"value": value})

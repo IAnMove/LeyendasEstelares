@@ -34,14 +34,7 @@ func _build() -> void:
 	row.position = Vector2(20, 70)
 	row.size = Vector2(600, 272)
 	row.add_theme_constant_override("separation", 12)
-	if UITheme.touch_mode():
-		var scroll := UITheme.scrolling(_layout)
-		scroll.position = Vector2(20, 76)
-		scroll.size = Vector2(610, 274)
-		row.position = Vector2.ZERO
-		scroll.add_child(row)
-	else:
-		_layout.add_child(row)
+	_layout.add_child(row)
 	for a in Content.avatars:
 		row.add_child(_card(a))
 	row.get_child(0).find_children("*", "Button", true, false)[0].grab_focus()
@@ -56,13 +49,18 @@ func _card(a: Dictionary) -> Control:
 	paper.shadow_offset = Vector2(3, 4)
 	paper.shadow_size = 1
 	panel.add_theme_stylebox_override("panel", paper)
+	var outer := VBoxContainer.new()
+	outer.add_theme_constant_override("separation", 7)
+	panel.add_child(outer)
+	var scroll := UITheme.scrolling(outer)
 	var v := VBoxContainer.new()
+	v.size_flags_horizontal = SIZE_EXPAND_FILL
 	v.add_theme_constant_override("separation", 7)
-	panel.add_child(v)
+	scroll.add_child(v)
 	var top := HBoxContainer.new()
 	top.add_theme_constant_override("separation", 10)
 	v.add_child(top)
-	top.add_child(UITheme.illustration(a["portrait"], Vector2(130, 158)))
+	top.add_child(UITheme.illustration(a["portrait"], Vector2(116, 148)))
 	var info := VBoxContainer.new()
 	info.size_flags_horizontal = SIZE_EXPAND_FILL
 	info.add_theme_constant_override("separation", 6)
@@ -83,5 +81,5 @@ func _card(a: Dictionary) -> Control:
 	pick.alignment = HORIZONTAL_ALIGNMENT_CENTER
 	pick.custom_minimum_size.y = 28
 	pick.pressed.connect(func(): avatar_chosen.emit(id))
-	v.add_child(pick)
+	outer.add_child(pick)
 	return panel

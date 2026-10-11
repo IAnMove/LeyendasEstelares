@@ -49,6 +49,9 @@ static func resolve(event_id: String, index: int, choice: Dictionary, state, rng
 	else:
 		branch = choice["result"]
 	var lines: Array[String] = state.apply_effects(branch.get("effects", {}))
+	if success and choice.get("tag", "") == "ciencia" and state.has_trait("ciencia"):
+		state.apply_effects({"data": 1})
+		lines.append(T.t("ui.crew.discovery"))
 	if branch.has("follow_up"):
 		state.queue_story(branch["follow_up"])
 		lines.append(T.t("ui.story.queued"))

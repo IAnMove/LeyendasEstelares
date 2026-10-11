@@ -21,7 +21,7 @@ func _init(state_, species_: Dictionary, encounter_: Dictionary) -> void:
 	species = species_
 	encounter = encounter_
 	trust = int(species["start"]["trust"])
-	trust = mini(trust + int(state.item_bonus("trust")), MAX_METER)
+	trust = mini(trust + int(state.item_bonus("trust")) + (1 if state.has_trait("diplomacia") else 0), MAX_METER)
 	tension = int(species["start"]["tension"])
 
 
@@ -69,7 +69,7 @@ func preview(i: int) -> Dictionary:
 	var repeats := mini(history.count(stance), 2)
 	var d_trust := int(base["trust"]) + int(extra.get("trust", 0)) + int(context.get("trust", 0)) - repeats
 	var d_tension := int(base["tension"]) + int(extra.get("tension", 0)) + int(context.get("tension", 0)) + (1 if repeats > 0 else 0)
-	if state.has_crew_trait("diplomacia") and d_tension > 0:
+	if state.has_trait("diplomacia") and d_tension > 0:
 		d_tension -= 1
 	return {"trust": clampi(trust + d_trust, 0, MAX_METER) - trust,
 		"tension": clampi(tension + d_tension, 0, MAX_METER) - tension,

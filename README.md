@@ -107,6 +107,13 @@ software presenta incompatibilidades. Para contrastarlo, usar un emulador con GP
 de generar el APK; el script falla ante errores gráficos. La validación de una partida completa,
 reanudar tras interrupciones y el consumo en un teléfono se documentan por separado.
 
+## Líderes con capacidades distintas
+
+Ambos oficiales disponen de 40 de oxígeno y comparten la moral de la tripulación. Vance añade
+un dato a cada acción científica exitosa y conserva su bonificación de probabilidad. Okafor empieza
+los contactos con una unidad adicional de confianza y reduce en uno la tensión positiva. Estas
+ventajas dependen del líder activo, que se cambia a bordo antes del siguiente encuentro.
+
 ## Consecuencias que viajan contigo
 
 Tres cadenas enlazan seis nuevos eventos con rescates, señales Vael y depósitos del gremio.

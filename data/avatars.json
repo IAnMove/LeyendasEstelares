@@ -14,7 +14,7 @@
 		"traits": [
 			"diplomacia"
 		],
-		"max_oxygen": 36,
+		"max_oxygen": 40,
 		"max_morale": 12,
 		"sprite": "avatar_okafor",
 		"portrait": "generated/crew_okafor"
