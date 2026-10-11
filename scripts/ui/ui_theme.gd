@@ -120,7 +120,8 @@ static func help_button() -> Button:
 
 
 static func pause_button() -> Button:
-	var b := button("Ⅱ")
+	# ASCII evita depender del glifo romano que falta en la fuente exportada a web.
+	var b := button("II")
 	b.tooltip_text = T.t("ui.pause.title")
 	b.accessibility_name = T.t("ui.pause.title")
 	b.custom_minimum_size.x = 48

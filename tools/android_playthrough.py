@@ -210,7 +210,7 @@ def main():
                 item = next((b for b in report['buttons'] if b['path'] == report.get('suggested_button')), None)
                 if item is None:
                     # Event choices only: decorative/help controls are outside the active overlay.
-                    candidates = [b for b in report['buttons'] if not b['disabled'] and b['text'] not in ['?', 'Ⅱ']]
+                    candidates = [b for b in report['buttons'] if not b['disabled'] and b['text'] not in ['?', 'II']]
                     item = candidates[0] if candidates else None
                 press(report, item)
             if step % 25 == 0:
