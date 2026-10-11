@@ -165,3 +165,8 @@ cython_debug/
 *.translation
 /android/
 *.tmp
+
+# Private signing credentials (stored outside this repository)
+*.jks
+*.keystore
+*.p12

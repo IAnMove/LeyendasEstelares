@@ -79,7 +79,8 @@ python3 tools/export.py linux web --godot /ruta/al/ejecutable/Godot
 
 El script guarda los paquetes y una copia de `LICENSE` en `build/<plataforma>/`, excluye pruebas y
 herramientas del juego, y usa temporales locales para evitar cuotas de `/tmp`. `build/` no se versiona.
-Los ejecutables de escritorio se exportan en modo release; Android genera un **APK de depuración**.
+Los ejecutables de escritorio se exportan en modo release; el script general genera un **APK Android de depuración**
+con paquete `.debug`, separado de la aplicación de distribución. Para el APK/AAB firmado, usa el flujo siguiente.
 macOS lleva firma local ad hoc y Windows se genera sin firma de distribución. Publicar en tiendas y firmar con credenciales
 propias son pasos independientes.
 
@@ -94,11 +95,33 @@ La web usa un solo hilo, incluye un manifiesto PWA y funciona con controles tác
 puede empezar tras la primera interacción. La ejecución se verifica en Linux y Chromium; las exportaciones
 de Windows, macOS y Android necesitan además una revisión en sus dispositivos nativos antes de distribuirlas.
 
+## Distribución firmada de Android
+
+Los perfiles **Android Release APK** y **Android Release AAB** exportan la versión 1.1.0 (código 2),
+con SDK mínimo 24, objetivo 36 y bibliotecas ARM de 32 y 64 bits. Incluyen iconos adaptativos propios.
+
+```sh
+python3 tools/android_release.py init-key --java-home /ruta/jdk17  # solo una vez
+python3 tools/android_release.py export --godot /ruta/godot --java-home /ruta/jdk17
+```
+
+La clave y `signing.json` se guardan en `~/.local/share/leyendas-estelares/signing/`, fuera del repositorio,
+con permisos privados. Conserva una copia segura de esa carpeta: las futuras actualizaciones deben
+usar la misma identidad de firma. Para una clave existente, configura allí su ruta, alias y contraseña;
+el script los pasa a Godot mediante variables de entorno, sin publicarlos en la línea de comandos.
+
+Los archivos quedan en `build/android/release/`, junto a sus hashes y verificaciones de firma/alineación.
+El script instala la plantilla Gradle si falta. La primera compilación puede descargar dependencias.
+Se ha validado también el AAB con [bundletool](https://github.com/google/bundletool/releases/tag/1.18.2).
+Generar estos archivos no los publica en ninguna tienda.
+
 ## Verificación nativa de Android
 
 `python3 tools/android_smoke.py --serial SERIE --adb /ruta/adb` instala el APK en el dispositivo
 indicado, comprueba el arranque, detecta errores de shaders y guarda captura y registro en
-`build/android/validation/`. No selecciona teléfonos automáticamente ni borra sus datos.
+`build/android/validation/`. No selecciona teléfonos automáticamente ni borra sus datos. El dispositivo debe estar desbloqueado;
+la comprobación exige además un renderizador inicializado y la aplicación en primer plano. Para el APK
+firmado, añade `--package org.leyendasestelares.game --apk build/android/release/leyendas-estelares.apk`.
 
 El error `GL_MAX_FRAGMENT_UNIFORM_VECTORS (261)` observado en SwiftShader coincide con
 [Godot #109550](https://github.com/godotengine/godot/issues/109550): su compilador OpenGL ES por
