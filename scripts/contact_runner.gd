@@ -85,15 +85,15 @@ func choose(i: int) -> Dictionary:
 	var d_trust: int = forecast["trust"]
 	var d_tension: int = forecast["tension"]
 	history.append(opt["stance"])
-	var lines: Array[String] = []
+	var lines: Array = []
 	var t0 := trust
 	var n0 := tension
 	trust = clampi(trust + d_trust, 0, MAX_METER)
 	tension = clampi(tension + d_tension, 0, MAX_METER)
 	if trust != t0:
-		lines.append(T.t("fx.trust", {"delta": _signed(trust - t0)}))
+		lines.append(T.later("fx.trust", {"delta": _signed(trust - t0)}))
 	if tension != n0:
-		lines.append(T.t("fx.tension", {"delta": _signed(tension - n0)}))
+		lines.append(T.later("fx.tension", {"delta": _signed(tension - n0)}))
 	var generic := {}
 	for k in extra:
 		if k != "trust" and k != "tension":
@@ -126,7 +126,7 @@ func apply_outcome() -> Dictionary:
 		return {}
 	var id := outcome()
 	state.relations[species["id"]] = id
-	var lines: Array[String] = state.apply_effects(encounter["outcomes"][id].get("effects", {}))
+	var lines: Array = state.apply_effects(encounter["outcomes"][id].get("effects", {}))
 	if not state.has_flag("met_" + species["id"]):
 		state.flags["met_" + species["id"]] = true
 	_applied_outcome = {"id": id, "key": "contact.%s.out.%s" % [encounter["id"], id], "lines": lines}

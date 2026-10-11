@@ -24,6 +24,30 @@ static func ev(event_id: String, suffix: String, args: Dictionary = {}) -> Strin
 	return t("event.%s.%s" % [event_id, suffix], args)
 
 
+## Texto que se traduce al mostrarlo, no al crearlo: lo que se guarda es la clave y sus parámetros,
+## así una partida reanudada en otro idioma no mezcla idiomas. Un parámetro puede ser otro `later`.
+static func later(key: String, args: Dictionary = {}) -> Dictionary:
+	return {"key": key, "args": args}
+
+
+## Traduce un `later`; los textos ya traducidos (guardados antiguos) se devuelven tal cual.
+static func show(text) -> String:
+	if not text is Dictionary:
+		return str(text)
+	var args := {}
+	for name in text.get("args", {}):
+		var value = text["args"][name]
+		args[name] = show(value) if value is Dictionary else value
+	return t(str(text.get("key", "")), args)
+
+
+static func join(texts: Array, separator := "  ·  ") -> String:
+	var out: Array[String] = []
+	for text in texts:
+		out.append(show(text))
+	return separator.join(out)
+
+
 ## Registra las traducciones desde el CSV si el editor aún no las ha importado (ejecución directa sin importar).
 static func ensure_loaded() -> void:
 	if _loaded:

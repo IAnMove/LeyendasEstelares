@@ -31,11 +31,14 @@ static func write(snapshot: Dictionary, path := PATH) -> Error:
 	return DirAccess.rename_absolute(path + ".tmp", path)
 
 
+## Principal; si falta o está dañado, el temporal verificado (un corte entre los dos renombrados
+## lo deja como el más reciente) y, por último, la copia de respaldo.
 static func read(path := PATH) -> Dictionary:
-	var saved := _read(path)
-	if saved.is_empty():
-		saved = _read(path + ".bak")
-	return saved
+	for suffix in ["", ".tmp", ".bak"]:
+		var saved := _read(path + suffix)
+		if not saved.is_empty():
+			return saved
+	return {}
 
 
 static func clear(path := PATH) -> void:
@@ -96,4 +99,41 @@ static func valid(saved: Dictionary) -> bool:
 			return false
 	if screen["kind"] == "contact" and not screen.get("runner") is Dictionary:
 		return false
+	return _screen_fields_valid(screen)
+
+
+## Campos que cada pantalla lee al restaurarse. Solo `log` puede faltar (guardados anteriores a su formato).
+static func _screen_fields_valid(screen: Dictionary) -> bool:
+	var required := {
+		"planet": {"rng": TYPE_INT, "phase": TYPE_STRING, "pending": TYPE_DICTIONARY},
+		"contact": {"phase": TYPE_STRING, "reply": TYPE_DICTIONARY},
+		"anomaly": {"rng": TYPE_INT, "result": TYPE_DICTIONARY, "choice": TYPE_INT},
+		"followup": {"rng": TYPE_INT, "result": TYPE_DICTIONARY, "choice": TYPE_INT},
+	}
+	var fields: Dictionary = required.get(screen["kind"], {})
+	for key in fields:
+		if typeof(screen.get(key)) != fields[key]:
+			return false
+	if screen.has("log") and not (screen["log"] is Array or screen["log"] is String):
+		return false
+	match screen["kind"]:
+		"planet":
+			var pending: Dictionary = screen["pending"]
+			match screen["phase"]:
+				"briefing", "explore", "event": return true
+				"result": return pending.get("index") is int and _result_valid(pending.get("result"))
+				"fail": return pending.get("reason") is String
+				"conclusion": return pending.get("result") is String
+			return false
+		"contact":
+			match screen["phase"]:
+				"intro", "prompt", "outcome": return true
+				"reply": return screen["reply"].has("mine") and screen["reply"].get("result") is Dictionary
+			return false
+		"anomaly", "followup":
+			return screen["result"].is_empty() or _result_valid(screen["result"])
 	return true
+
+
+static func _result_valid(result) -> bool:
+	return result is Dictionary and result.has("text") and result.get("lines") is Array and result.get("success") is bool

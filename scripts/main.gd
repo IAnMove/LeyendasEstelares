@@ -7,7 +7,9 @@ var _vignette: ColorRect
 var save_path := SaveStore.PATH
 var _save_queued := false
 var _last_save_error := OK
+var _last_saved_bytes := PackedByteArray()  # evita reescribir un estado idéntico (pausa, Atrás, segundo plano)
 var _pause_menu: Overlay
+var _quit_modal: Overlay
 var _backgrounded := false
 var _safe_content: Control
 
@@ -65,6 +67,7 @@ func _show_avatars() -> void:
 	s.avatar_chosen.connect(func(id: String):
 		GameState.start_run(Content.avatar_by_id(id), Content.factions, Content.campaign)
 		_campaign = Campaign.new(GameState, Content.campaign, randi())
+		_last_saved_bytes = PackedByteArray()
 		_show_sector())
 	_swap(s)
 
@@ -128,6 +131,7 @@ func _after_node(id: String) -> void:
 func _end(ending: String) -> void:
 	if not save_path.is_empty():
 		SaveStore.clear(save_path)
+	_last_saved_bytes = PackedByteArray()
 	GameState.on_surface = false
 	Sound.play("signal" if ending == "victory" else "warning")
 	var s := EndScreen.new()
@@ -141,6 +145,9 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
 		if event.keycode == KEY_ESCAPE:
 			_go_back()
+			get_viewport().set_input_as_handled()
+		elif event.keycode == KEY_F1:
+			_open_help()
 			get_viewport().set_input_as_handled()
 		elif event.keycode == KEY_F11:
 			var full := DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN
@@ -173,23 +180,32 @@ func queue_checkpoint() -> void:
 
 func _save_checkpoint() -> void:
 	_save_queued = false
-	if save_path.is_empty() or _campaign == null or not is_instance_valid(_current):
-		return
 	var screen := {}
-	if _current is SectorScreen:
+	if save_path.is_empty() or _campaign == null or not is_instance_valid(_current):
+		pass
+	elif _current is SectorScreen:
 		screen = {"kind": "sector"}
 	elif _current.has_method("save_state"):
 		screen = _current.save_state()
 	if screen.is_empty():
+		_last_save_error = OK  # fuera de una expedición no queda nada pendiente de guardar
 		return
-	var error := SaveStore.write({"state": GameState.snapshot(), "campaign": _campaign.snapshot(), "screen": screen}, save_path)
+	var snapshot := {"state": GameState.snapshot(), "campaign": _campaign.snapshot(), "screen": screen}
+	var bytes := var_to_bytes(snapshot)
+	if bytes == _last_saved_bytes:
+		return
+	var error := SaveStore.write(snapshot, save_path)
+	_last_saved_bytes = bytes if error == OK else PackedByteArray()
 	if error != OK and _last_save_error == OK:
+		# En la raíz segura y no en la pantalla: con la pausa abierta, la pantalla no recibe clics.
 		var modal := Overlay.new()
-		_current.add_child(modal)
+		modal.add_to_group("dismissible")
+		_safe_content.add_child(modal)
 		modal.open()
 		modal.title(T.t("ui.save.error_title"), UITheme.BAD)
 		modal.body(T.t("ui.save.error_body"))
-		modal.button(T.t("ui.continue"), modal.queue_free)
+		modal.button(T.t("ui.continue"), modal.queue_free).grab_focus()
+		UITheme.isolate_focus(modal)
 	_last_save_error = error
 
 
@@ -217,9 +233,10 @@ func _notification(what: int) -> void:
 			_request_quit()
 		NOTIFICATION_APPLICATION_PAUSED:
 			_backgrounded = true
-			_save_checkpoint()
-			if not (_current is TitleScreen or _current is AvatarScreen or _current is EndScreen):
-				_open_pause()
+			if _current is TitleScreen or _current is AvatarScreen or _current is EndScreen:
+				_save_checkpoint()
+			else:
+				_open_pause()  # guarda antes de abrirse
 			Sound.set_suspended(true)
 		NOTIFICATION_APPLICATION_RESUMED:
 			_fit_safe_area.call_deferred()
@@ -228,6 +245,11 @@ func _notification(what: int) -> void:
 
 
 func _go_back() -> void:
+	if is_instance_valid(_quit_modal):
+		_close_quit()
+		return
+	if _dismiss_child(_safe_content, false):
+		return
 	if is_instance_valid(_pause_menu):
 		_close_pause()
 		return
@@ -242,13 +264,15 @@ func _go_back() -> void:
 		_open_pause()
 
 
-func _dismiss_child(node: Node) -> bool:
+## Cierra el modal o panel más reciente bajo `node`. Sin `recursive` solo mira sus hijos directos:
+## los avisos que main añade a la raíz segura, por encima de la pausa y de la pantalla.
+func _dismiss_child(node: Node, recursive := true) -> bool:
 	var children := node.get_children()
 	children.reverse()
 	for child in children:
 		if child.is_queued_for_deletion():
 			continue
-		if _dismiss_child(child):
+		if recursive and _dismiss_child(child):
 			return true
 		if child is ShipScreen or child is TradeScreen:
 			child.closed.emit()
@@ -262,13 +286,14 @@ func _dismiss_child(node: Node) -> bool:
 func _open_pause() -> void:
 	if is_instance_valid(_pause_menu):
 		return
-	_save_checkpoint()
-	if _last_save_error != OK:
-		return
+	_save_checkpoint()  # si falla, su aviso queda por encima; la pausa sigue disponible
 	_current.process_mode = Node.PROCESS_MODE_DISABLED
 	Sound.set_suspended(true)
 	_pause_menu = Overlay.new()
 	_safe_content.add_child(_pause_menu)
+	for child in _safe_content.get_children():
+		if child is Overlay and child.is_in_group("dismissible"):
+			_safe_content.move_child(child, -1)  # un aviso de guardado ya abierto queda por encima
 	_pause_menu.open()
 	_pause_menu.title(T.t("ui.pause.title"))
 	_pause_menu.body(T.t("ui.pause.body"))
@@ -291,22 +316,32 @@ func _close_pause() -> void:
 	Sound.set_suspended(_backgrounded)
 
 
+## Pide confirmación para salir; en una expedición pausa antes. Una segunda petición con la
+## confirmación abierta (otro clic en la X de la ventana) sale directamente.
 func _request_quit() -> void:
-	_save_checkpoint()
-	if _last_save_error != OK:
+	if is_instance_valid(_quit_modal):
+		get_tree().quit()
 		return
-	if not (_current is TitleScreen or _current is EndScreen):
+	if _current is TitleScreen or _current is AvatarScreen or _current is EndScreen:
+		_save_checkpoint()
+	else:
 		_open_pause()
-		return
-	var modal := Overlay.new()
-	modal.add_to_group("dismissible")
-	_current.add_child(modal)
-	modal.open()
-	modal.title(T.t("ui.pause.quit_title"))
-	modal.body(T.t("ui.pause.quit_body"))
-	modal.button(T.t("ui.quit"), func(): get_tree().quit())
-	modal.button(T.t("ui.save.cancel"), modal.queue_free).grab_focus()
-	UITheme.isolate_focus(modal)
+	_quit_modal = Overlay.new()
+	_safe_content.add_child(_quit_modal)
+	_quit_modal.open()
+	_quit_modal.title(T.t("ui.pause.quit_title"))
+	_quit_modal.body(T.t("ui.pause.quit_body"))
+	if _last_save_error != OK:
+		_quit_modal.note(T.t("ui.save.quit_unsaved"), UITheme.BAD)
+	_quit_modal.button(T.t("ui.quit"), func(): get_tree().quit())
+	_quit_modal.button(T.t("ui.save.cancel"), _close_quit).grab_focus()
+	UITheme.isolate_focus(_quit_modal)
+
+
+func _close_quit() -> void:
+	if is_instance_valid(_quit_modal):
+		_quit_modal.queue_free()
+	_quit_modal = null
 
 
 func _fit_safe_area() -> void:

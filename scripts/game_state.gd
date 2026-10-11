@@ -153,9 +153,9 @@ func failure_reason() -> String:
 	return ""
 
 
-## Aplica efectos y devuelve líneas legibles (ya traducidas) de lo que cambió realmente.
-func apply_effects(effects: Dictionary) -> Array[String]:
-	var lines: Array[String] = []
+## Aplica efectos y devuelve líneas (`T.later`, se traducen al mostrarlas) de lo que cambió realmente.
+func apply_effects(effects: Dictionary) -> Array:
+	var lines: Array = []
 	_apply_stat(effects, "oxygen", "max_oxygen", lines)
 	_apply_stat(effects, "morale", "max_morale", lines)
 	_apply_stat(effects, "fuel", "max_fuel", lines)
@@ -164,11 +164,11 @@ func apply_effects(effects: Dictionary) -> Array[String]:
 		var before := data
 		data = maxi(data + int(effects["data"]), 0)
 		if data != before:
-			lines.append(T.t("fx.data", {"delta": _signed(data - before)}))
+			lines.append(T.later("fx.data", {"delta": _signed(data - before)}))
 	for faction in effects.get("rep", {}):
 		var delta := int(effects["rep"][faction])
 		rep[faction] = int(rep.get(faction, 0)) + delta
-		lines.append(T.t("fx.rep", {"faction": T.t("faction." + faction), "delta": _signed(delta)}))
+		lines.append(T.later("fx.rep", {"faction": T.later("faction." + faction), "delta": _signed(delta)}))
 	for f in effects.get("set_flags", []):
 		flags[f] = true
 	for id in effects.get("items", {}):
@@ -178,19 +178,19 @@ func apply_effects(effects: Dictionary) -> Array[String]:
 		var before := item_count(id)
 		inventory[id] = clampi(before + int(effects["items"][id]), 0, int(item["capacity"]))
 		if item_count(id) != before:
-			lines.append(T.t("fx.item", {"name": T.t("item.%s.name" % id), "delta": _signed(item_count(id) - before)}))
+			lines.append(T.later("fx.item", {"name": T.later("item.%s.name" % id), "delta": _signed(item_count(id) - before)}))
 	changed.emit()
 	return lines
 
 
-func _apply_stat(effects: Dictionary, stat: String, max_stat: String, lines: Array[String]) -> void:
+func _apply_stat(effects: Dictionary, stat: String, max_stat: String, lines: Array) -> void:
 	if not effects.has(stat):
 		return
 	var before: int = get(stat)
 	var after := clampi(before + int(effects[stat]), 0, int(get(max_stat)))
 	set(stat, after)
 	if after != before:
-		lines.append(T.t("fx." + stat, {"delta": _signed(after - before)}))
+		lines.append(T.later("fx." + stat, {"delta": _signed(after - before)}))
 
 
 func _signed(n: int) -> String:
@@ -204,10 +204,20 @@ func snapshot() -> Dictionary:
 	return out.duplicate(true)
 
 
+## Parte de un estado vacío: un guardado anterior a un campo nuevo no hereda valores de la partida previa.
 func restore(saved: Dictionary) -> void:
 	for key in snapshot():
-		if saved.has(key):
-			set(key, saved[key])
+		var value = get(key)
+		set(key, saved[key] if saved.has(key) else _empty_like(value))
+
+
+static func _empty_like(value):
+	match typeof(value):
+		TYPE_DICTIONARY: return {}
+		TYPE_ARRAY: return []
+		TYPE_BOOL: return false
+		TYPE_INT: return 0
+	return null
 
 
 func queue_story(follow_up: Dictionary) -> void:

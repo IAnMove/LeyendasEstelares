@@ -48,7 +48,7 @@ Los suministros se usan desde la bodega, nunca se consumen si el recurso ya est�
 reserva permite repostar antes de que una nave sin combustible se dé por perdida.
 
 **Controles:** ratón (clic) en todo; en el mapa de superficie también teclado: `Q` `E` (arriba), `A` `D` (lados),
-`Z` `C` (abajo). En los menús, Tab, las flechas y Enter. `F11` cambia la pantalla completa y `M` silencia
+`Z` `C` (abajo). En los menús, Tab, las flechas y Enter. `F1` abre la guía, `F11` cambia la pantalla completa y `M` silencia
 el sonido. También hay un botón de sonido en el título; el idioma y el silencio se guardan entre sesiones.
 En pantallas táctiles se juega tocando los controles, en horizontal; los paneles largos permiten desplazamiento.
 
@@ -188,7 +188,8 @@ y la bitácora se guardan junto con la expedición.
 Las preferencias culturales son una orientación. Cada intercambio introduce una situación distinta:
 privacidad, pruebas, ofertas o compromisos. Repetir una postura reduce la confianza y puede aumentar
 la tensión. Las respuestas muestran sus efectos y el coste en datos antes de elegirlas; el motor
-rechaza pagos que no se pueden afrontar. El historial de posturas forma parte del guardado.
+rechaza pagos que no se pueden afrontar. El historial de posturas forma parte del guardado. Los resultados y el registro guardan claves de
+texto, no frases traducidas: al continuar en otro idioma todo se muestra en el idioma elegido.
 
 ## Interfaz táctil
 
@@ -200,11 +201,14 @@ del dispositivo. Puede revisarse en escritorio con `godot --path . -- --touch-ui
 ## Guardado de expediciones
 
 La partida se guarda después de cada decisión en `user://expedition.save`, con escritura temporal,
-verificación de integridad y una copia de respaldo. **Continuar partida** recupera ruta, inventario,
+verificación de integridad y una copia de respaldo. Un estado idéntico al último guardado no se reescribe;
+si el principal falta o está dañado se recupera el temporal verificado y, después, el respaldo. **Continuar partida** recupera ruta, inventario,
 mercados, superficie, niebla, conversaciones y resultados pendientes. Una nueva expedición pide
 confirmación antes de sustituir la anterior; terminarla elimina su guardado. Los archivos son locales
 al dispositivo. Atrás en Android o Esc en escritorio cierra primero la bodega o el mercado;
-en una expedición abre el menú de pausa. Al cambiar de aplicación se guarda inmediatamente,
+en una expedición abre el menú de pausa. Cerrar la ventana pide confirmación (durante una expedición,
+sobre la pausa); un segundo cierre sale directamente. Si un guardado falla, el juego avisa una vez y
+sigue permitiendo pausar y salir, indicando qué se perdería. Al cambiar de aplicación se guarda inmediatamente,
 se suspende el audio y se requiere reanudar de forma explícita. El silencio elegido se conserva. Las partidas y sus copias no se incluyen en Git ni en las exportaciones.
 
 ## Traducciones

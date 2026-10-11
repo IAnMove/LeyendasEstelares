@@ -10,6 +10,7 @@ var expedition: Expedition
 var restored: Dictionary = {}
 var _phase := "briefing"
 var _pending: Dictionary = {}
+var _log_entries: Array = []  # {text: T.later, color}; se traduce al mostrarlo
 var _step_buttons: Array[Button] = []
 
 var _view: PlanetMapView
@@ -61,7 +62,11 @@ func _ready() -> void:
 			_overlay.show_result(poi["event_id"], _pending["index"], _pending["result"], func(): _after_event(poi))
 		"fail": _fail(_pending["reason"])
 		"conclusion": _conclude(_pending["result"])
-	_log.text = restored.get("log", "")
+	var saved_log = restored.get("log", [])
+	if saved_log is Array:
+		_log_entries = saved_log.duplicate(true)
+	for entry in _log_entries:
+		_print_log(entry)
 
 
 func _build_hud() -> void:
@@ -186,8 +191,19 @@ func _refresh_hud() -> void:
 			_step_buttons[i].text += "\n−%d O₂" % expedition.map.move_cost(cell)
 
 
-func _say(text: String, color := UITheme.TEXT) -> void:
-	_log.append_text("[color=#%s]%s[/color]\n" % [color.to_html(false), text])
+const LOG_LIMIT := 40
+
+
+func _say(text: Dictionary, color := UITheme.TEXT) -> void:
+	var entry := {"text": text, "color": color.to_html(false)}
+	_log_entries.append(entry)
+	if _log_entries.size() > LOG_LIMIT:
+		_log_entries.pop_front()
+	_print_log(entry)
+
+
+func _print_log(entry: Dictionary) -> void:
+	_log.append_text("[color=#%s]%s[/color]\n" % [entry["color"], T.show(entry["text"])])
 
 
 # ---------------------------------------------------------------- movimiento
@@ -198,7 +214,7 @@ func _on_cell_clicked(cell: Vector2i) -> void:
 	var res := expedition.move(cell)
 	_refresh_hud()
 	Sound.play("step")
-	_say(T.t("ui.log.move", {"cost": cost}), UITheme.DIM)
+	_say(T.later("ui.log.move", {"cost": cost}), UITheme.DIM)
 	if res["failure"] != "":
 		_fail(res["failure"])
 	elif not res["poi"].is_empty():
@@ -218,7 +234,7 @@ func _show_briefing() -> void:
 		_phase = "explore"
 		_overlay.close()
 		Sound.play("signal")
-		_say(T.t("ui.log.descend"), UITheme.ACCENT)
+		_say(T.later("ui.log.descend"), UITheme.ACCENT)
 	).grab_focus()
 	if not planet.get("final", false):
 		_overlay.button(T.t("ui.skip_planet"), func(): finished.emit({"result": "skip", "reason": ""}))
@@ -240,9 +256,9 @@ func _after_event(poi: Dictionary) -> void:
 	_phase = "explore"
 	_pending = {}
 	_refresh_hud()
-	_say("%s" % T.ev(poi["event_id"], "title"), UITheme.TEXT)
+	_say(T.later("event.%s.title" % poi["event_id"]), UITheme.TEXT)
 	if poi["objective"]:
-		_say(T.t("ui.map.goal_done"), UITheme.GOOD)
+		_say(T.later("ui.map.goal_done"), UITheme.GOOD)
 	var reason := GameState.failure_reason()
 	if reason != "":
 		_fail(reason)
@@ -286,4 +302,4 @@ func _conclude(result: String) -> void:
 
 func save_state() -> Dictionary:
 	return {"kind": "planet", "expedition": expedition.snapshot(), "rng": _rng.state,
-		"phase": _phase, "pending": _pending, "log": _log.text}
+		"phase": _phase, "pending": _pending, "log": _log_entries.duplicate(true)}

@@ -47,6 +47,48 @@ func _ready() -> void:
 	await frames()
 	check(not is_instance_valid(main._pause_menu), "Atrás cierra bodega antes de pausar")
 
+	# Cerrar la ventana en ruta pausa y pide confirmación; Atrás cierra primero la confirmación.
+	main._request_quit()
+	check(is_instance_valid(main._pause_menu) and is_instance_valid(main._quit_modal), "cerrar la ventana en ruta pide confirmación")
+	main._go_back()
+	await frames()
+	check(not is_instance_valid(main._quit_modal) and is_instance_valid(main._pause_menu), "Atrás cierra la confirmación y deja la pausa")
+	main._go_back()
+	await frames()
+
+	# Pausar sin cambios no reescribe el guardado (ni rota el respaldo).
+	main._save_checkpoint()
+	DirAccess.remove_absolute(SLOT + ".bak")
+	main._notification(Node.NOTIFICATION_APPLICATION_PAUSED)
+	main._notification(Node.NOTIFICATION_APPLICATION_RESUMED)
+	main._close_pause()
+	await frames()
+	check(not FileAccess.file_exists(SLOT + ".bak"), "pausar sin cambios no reescribe el guardado")
+
+	# Un guardado fallido avisa, pero no bloquea la pausa ni la salida, y no persiste fuera de la expedición.
+	main.save_path = "user://carpeta-inexistente/sin-permiso/expedition.save"
+	GameState.data += 1
+	main._save_checkpoint()
+	check(main._last_save_error != OK, "detecta el guardado fallido")
+	check(_overlays(main._safe_content) == 1, "el aviso de guardado está sobre la pantalla")
+	main._go_back()
+	await frames()
+	check(_overlays(main._safe_content) == 0 and not is_instance_valid(main._pause_menu), "Atrás cierra el aviso")
+	main._go_back()
+	check(is_instance_valid(main._pause_menu), "con el guardado fallido, Atrás sigue abriendo la pausa")
+	main._request_quit()
+	check(is_instance_valid(main._quit_modal), "con el guardado fallido se puede salir")
+	main._close_quit()
+	main._close_pause()
+	main._show_title()
+	await frames()
+	main._request_quit()
+	check(main._last_save_error == OK and is_instance_valid(main._quit_modal), "en el título un error anterior no bloquea Salir")
+	main._close_quit()
+	main.save_path = SLOT
+	main._resume()
+	await frames()
+
 	# Partida en superficie, con posición, niebla, POI y resultado pendiente.
 	var planet_id := ""
 	var contact_id := ""
@@ -103,10 +145,16 @@ func _ready() -> void:
 	main._save_checkpoint()
 	before = GameState.snapshot()
 	expected = anomaly.save_state()
+	var language := T.language()
+	var shown := T.show(expected["result"]["text"])
+	T.set_language("es" if language == "en" else "en", false)
 	main._show_title()
 	main._resume()
 	await frames()
 	check(main._current.save_state() == expected and GameState.snapshot() == before, "anomalía pendiente idempotente")
+	var translated := T.show(expected["result"]["text"])
+	check(translated != shown and _has_text(main._current, translated), "el resultado reanudado usa el idioma actual")
+	T.set_language(language, false)
 
 	# Continuación narrativa en tránsito; recuperar resultado no repite la recompensa.
 	GameState.queue_story({"event": "convoy_rescatado", "delay": 1})
@@ -128,14 +176,39 @@ func _ready() -> void:
 	await frames()
 	check(main._current is MapScreen and GameState.story_active.is_empty(), "después de la transmisión se llega al planeta")
 
-	# Guardado truncado: se recupera el último archivo verificado.
+	# Registro de superficie: se guarda por entradas y sobrevive a reanudar.
+	main._current._say(T.later("ui.log.descend"), UITheme.ACCENT)
 	main._save_checkpoint()
-	var backup := SaveStore.read(SLOT)
+	var surface_log: Array = main._current.save_state()["log"]
+	check(not surface_log.is_empty(), "el registro de superficie se guarda")
+	main._show_title()
+	main._resume()
+	await frames()
+	check(main._current.save_state()["log"] == surface_log, "el registro de superficie se restaura")
+	var legacy := SaveStore.read(SLOT)
+	legacy["screen"]["log"] = ""
+	check(SaveStore.valid(legacy), "acepta el registro de texto de guardados anteriores")
+	var broken := legacy.duplicate(true)
+	broken["screen"]["phase"] = "desconocida"
+	check(not SaveStore.valid(broken), "rechaza una fase de pantalla desconocida")
+
+	# Corte entre los dos renombrados: el temporal verificado es el estado más reciente.
+	main._save_checkpoint()
+	var previous := SaveStore.read(SLOT)
+	GameState.data += 1
+	main._save_checkpoint()
+	var newest := SaveStore.read(SLOT)
+	check(newest != previous, "cada cambio crea un guardado nuevo")
+	DirAccess.rename_absolute(SLOT, SLOT + ".tmp")
+	check(SaveStore.read(SLOT) == newest, "recupera el temporal verificado antes que el respaldo")
+	DirAccess.rename_absolute(SLOT + ".tmp", SLOT)
+
+	# Guardado truncado: se recupera el último archivo verificado.
 	var file := FileAccess.open(SLOT, FileAccess.WRITE)
 	file.store_string("truncado")
 	file.close()
-	check(SaveStore.read(SLOT) == backup, "recupera copia de respaldo tras truncado")
-	check(SaveStore.write(backup, SLOT) == OK, "reemplaza el archivo dañado")
+	check(SaveStore.read(SLOT) == previous, "recupera copia de respaldo tras truncado")
+	check(SaveStore.write(newest, SLOT) == OK, "reemplaza el archivo dañado")
 	check(SaveStore.write({"state": {}}, SLOT) == ERR_INVALID_DATA, "rechaza esquema incompleto")
 	main._end("victory")
 	await frames()
@@ -146,6 +219,23 @@ func _ready() -> void:
 	await frames()
 	print("GUARDADO: %d fallos" % failures)
 	get_tree().quit(0 if failures == 0 else 1)
+
+func _overlays(node: Node) -> int:
+	var n := 0
+	for child in node.get_children():
+		if child is Overlay and child.is_in_group("dismissible") and not child.is_queued_for_deletion():
+			n += 1
+	return n
+
+
+func _has_text(node: Node, text: String) -> bool:
+	if (node is Label or node is Button) and node.text == text:
+		return true
+	for child in node.get_children():
+		if _has_text(child, text):
+			return true
+	return false
+
 
 func frames() -> void:
 	for i in 4:

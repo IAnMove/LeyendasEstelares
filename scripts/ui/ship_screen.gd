@@ -96,7 +96,7 @@ func _refresh() -> void:
 		use.tooltip_text = T.t(GameState.item_use_reason(id)) if use.disabled else ""
 		use.pressed.connect(func():
 			var result := GameState.use_item(id)
-			_status.text = " · ".join(result["lines"])
+			_status.text = T.join(result["lines"], " · ")
 			_status.visible = true
 			Sound.play("supply")
 			_refresh())

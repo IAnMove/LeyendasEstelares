@@ -165,6 +165,9 @@ func _test_generation() -> void:
 			again.generate(planet, Content.events, s)
 			_check(again.terrain == m.terrain and again.ship_cell == m.ship_cell, "%s: determinista semilla %d" % [planet["id"], s])
 		print("  %s: %s" % [planet["id"], counts])
+		var fallback := PlanetData.new()
+		_check(fallback._try_generate(planet, Content.events, 0, true), "%s: el mapa de reserva siempre es válido" % planet["id"])
+		_check(fallback.pois.filter(func(p): return p["objective"]).size() == 1, "%s: el mapa de reserva conserva el objetivo" % planet["id"])
 
 
 func _test_event_rules() -> void:
@@ -190,6 +193,22 @@ func _test_event_rules() -> void:
 	_check(gs.oxygen == gs.max_oxygen and gs.fuel == gs.max_fuel, "recursos acotados al máximo")
 	gs.apply_effects({"oxygen": -999})
 	_check(gs.failure_reason() == "oxygen", "fallo por oxígeno")
+	# Las líneas guardan clave y parámetros: se traducen al mostrarlas, no al resolverse.
+	var lines: Array = gs.apply_effects({"oxygen": 5, "rep": {"vael": 1}})
+	var english := T.join(lines)
+	T.set_language("es", false)
+	_check(T.join(lines) != english and not "{" in T.join(lines), "las líneas se traducen en el idioma activo")
+	T.set_language("en", false)
+	_check(T.show("texto de un guardado antiguo") == "texto de un guardado antiguo", "los textos ya traducidos se muestran tal cual")
+	# Restaurar parte de un estado vacío: un guardado sin un campo no hereda el de la partida anterior.
+	var saved: Dictionary = gs.snapshot()
+	saved.erase("journal")
+	saved.erase("story_queue")
+	gs.journal.append({"event": "anterior", "choice": 0, "suffix": "res"})
+	gs.story_queue.append({"event": "anterior", "due": 1})
+	gs.restore(saved)
+	_check(gs.journal.is_empty() and gs.story_queue.is_empty(), "restaurar no hereda la bitácora de otra partida")
+	_check(gs.flags.has("x") and gs.rep["vael"] == 3, "restaurar conserva los campos guardados")
 	gs.free()
 
 

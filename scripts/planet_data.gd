@@ -25,7 +25,9 @@ func generate(planet: Dictionary, events: Dictionary, seed_value: int) -> void:
 	for attempt in 80:
 		if _try_generate(planet, events, seed_value + attempt * 7919):
 			return
-	push_error("PlanetData: no se pudo generar un mapa válido para %s" % planet.get("id", "?"))
+	# Último recurso: llanura sin obstáculos, siempre con baliza alcanzable (nunca una partida sin objetivo).
+	if not _try_generate(planet, events, seed_value, true):
+		push_error("PlanetData: no se pudo generar un mapa válido para %s" % planet.get("id", "?"))
 
 
 func is_passable(c: Vector2i) -> bool:
@@ -118,7 +120,7 @@ func _too_close(c: Vector2i) -> bool:
 	return false
 
 
-func _try_generate(planet: Dictionary, events: Dictionary, s: int) -> bool:
+func _try_generate(planet: Dictionary, events: Dictionary, s: int, flat := false) -> bool:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = s
 	var noise := FastNoiseLite.new()
@@ -130,7 +132,7 @@ func _try_generate(planet: Dictionary, events: Dictionary, s: int) -> bool:
 	revealed.clear()
 	for y in ROWS:
 		for x in COLS:
-			terrain[Vector2i(x, y)] = _terrain_for(noise.get_noise_2d(x, y))
+			terrain[Vector2i(x, y)] = "llanura" if flat else _terrain_for(noise.get_noise_2d(x, y))
 
 	ship_cell = Vector2i(1, rng.randi_range(2, ROWS - 3))
 	beacon_cell = Vector2i(COLS - 2, rng.randi_range(2, ROWS - 3))

@@ -186,20 +186,18 @@ func _show_prompt() -> void:
 func _on_choose(i: int) -> void:
 	var eid: String = runner.encounter["id"]
 	var x := runner.index
-	var mine := T.t("contact.%s.x%d.o%d" % [eid, x, i])
-	_reply = {"mine": mine, "result": runner.choose(i)}
+	_reply = {"mine": T.later("contact.%s.x%d.o%d" % [eid, x, i]), "result": runner.choose(i)}
 	_show_reply()
 
 
 func _show_reply() -> void:
 	_phase = "reply"
-	var mine: String = _reply["mine"]
 	var res: Dictionary = _reply["result"]
 	_refresh_bars()
 	_clear_options()
 	_speech.add_theme_color_override("font_color", _color)
 	_speech.text = T.t(res["key"])
-	_extra.text = "%s: %s\n%s" % [T.t("ui.contact.you"), mine, "  ·  ".join(res["lines"])]
+	_extra.text = "%s: %s\n%s" % [T.t("ui.contact.you"), T.show(_reply["mine"]), T.join(res["lines"])]
 	_add_option(T.t("ui.continue"), _after_reply).grab_focus()
 
 
@@ -218,7 +216,7 @@ func _show_outcome() -> void:
 	var colors := {"alliance": UITheme.GOOD, "deal": UITheme.ACCENT, "wary": UITheme.DIM, "hostile": UITheme.BAD}
 	_speech.add_theme_color_override("font_color", colors[out["id"]])
 	_speech.text = "%s\n\n%s" % [T.t("ui.contact.result." + out["id"]), T.t(out["key"])]
-	_extra.text = "  ·  ".join(out["lines"])
+	_extra.text = T.join(out["lines"])
 	_add_option(T.t("ui.contact.close"), func(): finished.emit({"result": out["id"]})).grab_focus()
 	if out["id"] in ["alliance", "deal"]:
 		_add_option(T.t("ui.trade.open"), _open_trade)

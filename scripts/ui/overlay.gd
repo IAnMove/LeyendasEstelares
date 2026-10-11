@@ -129,7 +129,7 @@ func show_result(event_id: String, index: int, result: Dictionary, on_done: Call
 	if choice.has("risk"):
 		headline += " — " + T.t("ui.event.success" if result["success"] else "ui.event.setback")
 	title(headline, UITheme.GOOD if result["success"] else UITheme.BAD)
-	body(result["text"])
+	body(T.show(result["text"]))
 	if not result["lines"].is_empty():
-		note("  ·  ".join(result["lines"]))
+		note(T.join(result["lines"]))
 	button(T.t("ui.continue"), on_done).grab_focus()

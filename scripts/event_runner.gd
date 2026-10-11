@@ -37,7 +37,7 @@ static func success_chance(choice: Dictionary, state) -> float:
 	return clampf(chance, 0.05, 0.95)
 
 
-## Resuelve la opción `index` del evento: aplica efectos y devuelve {text, lines, success}.
+## Resuelve la opción `index` del evento: aplica efectos y devuelve {text, lines, success} (textos `T.later`).
 static func resolve(event_id: String, index: int, choice: Dictionary, state, rng: RandomNumberGenerator) -> Dictionary:
 	var branch: Dictionary
 	var success := true
@@ -48,16 +48,16 @@ static func resolve(event_id: String, index: int, choice: Dictionary, state, rng
 		suffix = "ok" if success else "fail"
 	else:
 		branch = choice["result"]
-	var lines: Array[String] = state.apply_effects(branch.get("effects", {}))
+	var lines: Array = state.apply_effects(branch.get("effects", {}))
 	if success and choice.get("tag", "") == "ciencia" and state.has_trait("ciencia"):
 		state.apply_effects({"data": 1})
-		lines.append(T.t("ui.crew.discovery"))
+		lines.append(T.later("ui.crew.discovery"))
 	if branch.has("follow_up"):
 		state.queue_story(branch["follow_up"])
-		lines.append(T.t("ui.story.queued"))
+		lines.append(T.later("ui.story.queued"))
 	if branch.has("follow_up") or not state.story_active.is_empty():
 		state.journal.append({"event": event_id, "choice": index, "suffix": suffix})
-	return {"text": T.ev(event_id, "c%d.%s" % [index, suffix]), "lines": lines, "success": success}
+	return {"text": T.later("event.%s.c%d.%s" % [event_id, index, suffix]), "lines": lines, "success": success}
 
 
 static func preview(choice: Dictionary, state) -> String:
