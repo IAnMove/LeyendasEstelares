@@ -1,42 +1,72 @@
 {
   "date": "2026-10-11",
+  "source_commit": "ce8cebe3a1f7ef167143a4e0e5ce6fdc1d60604b",
   "godot": "4.7.2.stable.official.ed1daf0bf",
-  "logic": "passed, 600 bot campaigns including trade and supplies",
-  "ui": "passed; mouse, keyboard, crew, cargo, trade, focus isolation, sound, panel bounds; V1/V2 portrait selection, live refresh and saved preference",
-  "linux_release": "headless startup passed outside source directory after retro UI export",
-  "web": "Chromium: desktop mouse switched V2 → V1 → V2 with visible portrait updates; mobile touch selected a leader and opened cargo at 960x540; no console errors",
-  "android": "debug APK signature verified; installed and launched in x86_64 emulator; engine logged SceneShaderGLES3 linking errors (GL_MAX_FRAGMENT_UNIFORM_VECTORS); native gameplay not validated",
-  "macos": "universal app exported with local ad-hoc signing; ZIP integrity verified",
+  "logic": {
+    "status": "passed; zero failures",
+    "campaigns": 600,
+    "vance": {
+      "victory": 251,
+      "fuel": 28,
+      "oxygen": 21
+    },
+    "okafor": {
+      "victory": 263,
+      "fuel": 16,
+      "oxygen": 21
+    },
+    "scope": "Automated regression bots, not an estimate of player success. Covers data, translations, diplomacy context/cost/history, story chains, active leader traits, return path and resource previews."
+  },
+  "save_and_lifecycle": "passed; zero failures. Round trips of sector, map, RNG, pending results, contacts, trade and story queue; backup recovery; no duplicate rewards; pause, help and suspended audio.",
+  "ui": "passed; zero failures in desktop and touch modes. Mouse/keyboard flow, controls, bounds, leader assignment, cargo, trade, portrait versions and persisted preference.",
+  "linux_release": "Final release starts headlessly outside source directory with no engine errors.",
+  "web": "Final Web export in Chromium: desktop mouse at 1280x720 and touch at 960x540; V2 to V1 to V2 restores identical portrait rendering; leader selection, cargo, pause and continue after browser reload; no JavaScript/console errors. Pause label uses ASCII to avoid a missing font glyph.",
+  "android": {
+    "native_campaign": "Passed on Android 17 x86_64 emulator with ANGLE at 960x540: victory, five jumps, 36 moves, trade purchase, touch scrolling, Back, Home/resume, suspended audio and exact recovery after process death.",
+    "campaign_report": "docs/android/report.json",
+    "normal_debug_startup": "docs/android/debug-startup.json",
+    "performance_scope": "30 FPS cap. Emulator measurements are in the campaign report; they do not establish performance or battery life on physical hardware.",
+    "physical_device": "Pending. Samsung SM-S928B on Android 16 stayed locked/asleep; no physical gameplay or battery measurement was performed.",
+    "renderer": "Raw SwiftShader GLES showed shader linker failures. ANGLE over SwiftShader Vulkan completed the campaign; two cached-shader warnings recovered by recompilation, with no engine errors.",
+    "distribution": "Signed release APK and AAB generated for ARM64/ARMv7, version 1.1.0 (2), minimum SDK 24, target SDK 36. APK v2 signature, 16 KiB ZIP alignment, 16 KiB ARM64 ELF segments, AAB signature and bundletool validation passed. Production package excludes tests and QA observer."
+  },
+  "macos": "Universal app exported with local ad-hoc signing; ZIP integrity verified.",
   "not_tested": [
     "Windows native runtime",
     "macOS native runtime",
-    "Android native runtime"
+    "Android physical gameplay, sustained performance, temperature and battery life",
+    "Store publication"
   ],
   "artifacts": [
     {
       "path": "build/linux/leyendas-estelares.x86_64",
-      "bytes": 107332328,
-      "sha256": "8010bb0c752f31e23166ef4ccf385b3cb6d42760d40858de082b7dec4af0287b"
+      "bytes": 107527760,
+      "sha256": "59d3578a84cdc6f2200f9267d721322eac4ee9fd5be4981a54754a42fc4b8dd3"
     },
     {
       "path": "build/windows/leyendas-estelares.exe",
-      "bytes": 142990264,
-      "sha256": "0ed29d0bc3692b175b31c27566d9bddc06e08e54109f4f8275220cb56c2dfdb5"
+      "bytes": 143185696,
+      "sha256": "06bf5be77375486cee35a2d560195b6e0038bad37cc3d086b653c475c9090531"
     },
     {
       "path": "build/macos/leyendas-estelares.zip",
-      "bytes": 67840187,
-      "sha256": "d51a89179fd7bd44726a94700227c7d7f86fd5f4bdda191fb3c93d7e6e842454"
+      "bytes": 94509472,
+      "sha256": "c4f22a1427851175c0b0eee7f283b4914a0f11d3eb9710c1ebdd5cf1a41f0b05"
     },
     {
       "path": "build/web/index.html",
       "bytes": 5541,
-      "sha256": "240630264d5f7b658631830e8b99b3b1e3a7c6081b5728eab45fbde83ba76931"
+      "sha256": "5c4de98da2724ea1969d092e292741c0a85a3014d227adfc184efecac44263e7"
+    },
+    {
+      "path": "build/web/index.js",
+      "bytes": 279815,
+      "sha256": "33c94cb3175f3333b82e2a3be5e8e86f77986f0aa2042b1631f6367a4e5bb6ba"
     },
     {
       "path": "build/web/index.pck",
-      "bytes": 33812908,
-      "sha256": "3b77eee316002a0172d07f2fbb9cff23beaa01212221a8c80a16b7979a83b461"
+      "bytes": 34008340,
+      "sha256": "fbf71fd309a4661dfa4756159a77df7b6617f8362df221942496360e67495988"
     },
     {
       "path": "build/web/index.wasm",
@@ -45,11 +75,20 @@
     },
     {
       "path": "build/android/leyendas-estelares.apk",
-      "bytes": 90815785,
-      "sha256": "34d8735fc8f30acd6b64b32d9fdb4a40b0badda44cd14d831140663a2501b30d"
+      "bytes": 91004431,
+      "sha256": "d513f57e5f2cdf9af17ddf48923c105270f151b707a5918c36298edc4983112e"
+    },
+    {
+      "path": "build/android/release/leyendas-estelares.apk",
+      "bytes": 184369229,
+      "sha256": "90500d5786dee2a0768df5f1b04f92e34327ae79643e97317484917212ec300f"
+    },
+    {
+      "path": "build/android/release/leyendas-estelares.aab",
+      "bytes": 86295865,
+      "sha256": "060576f27cc6d64aa159b704f39816ce045b6064714fd82efc46226ac62e620a"
     }
   ],
-  "art": "5 retro comic edits; source hashes confirm all 9 original illustrations unchanged",
-  "screenshots": "24 Spanish and 24 English screens at 1920x1080",
-  "android_startup_log": "docs/android-startup.log"
+  "art": "5 versioned retro comic edits and original portraits retained; SVG retro cartography integrated.",
+  "screenshots": "24 Spanish and 24 English screenshots at 1920x1080, plus native Android campaign, process recovery and widescreen captures."
 }

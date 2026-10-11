@@ -1,0 +1,11 @@
+{
+  "model": "sdk_gphone64_x86_64",
+  "android": "17",
+  "abi": "x86_64",
+  "native_startup": true,
+  "engine_renderer_ready": true,
+  "foreground": true,
+  "errors": [],
+  "warnings": [],
+  "scope": "Installation, engine startup and screenshot only; not a complete gameplay or battery test."
+}

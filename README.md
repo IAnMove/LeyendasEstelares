@@ -94,7 +94,8 @@ python3 -m http.server 8000 --directory build/web
 
 La web usa un solo hilo, incluye un manifiesto PWA y funciona con controles táctiles. El audio del navegador
 puede empezar tras la primera interacción. La ejecución se verifica en Linux y Chromium; las exportaciones
-de Windows, macOS y Android necesitan además una revisión en sus dispositivos nativos antes de distribuirlas.
+de Windows y macOS requieren pruebas en sus sistemas nativos. Android cuenta con una campaña completa
+en emulador; la revisión física y el consumo de batería siguen pendientes.
 
 ## Distribución firmada de Android
 
@@ -237,6 +238,7 @@ simula campañas completas con un bot usando el mismo motor que la interfaz.
 Incluye 600 campañas, cambio de líder, consumo y límites de objetos, mejoras, bloqueo por relaciones,
 compras y ventas, existencias persistentes y protección contra recompensas duplicadas. Los bots compran
 suministros y los usan durante la campaña. La prueba de UI también abre la bodega y los mercados.
+El [informe de validación](docs/validation.json) registra resultados, límites y hashes de los paquetes locales.
 Capturas (requiere display, p. ej. `xvfb-run`): `godot --path . res://tests/screenshot.tscn -- /ruta [en|es]`.
 
 ## Estructura
@@ -250,7 +252,8 @@ Capturas (requiere display, p. ej. `xvfb-run`): `godot --path . res://tests/scre
 | `art/generated/` | 9 ilustraciones originales V1; prompts y hashes en `manifest.json` |
 | `art/generated/v2_retro/` | 5 retratos V2 editados con el generador de imágenes: cómic americano retro de ciencia ficción; fuentes, prompts y hashes en su `manifest.json` |
 | `art/fonts/` | Liberation Sans y Mono, con su licencia OFL incluida |
-| `art/` | Icono vectorial y sprites tácticos pixel art de `tools/gen_art.py`, conservados para los hexágonos y marcadores |
+| `art/cartography/` | Símbolos SVG retro para terrenos, objetos y mapa estelar |
+| `art/` | Icono vectorial y sprites pixel art originales de `tools/gen_art.py`, conservados como colección de referencia |
 | `audio/` | Ambiente espacial y 8 señales originales sintetizadas por `tools/gen_audio.py` |
 | `tools/export.py` | Exportaciones reproducibles con los presets versionados |
 | `tests/` | Pruebas headless, prueba de UI y capturas |
