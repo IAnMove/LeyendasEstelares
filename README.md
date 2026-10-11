@@ -94,6 +94,19 @@ La web usa un solo hilo, incluye un manifiesto PWA y funciona con controles tác
 puede empezar tras la primera interacción. La ejecución se verifica en Linux y Chromium; las exportaciones
 de Windows, macOS y Android necesitan además una revisión en sus dispositivos nativos antes de distribuirlas.
 
+## Verificación nativa de Android
+
+`python3 tools/android_smoke.py --serial SERIE --adb /ruta/adb` instala el APK en el dispositivo
+indicado, comprueba el arranque, detecta errores de shaders y guarda captura y registro en
+`build/android/validation/`. No selecciona teléfonos automáticamente ni borra sus datos.
+
+El error `GL_MAX_FRAGMENT_UNIFORM_VECTORS (261)` observado en SwiftShader coincide con
+[Godot #109550](https://github.com/godotengine/godot/issues/109550): su compilador OpenGL ES por
+software presenta incompatibilidades. Para contrastarlo, usar un emulador con GPU del host
+(`-gpu host`) o un dispositivo físico. No se considera superada la validación por el mero hecho
+de generar el APK; el script falla ante errores gráficos. La validación de una partida completa,
+reanudar tras interrupciones y el consumo en un teléfono se documentan por separado.
+
 ## Traducciones
 
 Todos los textos están en **`translations/strings.csv`** (formato estándar de Godot: `keys,en,es`).
