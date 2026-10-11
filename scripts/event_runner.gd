@@ -49,4 +49,9 @@ static func resolve(event_id: String, index: int, choice: Dictionary, state, rng
 	else:
 		branch = choice["result"]
 	var lines: Array[String] = state.apply_effects(branch.get("effects", {}))
+	if branch.has("follow_up"):
+		state.queue_story(branch["follow_up"])
+		lines.append(T.t("ui.story.queued"))
+	if branch.has("follow_up") or not state.story_active.is_empty():
+		state.journal.append({"event": event_id, "choice": index, "suffix": suffix})
 	return {"text": T.ev(event_id, "c%d.%s" % [index, suffix]), "lines": lines, "success": success}

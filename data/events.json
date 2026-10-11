@@ -34,6 +34,10 @@
 							"set_flags": [
 								"vael_contacto"
 							]
+						},
+						"follow_up": {
+							"event": "respuesta_del_archivo",
+							"delay": 1
 						}
 					},
 					"fail": {
@@ -504,6 +508,10 @@
 					"success": {
 						"effects": {
 							"fuel": 2
+						},
+						"follow_up": {
+							"event": "reclamacion_del_gremio",
+							"delay": 1
 						}
 					},
 					"fail": {
@@ -565,6 +573,10 @@
 						"rep": {
 							"concordato": 1
 						}
+					},
+					"follow_up": {
+						"event": "reclamacion_del_gremio",
+						"delay": 1
 					}
 				}
 			}
@@ -1087,6 +1099,10 @@
 						"effects": {
 							"data": 2,
 							"scans": 1
+						},
+						"follow_up": {
+							"event": "convoy_rescatado",
+							"delay": 1
 						}
 					},
 					"fail": {
@@ -1106,6 +1122,10 @@
 								"concordato": 1
 							},
 							"scans": 1
+						},
+						"follow_up": {
+							"event": "convoy_rescatado",
+							"delay": 1
 						}
 					},
 					"fail": {
@@ -1196,6 +1216,10 @@
 							"set_flags": [
 								"vael_contacto"
 							]
+						},
+						"follow_up": {
+							"event": "respuesta_del_archivo",
+							"delay": 1
 						}
 					},
 					"fail": {
@@ -1254,6 +1278,256 @@
 					"fail": {
 						"effects": {
 							"fuel": -1
+						}
+					}
+				}
+			}
+		]
+	},
+	{
+		"id": "convoy_rescatado",
+		"type": "anomaly",
+		"choices": [
+			{
+				"result": {
+					"effects": {
+						"data": -2,
+						"morale": 1,
+						"set_flags": [
+							"convoy_guiado"
+						]
+					},
+					"follow_up": {
+						"event": "destino_del_convoy",
+						"delay": 1
+					}
+				},
+				"requires": {
+					"min_data": 2
+				}
+			},
+			{
+				"result": {
+					"effects": {
+						"items": {
+							"fuel_cell": 1
+						}
+					},
+					"follow_up": {
+						"event": "destino_del_convoy",
+						"delay": 1
+					}
+				}
+			},
+			{
+				"result": {
+					"effects": {
+						"morale": 2,
+						"set_flags": [
+							"convoy_autonomo"
+						]
+					},
+					"follow_up": {
+						"event": "destino_del_convoy",
+						"delay": 1
+					}
+				}
+			}
+		]
+	},
+	{
+		"id": "destino_del_convoy",
+		"type": "anomaly",
+		"choices": [
+			{
+				"result": {
+					"effects": {
+						"fuel": 2,
+						"items": {
+							"oxygen_cell": 1
+						}
+					}
+				},
+				"requires": {
+					"flag": "convoy_guiado"
+				}
+			},
+			{
+				"result": {
+					"effects": {
+						"data": -2,
+						"fuel": 2
+					}
+				},
+				"requires": {
+					"min_data": 2
+				}
+			},
+			{
+				"result": {
+					"effects": {
+						"morale": 1,
+						"data": 1
+					}
+				}
+			}
+		]
+	},
+	{
+		"id": "respuesta_del_archivo",
+		"type": "anomaly",
+		"choices": [
+			{
+				"result": {
+					"effects": {
+						"data": -2,
+						"set_flags": [
+							"archivo_testigo"
+						]
+					},
+					"follow_up": {
+						"event": "memoria_compartida",
+						"delay": 1
+					}
+				},
+				"requires": {
+					"min_data": 2
+				}
+			},
+			{
+				"result": {
+					"effects": {
+						"scans": 1
+					},
+					"follow_up": {
+						"event": "memoria_compartida",
+						"delay": 1
+					}
+				}
+			},
+			{
+				"result": {
+					"effects": {
+						"morale": 1
+					}
+				}
+			}
+		]
+	},
+	{
+		"id": "memoria_compartida",
+		"type": "anomaly",
+		"choices": [
+			{
+				"result": {
+					"effects": {
+						"data": 4,
+						"rep": {
+							"vael": 2
+						},
+						"set_flags": [
+							"archivo_preservado"
+						]
+					}
+				},
+				"requires": {
+					"flag": "archivo_testigo"
+				}
+			},
+			{
+				"result": {
+					"effects": {
+						"data": 3,
+						"scans": 1,
+						"rep": {
+							"vael": -2
+						}
+					}
+				}
+			},
+			{
+				"result": {
+					"effects": {
+						"morale": 2,
+						"rep": {
+							"vael": 1
+						}
+					}
+				}
+			}
+		]
+	},
+	{
+		"id": "reclamacion_del_gremio",
+		"type": "anomaly",
+		"choices": [
+			{
+				"result": {
+					"effects": {
+						"data": -2,
+						"set_flags": [
+							"gremio_reparacion"
+						]
+					},
+					"follow_up": {
+						"event": "deposito_restaurado",
+						"delay": 1
+					}
+				},
+				"requires": {
+					"min_data": 2
+				}
+			},
+			{
+				"result": {
+					"effects": {
+						"morale": -2,
+						"set_flags": [
+							"gremio_reparacion"
+						]
+					},
+					"follow_up": {
+						"event": "deposito_restaurado",
+						"delay": 1
+					}
+				}
+			},
+			{
+				"result": {
+					"effects": {
+						"morale": -1
+					}
+				}
+			}
+		]
+	},
+	{
+		"id": "deposito_restaurado",
+		"type": "anomaly",
+		"choices": [
+			{
+				"result": {
+					"effects": {
+						"fuel": 2
+					}
+				}
+			},
+			{
+				"result": {
+					"effects": {
+						"items": {
+							"oxygen_cell": 1,
+							"rations": 1
+						}
+					}
+				}
+			},
+			{
+				"result": {
+					"effects": {
+						"morale": 3,
+						"rep": {
+							"concordato": 1
 						}
 					}
 				}

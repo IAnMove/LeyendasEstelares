@@ -107,6 +107,14 @@ software presenta incompatibilidades. Para contrastarlo, usar un emulador con GP
 de generar el APK; el script falla ante errores gráficos. La validación de una partida completa,
 reanudar tras interrupciones y el consumo en un teléfono se documentan por separado.
 
+## Consecuencias que viajan contigo
+
+Tres cadenas enlazan seis nuevos eventos con rescates, señales Vael y depósitos del gremio.
+Las transmisiones llegan tras saltos posteriores, pueden abrir opciones según promesas anteriores
+y se intercalan antes del destino sin sustituirlo. La **Bitácora** de la bodega conserva las decisiones;
+el final recoge sus consecuencias y las transmisiones que quedaron pendientes. La cola, los resultados
+y la bitácora se guardan junto con la expedición.
+
 ## Diplomacia contextual
 
 Las preferencias culturales son una orientación. Cada intercambio introduce una situación distinta:

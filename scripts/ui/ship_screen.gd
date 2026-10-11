@@ -25,6 +25,10 @@ func _ready() -> void:
 	var back := UITheme.button(T.t("ui.ship.back"))
 	back.autowrap_mode = TextServer.AUTOWRAP_OFF
 	back.pressed.connect(func(): closed.emit())
+	var journal_button := UITheme.button(T.t("ui.story.journal"))
+	journal_button.autowrap_mode = TextServer.AUTOWRAP_OFF
+	journal_button.pressed.connect(func(): StoryJournal.open(self))
+	head.add_child(journal_button)
 	head.add_child(back)
 	col.add_child(UITheme.label(T.t("ui.ship.surface" if GameState.on_surface else "ui.ship.brief"), UITheme.DIM, 11))
 	_status = UITheme.label("", UITheme.GOOD, 11)

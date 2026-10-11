@@ -104,6 +104,26 @@ func _ready() -> void:
 	await frames()
 	check(main._current.save_state() == expected and GameState.snapshot() == before, "anomalía pendiente idempotente")
 
+	# Continuación narrativa en tránsito; recuperar resultado no repite la recompensa.
+	GameState.queue_story({"event": "convoy_rescatado", "delay": 1})
+	GameState.story_turn += 1
+	main._campaign.current = planet_id
+	main._on_jumped(planet_id)
+	await frames()
+	check(main._current is AnomalyScreen and main._current.is_story, "la consecuencia llega antes del destino")
+	var story: AnomalyScreen = main._current
+	story._choice = 1
+	story._result = EventRunner.resolve(story.event_id, 1, Content.events[story.event_id]["choices"][1], GameState, story._rng)
+	main._save_checkpoint()
+	before = GameState.snapshot()
+	main._show_title()
+	main._resume()
+	await frames()
+	check(main._current.is_story and GameState.snapshot() == before, "reanudar conserva la transmisión y su continuación")
+	main._current.finished.emit()
+	await frames()
+	check(main._current is MapScreen and GameState.story_active.is_empty(), "después de la transmisión se llega al planeta")
+
 	# Guardado truncado: se recupera el último archivo verificado.
 	main._save_checkpoint()
 	var backup := SaveStore.read(SLOT)

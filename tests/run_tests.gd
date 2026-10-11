@@ -16,6 +16,7 @@ func _ready() -> void:
 	_test_sector()
 	_test_contacts()
 	_test_contact_context()
+	_test_stories()
 	_test_campaign_rules()
 	_test_crew_and_items()
 	_test_trade()
@@ -461,6 +462,18 @@ func _bot_campaign(camp: Campaign, gs, rng: RandomNumberGenerator) -> String:
 
 ## Devuelve "" si el nodo se resolvió sin acabar la partida; si no, el desenlace.
 func _bot_node(camp: Campaign, gs, rng: RandomNumberGenerator, node: Dictionary) -> String:
+	while not gs.next_story().is_empty():
+		var event_id: String = gs.story_active["event"]
+		var legal: Array[int] = []
+		var event: Dictionary = Content.events[event_id]
+		for i in event["choices"].size():
+			if EventRunner.lock_reason(event["choices"][i], gs) == "":
+				legal.append(i)
+		var pick := legal[rng.randi() % legal.size()]
+		EventRunner.resolve(event_id, pick, event["choices"][pick], gs, rng)
+		gs.complete_story()
+		if gs.morale <= 0:
+			return "morale"
 	match node["type"]:
 		"planet":
 			gs.begin_planet()
@@ -577,4 +590,31 @@ func _test_contact_context() -> void:
 	r.choose(1)
 	before = r.snapshot()
 	_check(not r.choose(1)["ok"] and r.snapshot() == before, "contacto terminado no acepta más decisiones")
+	gs.free()
+
+
+func _test_stories() -> void:
+	print("cadenas narrativas y promesas")
+	var gs = _new_state("vance")
+	gs.queue_story({"event": "convoy_rescatado", "delay": 2})
+	gs.queue_story({"event": "convoy_rescatado", "delay": 2})
+	_check(gs.story_queue.size() == 1, "misma cadena no se programa dos veces")
+	_check(gs.next_story().is_empty(), "no llega en el mismo salto")
+	gs.story_turn = 1
+	_check(gs.next_story().is_empty(), "respeta la demora")
+	gs.story_turn = 2
+	_check(gs.next_story()["event"] == "convoy_rescatado", "llega en el salto previsto")
+	var rng := RandomNumberGenerator.new()
+	gs.data = 2
+	EventRunner.resolve("convoy_rescatado", 0, Content.events["convoy_rescatado"]["choices"][0], gs, rng)
+	_check(gs.data == 0 and gs.has_flag("convoy_guiado"), "compartir cartas tiene coste y deja una promesa")
+	gs.complete_story()
+	_check(gs.next_story().is_empty(), "el segundo episodio tampoco llega inmediatamente")
+	gs.story_turn += 1
+	_check(gs.next_story()["event"] == "destino_del_convoy", "cadena continúa tras otro salto")
+	var promise: Dictionary = Content.events["destino_del_convoy"]["choices"][0]
+	_check(EventRunner.lock_reason(promise, gs) == "", "decisión anterior abre la ruta prometida")
+	gs.flags.erase("convoy_guiado")
+	_check(EventRunner.lock_reason(promise, gs) != "", "sin aquella decisión no se abre la ruta")
+	_check(gs.journal.size() == 1, "consecuencia registrada en bitácora")
 	gs.free()

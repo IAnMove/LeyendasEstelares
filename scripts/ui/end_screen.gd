@@ -35,6 +35,12 @@ func _ready() -> void:
 		for flag in p.get("epilogues", []):
 			if GameState.has_flag(flag):
 				v.add_child(UITheme.label("· " + T.t("planet.%s.epilogue.%s" % [p["id"], flag]), UITheme.DIM, 11))
+	if not GameState.journal.is_empty():
+		v.add_child(UITheme.label(T.t("ui.story.journal"), UITheme.WARN, 14))
+		for entry in GameState.journal:
+			v.add_child(UITheme.label(T.ev(entry["event"], "c%d.%s" % [entry["choice"], entry["suffix"]]), UITheme.DIM, 11))
+	if not GameState.story_queue.is_empty():
+		v.add_child(UITheme.label(T.t("ui.story.pending_end", {"n": GameState.story_queue.size()}), UITheme.DIM, 11))
 	v.add_child(HSeparator.new())
 	v.add_child(UITheme.label(T.t("ending.stats", {"data": GameState.data, "jumps": jumps, "morale": GameState.morale, "max": GameState.max_morale}), UITheme.ACCENT, 12))
 	for faction in GameState.rep:

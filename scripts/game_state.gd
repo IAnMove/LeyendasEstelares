@@ -21,6 +21,11 @@ var inventory: Dictionary = {}
 var relations: Dictionary = {}
 var market_stock: Dictionary = {}
 var on_surface := false
+var story_turn := 0
+var story_queue: Array = []
+var story_seen: Dictionary = {}
+var story_active: Dictionary = {}
+var journal: Array = []
 
 
 func start_run(avatar_dict: Dictionary, factions: Dictionary = {}, campaign_cfg: Dictionary = {}) -> void:
@@ -29,6 +34,11 @@ func start_run(avatar_dict: Dictionary, factions: Dictionary = {}, campaign_cfg:
 	inventory = campaign_cfg.get("starting_items", {}).duplicate(true)
 	relations = {}
 	market_stock = {}
+	story_turn = 0
+	story_queue = []
+	story_seen = {}
+	story_active = {}
+	journal = []
 	on_surface = false
 	max_oxygen = int(avatar.get("max_oxygen", 40))
 	max_morale = int(avatar.get("max_morale", 10))
@@ -189,7 +199,7 @@ func _signed(n: int) -> String:
 
 func snapshot() -> Dictionary:
 	var out := {}
-	for key in ["avatar", "oxygen", "max_oxygen", "morale", "max_morale", "data", "fuel", "max_fuel", "scans", "max_scans", "rep", "flags", "faction_ids", "crew", "inventory", "relations", "market_stock", "on_surface"]:
+	for key in ["avatar", "oxygen", "max_oxygen", "morale", "max_morale", "data", "fuel", "max_fuel", "scans", "max_scans", "rep", "flags", "faction_ids", "crew", "inventory", "relations", "market_stock", "on_surface", "story_turn", "story_queue", "story_seen", "story_active", "journal"]:
 		out[key] = get(key)
 	return out.duplicate(true)
 
@@ -198,3 +208,28 @@ func restore(saved: Dictionary) -> void:
 	for key in snapshot():
 		if saved.has(key):
 			set(key, saved[key])
+
+
+func queue_story(follow_up: Dictionary) -> void:
+	var id: String = follow_up["event"]
+	if story_seen.has(id):
+		return
+	story_seen[id] = true
+	story_queue.append({"event": id, "due": story_turn + maxi(1, int(follow_up.get("delay", 1)))})
+	changed.emit()
+
+
+func next_story() -> Dictionary:
+	if not story_active.is_empty():
+		return story_active
+	for i in story_queue.size():
+		if story_queue[i]["due"] <= story_turn:
+			story_active = story_queue[i]
+			story_queue.remove_at(i)
+			return story_active
+	return {}
+
+
+func complete_story() -> void:
+	story_active = {}
+	changed.emit()

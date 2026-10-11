@@ -8,6 +8,7 @@ var event_id := ""
 var restored: Dictionary = {}
 var _result: Dictionary = {}
 var _choice := -1
+var is_story := false
 
 var _overlay: Overlay
 var _rng := RandomNumberGenerator.new()
@@ -37,4 +38,4 @@ func _ready() -> void:
 
 
 func save_state() -> Dictionary:
-	return {"kind": "anomaly", "rng": _rng.state, "result": _result, "choice": _choice}
+	return {"kind": "followup" if is_story else "anomaly", "event_id": event_id, "rng": _rng.state, "result": _result, "choice": _choice}

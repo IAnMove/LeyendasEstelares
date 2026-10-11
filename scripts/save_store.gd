@@ -77,11 +77,14 @@ static func valid(saved: Dictionary) -> bool:
 	var sector: Dictionary = camp["sector"]
 	if not sector.get("nodes") is Dictionary or not sector.get("columns") is Array or not sector["nodes"].has(camp.get("current")):
 		return false
-	if not screen.get("kind") in ["sector", "planet", "contact", "anomaly"]:
+	if not screen.get("kind") in ["sector", "planet", "contact", "anomaly", "followup"]:
 		return false
 	var current: Dictionary = sector["nodes"][camp["current"]]
-	if screen["kind"] != "sector" and current.get("type") != screen["kind"]:
+	if not screen["kind"] in ["sector", "followup"] and current.get("type") != screen["kind"]:
 		return false
+	if screen["kind"] == "followup":
+		if not Content.events.has(screen.get("event_id")) or state.get("story_active", {}).get("event") != screen.get("event_id"):
+			return false
 	if screen["kind"] == "planet":
 		var ex = screen.get("expedition")
 		if not ex is Dictionary or not ex.get("map") is Dictionary or not ex.get("player") is Vector2i:

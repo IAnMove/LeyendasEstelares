@@ -552,3 +552,62 @@ ui.contact.forecast,Trust {trust} · Tension {tension},Confianza {trust} · Tens
 ui.contact.data_cost,Costs {n} data,Cuesta {n} datos
 ui.contact.repeated,Repeated stance,Postura repetida
 ui.contact.repetition,Repeating a stance reduces trust and adds tension.,Repetir una postura reduce la confianza y añade tensión.
+event.convoy_rescatado.title,A voice you saved,Una voz que salvaste
+event.convoy_rescatado.text,"The civilians you helped have reached a rescue convoy. They offer a fuel cell, but their navigation system still needs a safe route.","Los civiles a quienes ayudaste han alcanzado un convoy de rescate. Ofrecen una célula de combustible, pero su navegador sigue necesitando una ruta segura."
+event.convoy_rescatado.c0.text,Share your charts (2 data),Compartir tus cartas (2 datos)
+event.convoy_rescatado.c0.res,Your charts guide the convoy around the storm. They promise to transmit a supply cache location.,Tus cartas guían al convoy alrededor de la tormenta. Prometen transmitir la ubicación de un depósito.
+event.convoy_rescatado.c0.hint,Requires 2 data,Necesita 2 datos
+event.convoy_rescatado.c1.text,Accept the fuel cell,Aceptar la célula de combustible
+event.convoy_rescatado.c1.res,The rescue crew sends its spare cell. Their next transmission will tell you whether they made it.,El equipo de rescate envía su célula de reserva. Su próxima transmisión contará si lograron llegar.
+event.convoy_rescatado.c2.text,Let them keep their supplies,Dejar que conserven sus suministros
+event.convoy_rescatado.c2.res,The crew thanks you for putting their survival first. You keep the channel open.,La tripulación agradece que priorices su supervivencia. Mantienes abierto el canal.
+event.destino_del_convoy.title,The last convoy transmission,La última transmisión del convoy
+event.destino_del_convoy.text,"A damaged relay carries the convoy's final message. Its occupants are safe, but their supply cache lies beyond a hazardous approach.","Un repetidor averiado trae el último mensaje del convoy. Sus ocupantes están a salvo, pero una aproximación peligrosa protege el depósito."
+event.destino_del_convoy.c0.text,Follow the charted approach,Seguir la aproximación cartografiada
+event.destino_del_convoy.c0.res,The route you shared brings the Meridiana to the cache. Your earlier investment has come back as supplies.,La ruta que compartiste lleva a la Meridiana al depósito. Tu inversión anterior regresa en forma de suministros.
+event.destino_del_convoy.c0.hint,You must have shared your charts,Debes haber compartido tus cartas
+event.destino_del_convoy.c1.text,Exchange telemetry (2 data),Intercambiar telemetría (2 datos)
+event.destino_del_convoy.c1.res,You buy a corrected approach vector and recover a modest fuel reserve.,Compras un vector de aproximación corregido y recuperas una pequeña reserva de combustible.
+event.destino_del_convoy.c1.hint,Requires 2 data,Necesita 2 datos
+event.destino_del_convoy.c2.text,Record their safe arrival and continue,Registrar su llegada y continuar
+event.destino_del_convoy.c2.res,Their names join the expedition log. Helping them mattered even without a material reward.,Sus nombres se incorporan a la bitácora. Haberles ayudado tuvo valor aunque no hubiera una recompensa material.
+event.respuesta_del_archivo.title,The archive answers,El archivo responde
+event.respuesta_del_archivo.text,The three tones you sent return as a request. A remote archive offers a memory shard in exchange for your own expedition log.,Los tres tonos que enviaste regresan convertidos en una petición. Un archivo remoto ofrece un fragmento de memoria a cambio de vuestro registro de expedición.
+event.respuesta_del_archivo.c0.text,Send the log (2 data),Enviar el registro (2 datos)
+event.respuesta_del_archivo.c0.res,The archive entrusts you with a memory that needs a living witness. A second rendezvous has been scheduled.,El archivo te confía una memoria que necesita un testigo vivo. Ha fijado un segundo encuentro.
+event.respuesta_del_archivo.c0.hint,Requires 2 data,Necesita 2 datos
+event.respuesta_del_archivo.c1.text,Request an anonymous copy,Pedir una copia anónima
+event.respuesta_del_archivo.c1.res,You receive coordinates without the names attached. The archive asks you to decide what to preserve later.,Recibes coordenadas sin sus nombres asociados. El archivo pide que decidas más adelante qué conservar.
+event.respuesta_del_archivo.c2.text,Close the connection,Cerrar la conexión
+event.respuesta_del_archivo.c2.res,The archive acknowledges your boundary and falls silent. This conversation ends here.,El archivo acepta tu límite y guarda silencio. Esta conversación termina aquí.
+event.memoria_compartida.title,A memory with a name,Una memoria con nombre
+event.memoria_compartida.text,The rendezvous signal arrives. Preserving the archive would make its people traceable; erasing its coordinates would protect them and destroy useful knowledge.,Llega la señal del encuentro. Conservar el archivo permitiría rastrear a su pueblo; borrar sus coordenadas lo protegería y destruiría conocimiento útil.
+event.memoria_compartida.c0.text,Preserve it as their witness,Conservarlo como su testigo
+event.memoria_compartida.c0.res,You bind the archive to the promise you made. The Vael grant access without surrendering their privacy.,Vinculas el archivo a la promesa que hiciste. Los Vael permiten el acceso sin entregar su intimidad.
+event.memoria_compartida.c0.hint,You must have shared your expedition log,Debes haber compartido tu registro
+event.memoria_compartida.c1.text,Extract the coordinates,Extraer las coordenadas
+event.memoria_compartida.c1.res,"The coordinates improve your maps, but the archive recognizes the intrusion and revokes its trust.","Las coordenadas mejoran tus mapas, pero el archivo reconoce la intrusión y retira su confianza."
+event.memoria_compartida.c2.text,Erase the coordinates,Borrar las coordenadas
+event.memoria_compartida.c2.res,The memory survives without a route leading to its people. Your crew accepts the lost research.,La memoria sobrevive sin una ruta que conduzca a su pueblo. La tripulación acepta la investigación perdida.
+event.reclamacion_del_gremio.title,The guild keeps records,El gremio lleva las cuentas
+event.reclamacion_del_gremio.text,A Hallen auditor matches your ship to the abandoned expedition sites. They offer to settle access to their depots with a contribution to the recovery fund.,Una auditora Hallen relaciona vuestra nave con los yacimientos abandonados. Ofrece regularizar el acceso a sus depósitos con una aportación al fondo de recuperación.
+event.reclamacion_del_gremio.c0.text,Contribute survey data (2 data),Aportar datos de prospección (2 datos)
+event.reclamacion_del_gremio.c0.res,The guild records your contribution and schedules a delivery from the restored depot.,El gremio registra tu aportación y programa una entrega desde el depósito restaurado.
+event.reclamacion_del_gremio.c0.hint,Requires 2 data,Necesita 2 datos
+event.reclamacion_del_gremio.c1.text,Offer the crew's work,Ofrecer el trabajo de la tripulación
+event.reclamacion_del_gremio.c1.res,"The repair shift wears down the crew, but the guild promises you first access to the reopened depot.","El turno de reparación desgasta a la tripulación, pero el gremio promete acceso preferente al depósito."
+event.reclamacion_del_gremio.c2.text,Refuse the claim,Rechazar la reclamación
+event.reclamacion_del_gremio.c2.res,The auditor closes the file as disputed. The Meridiana keeps its resources and loses a potential partner.,La auditora cierra el expediente como disputado. La Meridiana conserva sus recursos y pierde un posible socio.
+event.deposito_restaurado.title,The reopened depot,El depósito restaurado
+event.deposito_restaurado.text,The guild has kept its promise. Your contribution entitles the Meridiana to one allocation from the restored depot.,El gremio ha cumplido su promesa. Vuestra aportación da derecho a una asignación del depósito restaurado.
+event.deposito_restaurado.c0.text,Take fuel for the next jump,Recibir combustible para el próximo salto
+event.deposito_restaurado.c0.res,The guild loads two measures of fuel and marks your debt settled.,El gremio carga dos medidas de combustible y da la deuda por saldada.
+event.deposito_restaurado.c1.text,Take surface supplies,Recibir suministros de superficie
+event.deposito_restaurado.c1.res,An oxygen cell and fresh rations reach your cargo hold.,Una célula de oxígeno y raciones frescas llegan a la bodega.
+event.deposito_restaurado.c2.text,Fund the next rescue,Financiar el próximo rescate
+event.deposito_restaurado.c2.res,Your allocation remains at the depot for another stranded expedition. The crew is proud of the decision.,Tu asignación permanece en el depósito para otra expedición varada. La tripulación está orgullosa de la decisión.
+ui.story.queued,A later transmission may follow this decision.,Esta decisión puede traer una transmisión más adelante.
+ui.story.journal,Logbook,Bitácora
+ui.story.pending,Transmissions expected: {n}. They arrive after later jumps.,Transmisiones pendientes: {n}. Llegarán tras futuros saltos.
+ui.story.empty,Decisions with later consequences will appear here.,Aquí aparecerán las decisiones que tengan consecuencias posteriores.
+ui.story.pending_end,Unanswered transmissions: {n}. The expedition ended before the rendezvous.,Transmisiones sin responder: {n}. La expedición terminó antes del encuentro.

@@ -76,6 +76,10 @@ func _show_sector() -> void:
 
 
 func _on_jumped(id: String, restored: Dictionary = {}) -> void:
+	var follow_up := GameState.next_story()
+	if not follow_up.is_empty():
+		_show_story(id, follow_up["event"], restored)
+		return
 	var node := _campaign.node(id)
 	match node["type"]:
 		"planet":
@@ -240,13 +244,15 @@ func _dismiss_child(node: Node) -> bool:
 	var children := node.get_children()
 	children.reverse()
 	for child in children:
+		if child.is_queued_for_deletion():
+			continue
+		if _dismiss_child(child):
+			return true
 		if child is ShipScreen or child is TradeScreen:
 			child.closed.emit()
 			return true
 		if child is Overlay and child.is_in_group("dismissible"):
 			child.queue_free()
-			return true
-		if _dismiss_child(child):
 			return true
 	return false
 
@@ -307,3 +313,18 @@ func _fit_safe_area() -> void:
 	var fitted := SafeLayout.fit(Rect2(Vector2.ZERO, size), safe, get_viewport().get_screen_transform())
 	_safe_content.position = fitted.position
 	_safe_content.scale = fitted.size / SafeLayout.DESIGN
+
+
+func _show_story(destination: String, event_id: String, restored: Dictionary) -> void:
+	GameState.on_surface = false
+	var screen := AnomalyScreen.new()
+	screen.event_id = event_id
+	screen.is_story = true
+	screen.restored = restored
+	screen.finished.connect(func():
+		GameState.complete_story()
+		if GameState.morale <= 0:
+			_end("morale")
+		else:
+			_on_jumped(destination))
+	_swap(screen)

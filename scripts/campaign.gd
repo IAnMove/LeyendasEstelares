@@ -38,6 +38,7 @@ func jump(id: String) -> void:
 	state.spend_fuel(edge_cost(current, id))
 	current = id
 	jumps += 1
+	state.story_turn = jumps
 
 
 func can_scan(id: String) -> bool:

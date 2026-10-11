@@ -268,6 +268,10 @@ func _validate_choice(c: Dictionary, where: String, valid_effects: Array, errors
 		if chance < 0.0 or chance > 1.0:
 			errors.append("%s: chance fuera de rango" % where)
 	for b in _branches(c):
+		if b[1].has("follow_up"):
+			var follow: Dictionary = b[1]["follow_up"]
+			if not events.has(follow.get("event", "")) or int(follow.get("delay", 0)) < 1:
+				errors.append("%s: continuación inexistente o sin demora" % where)
 		for id in b[1].get("effects", {}).get("items", {}):
 			if item_by_id(id).is_empty():
 				errors.append("%s: objeto desconocido '%s'" % [where, id])
