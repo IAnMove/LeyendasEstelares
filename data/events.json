@@ -11,7 +11,8 @@
 						"effects": {
 							"data": 2,
 							"set_flags": [
-								"mapa_vael"
+								"mapa_vael",
+								"tono_agudo"
 							]
 						}
 					},
@@ -32,7 +33,8 @@
 								"vael": 1
 							},
 							"set_flags": [
-								"vael_contacto"
+								"vael_contacto",
+								"tono_agudo"
 							]
 						},
 						"follow_up": {
@@ -68,7 +70,8 @@
 						"effects": {
 							"data": 2,
 							"set_flags": [
-								"guia_baliza"
+								"guia_baliza",
+								"tono_agudo"
 							]
 						}
 					},
@@ -391,7 +394,8 @@
 		"choices": [
 			{
 				"requires": {
-					"flag": "vael_contacto"
+					"flag": "vael_contacto",
+					"min_tones": 2
 				},
 				"risk": {
 					"chance": 0.8,
@@ -421,7 +425,8 @@
 						"diagrama_baliza",
 						"mapa_vael",
 						"guia_baliza"
-					]
+					],
+					"min_tones": 2
 				},
 				"risk": {
 					"chance": 0.75,
@@ -471,6 +476,23 @@
 								"vael": -1
 							}
 						}
+					}
+				}
+			},
+			{
+				"requires": {
+					"min_tones": 3
+				},
+				"result": {
+					"effects": {
+						"data": 6,
+						"rep": {
+							"vael": 2,
+							"concordato": 1
+						},
+						"set_flags": [
+							"baliza_respuesta"
+						]
 					}
 				}
 			}
@@ -691,14 +713,18 @@
 							"fuel": 2,
 							"set_flags": [
 								"torre_reparada",
-								"guia_baliza"
+								"guia_baliza",
+								"tono_grave"
 							]
 						}
 					},
 					"fail": {
 						"effects": {
 							"data": 1,
-							"oxygen": -3
+							"oxygen": -3,
+							"set_flags": [
+								"tono_grave"
+							]
 						}
 					}
 				}
@@ -714,7 +740,8 @@
 								"concordato": 1
 							},
 							"set_flags": [
-								"torre_saqueada"
+								"torre_saqueada",
+								"tono_grave"
 							]
 						}
 					},
@@ -723,7 +750,8 @@
 							"fuel": 1,
 							"oxygen": -2,
 							"set_flags": [
-								"torre_saqueada"
+								"torre_saqueada",
+								"tono_grave"
 							]
 						}
 					}
@@ -732,7 +760,10 @@
 			{
 				"result": {
 					"effects": {
-						"data": 2
+						"data": 2,
+						"set_flags": [
+							"tono_grave"
+						]
 					}
 				}
 			},
@@ -753,13 +784,17 @@
 								"vael": 1
 							},
 							"set_flags": [
-								"torre_reparada"
+								"torre_reparada",
+								"tono_grave"
 							]
 						}
 					},
 					"fail": {
 						"effects": {
-							"data": 1
+							"data": 1,
+							"set_flags": [
+								"tono_grave"
+							]
 						}
 					}
 				}
@@ -975,7 +1010,8 @@
 							"data": 3,
 							"fuel": 2,
 							"set_flags": [
-								"jardin_cosechado"
+								"jardin_cosechado",
+								"tono_grave"
 							]
 						}
 					},
@@ -984,7 +1020,8 @@
 							"data": 1,
 							"morale": -1,
 							"set_flags": [
-								"jardin_cosechado"
+								"jardin_cosechado",
+								"tono_grave"
 							]
 						}
 					}
@@ -999,7 +1036,8 @@
 							"vael": 1
 						},
 						"set_flags": [
-							"jardin_protegido"
+							"jardin_protegido",
+							"tono_grave"
 						]
 					}
 				}
@@ -1013,13 +1051,17 @@
 							"data": 3,
 							"set_flags": [
 								"guia_baliza",
-								"vael_contacto"
+								"vael_contacto",
+								"tono_grave"
 							]
 						}
 					},
 					"fail": {
 						"effects": {
-							"morale": -1
+							"morale": -1,
+							"set_flags": [
+								"tono_grave"
+							]
 						}
 					}
 				}
@@ -1223,7 +1265,8 @@
 							"data": 2,
 							"scans": 1,
 							"set_flags": [
-								"mapa_vael"
+								"mapa_vael",
+								"tono_agudo"
 							]
 						}
 					},
@@ -1244,7 +1287,8 @@
 								"vael": 1
 							},
 							"set_flags": [
-								"vael_contacto"
+								"vael_contacto",
+								"tono_agudo"
 							]
 						},
 						"follow_up": {

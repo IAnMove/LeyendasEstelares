@@ -21,6 +21,7 @@ func _ready() -> void:
 	_test_campaign_rules()
 	_test_crew_and_items()
 	_test_leader_specialties()
+	_test_pulse_tones()
 	_test_trade()
 	for avatar in ["vance", "okafor"]:
 		_test_bot_campaigns(avatar)
@@ -92,9 +93,12 @@ func _dynamic_keys() -> Array[String]:
 		keys.append("ui.resource." + stat)
 	for fx in ["oxygen", "morale", "fuel", "scans", "data", "rep", "trust", "tension"]:
 		keys.append("fx." + fx)
-	for e in ["victory", "abort", "fuel", "oxygen", "morale"]:
+	for e in ["abort", "fuel", "oxygen", "morale"]:
 		keys.append("ending.%s.title" % e)
 		keys.append("ending.%s.body" % e)
+	for tier in EndScreen.VICTORY_TIERS.values() + [EndScreen.PARTIAL]:
+		keys.append("ending.victory.%s.title" % tier)
+		keys.append("ending.victory.%s.body" % tier)
 	for t in ["signal", "ruins", "wreck", "life", "fuel"]:
 		keys.append("ui.scan.tag." + t)
 	for t in ["planet", "contact", "anomaly", "start", "final"]:
@@ -669,6 +673,41 @@ func _test_leader_specialties() -> void:
 			break
 	science.free()
 	diplomacy.free()
+
+
+func _test_pulse_tones() -> void:
+	print("tonos del pulso y finales de la baliza")
+	var gs = _new_state("vance")
+	var beacon: Array = Content.events["baliza_central"]["choices"]
+	var answer: Dictionary = beacon.filter(func(c): return c.get("requires", {}).get("min_tones", 0) == Content.TONES.size())[0]
+	gs.apply_effects({"set_flags": ["vael_contacto", "mapa_vael"]})
+	_check(EventRunner.lock_reason(beacon[0], gs) != "" and EventRunner.lock_reason(beacon[1], gs) != "", "sin tonos, la baliza no abre diálogo ni mapa")
+	_check(EventRunner.lock_reason(beacon[2], gs) == "" and EventRunner.lock_reason(beacon[3], gs) == "", "registro parcial y silencio siempre disponibles")
+	var lines: Array = gs.apply_effects({"set_flags": ["tono_grave"]})
+	_check(gs.tones() == 1 and T.join(lines).contains("1/3"), "un tono nuevo se anuncia con el recuento")
+	_check(gs.apply_effects({"set_flags": ["tono_grave"]}).is_empty(), "repetir un tono no lo cuenta dos veces")
+	gs.apply_effects({"set_flags": ["tono_medio"]})
+	_check(EventRunner.lock_reason(beacon[0], gs) == "" and EventRunner.lock_reason(answer, gs) != "", "dos tonos abren el diálogo, no la respuesta")
+	gs.apply_effects({"set_flags": ["tono_agudo"]})
+	_check(EventRunner.lock_reason(answer, gs) == "" and gs.tone_names().count(",") == 2, "los tres tonos permiten responder al pulso")
+	# Fuentes: cada acuerdo o alianza da el tono medio; los relés de Kaelora y Nerea, el grave, pase lo que pase.
+	for enc in Content.encounters:
+		for o in ["deal", "alliance"]:
+			_check("tono_medio" in enc["outcomes"][o]["effects"].get("set_flags", []), "%s/%s concede el tono medio" % [enc["id"], o])
+	for id in Content.campaign["intermediate_planets"]:
+		var relay: Dictionary = Content.events[Content.planet_by_id(id)["beacon_event"]]
+		for c in relay["choices"]:
+			for b in Content._branches(c):
+				_check("tono_grave" in b[1].get("effects", {}).get("set_flags", []), "%s concede el tono grave" % id)
+	# El final depende de la salida de la baliza.
+	var tiers := {}
+	for flag in EndScreen.VICTORY_TIERS:
+		var probe = _new_state("vance")
+		probe.apply_effects({"set_flags": [flag]})
+		tiers[EndScreen.victory_tier(probe)] = true
+		probe.free()
+	_check(tiers.size() == EndScreen.VICTORY_TIERS.size() and EndScreen.victory_tier(gs) == EndScreen.PARTIAL, "cada salida de la baliza tiene su final; sin ella, registro parcial")
+	gs.free()
 
 
 func _test_return_guidance() -> void:

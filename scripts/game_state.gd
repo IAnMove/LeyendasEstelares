@@ -129,6 +129,24 @@ func has_flag(f: String) -> bool:
 	return flags.has(f)
 
 
+## Tonos del pulso reunidos (abren las salidas de la baliza final).
+func tones() -> int:
+	var n := 0
+	for tone in Content.TONES:
+		if flags.has(tone):
+			n += 1
+	return n
+
+
+## "Tono grave, tono agudo" o "—" si aún no hay ninguno.
+func tone_names() -> String:
+	var names: Array[String] = []
+	for tone in Content.TONES:
+		if flags.has(tone):
+			names.append(T.t("flag." + tone))
+	return ", ".join(names) if not names.is_empty() else "—"
+
+
 func spend_oxygen(n: int) -> void:
 	oxygen = maxi(oxygen - n, 0)
 	changed.emit()
@@ -170,7 +188,10 @@ func apply_effects(effects: Dictionary) -> Array:
 		rep[faction] = int(rep.get(faction, 0)) + delta
 		lines.append(T.later("fx.rep", {"faction": T.later("faction." + faction), "delta": _signed(delta)}))
 	for f in effects.get("set_flags", []):
+		var new_tone: bool = f in Content.TONES and not flags.has(f)
 		flags[f] = true
+		if new_tone:
+			lines.append(T.later("fx.tone", {"name": T.later("flag." + f), "n": tones(), "total": Content.TONES.size()}))
 	for id in effects.get("items", {}):
 		var item := Content.item_by_id(id)
 		if item.is_empty():

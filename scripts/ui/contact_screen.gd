@@ -91,7 +91,7 @@ func _hint_text() -> String:
 		return T.t("ui.contact.analysis", {"value": value})
 	if GameState.has_flag("met_" + species_id):
 		return T.t("ui.contact.experience", {"value": value})
-	return ""
+	return T.t("ui.contact.no_analysis")
 
 
 func _build_right() -> void:
@@ -192,12 +192,17 @@ func _show_prompt() -> void:
 		var hint := T.t("contact.%s.x%d.o%d.hint" % [eid, x, i]) if opts[i].has("requires") else ""
 		var lock := runner.lock_reason(i, hint)
 		var label := "[%s]  %s" % [T.t("ui.stance." + opts[i]["stance"]), T.t("contact.%s.x%d.o%d" % [eid, x, i])]
+		# La reacción prevista (contexto incluido) solo la ve el análisis de Vance; coste y repetición son hechos conocidos.
 		var forecast := runner.preview(i)
-		label += "\n" + T.t("ui.contact.forecast", {"trust": "%+d" % forecast["trust"], "tension": "%+d" % forecast["tension"]})
+		var notes: Array[String] = []
+		if GameState.has_trait("ciencia"):
+			notes.append(T.t("ui.contact.forecast", {"trust": "%+d" % forecast["trust"], "tension": "%+d" % forecast["tension"]}))
 		if forecast["cost"] > 0:
-			label += " · " + T.t("ui.contact.data_cost", {"n": forecast["cost"]})
+			notes.append(T.t("ui.contact.data_cost", {"n": forecast["cost"]}))
 		if forecast["repeats"] > 0:
-			label += " · " + T.t("ui.contact.repeated")
+			notes.append(T.t("ui.contact.repeated"))
+		if not notes.is_empty():
+			label += "\n" + " · ".join(notes)
 		if lock != "":
 			label += "   [%s]" % lock
 		var b := _add_option(label, _on_choose.bind(i), lock != "")

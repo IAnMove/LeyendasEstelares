@@ -5,11 +5,13 @@ extends Node
 
 const VALID_EFFECTS := ["oxygen", "morale", "data", "fuel", "scans", "rep", "set_flags", "items"]
 const VALID_CONTACT_EFFECTS := ["trust", "tension", "oxygen", "morale", "data", "fuel", "scans", "rep", "set_flags", "items"]
-const VALID_REQUIRES := ["trait", "flag", "any_flag", "not_flag", "min_data"]
+const VALID_REQUIRES := ["trait", "flag", "any_flag", "not_flag", "min_data", "min_tones"]
 const VALID_TYPES := ["signal", "ruins", "wreck", "life", "beacon", "anomaly"]
 const VALID_BIOMES := ["frost", "dust", "verdant"]
 const STANCES := ["open", "careful", "firm", "deceive"]
 const OUTCOMES := ["alliance", "deal", "hostile", "wary"]
+## Los tres tonos del pulso: relés planetarios, especies con acuerdo y la propia señal.
+const TONES := ["tono_grave", "tono_medio", "tono_agudo"]
 
 var avatars: Array = []
 var planets: Array = []
@@ -239,7 +241,12 @@ func validate() -> Array[String]:
 		for ex in enc.get("exchanges", []):
 			for opt in ex["options"]:
 				required.append(opt.get("requires", {}))
+	for tone in TONES:
+		if not set_flags.has(tone):
+			errors.append("el tono '%s' nunca se consigue" % tone)
 	for req in required:
+		if int(req.get("min_tones", 0)) > TONES.size():
+			errors.append("min_tones mayor que el número de tonos")
 		var needed: Array = req.get("any_flag", []).duplicate()
 		if req.has("flag"):
 			needed.append(req["flag"])

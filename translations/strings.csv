@@ -78,11 +78,11 @@ event.ser_de_cristal.c2.res,You withdraw slowly. The form does not follow.,Te re
 event.baliza_central.title,The beacon,La baliza
 event.baliza_central.text,A tower of black crystal rises in the middle of the valley. It beats with the same three-tone pulse. At its base is an opening the size of a person; the light inside changes as you approach.,Una torre de cristal negro se alza en el centro del valle. Late con el mismo pulso de tres tonos. En su base hay una abertura del tamaño de una persona; la luz interior cambia según te acercas.
 event.baliza_central.c0.text,Present yourself as an emissary to the beacon,Presentarte como emisario ante la baliza
-event.baliza_central.c0.hint,Requires having made contact with the Vael,Requiere haber establecido contacto con los Vael
+event.baliza_central.c0.hint,Requires contact with the Vael and two tones of the pulse,Requiere contacto con los Vael y dos tonos del pulso
 event.baliza_central.c0.ok,"The beacon opens a channel. The Vael, transformed into light, welcome you and share their star record.","La baliza abre un canal. Los Vael, transformados en luz, te dan la bienvenida y comparten su registro estelar."
 event.baliza_central.c0.fail,The channel opens only halfway. You receive disconnected fragments.,El canal se abre a medias. Recibes fragmentos inconexos.
 event.baliza_central.c1.text,Activate the sequence with the data you gathered,Activar la secuencia con los datos recopilados
-event.baliza_central.c1.hint,Requires having studied the beacon's system,Requiere haber estudiado el sistema de la baliza
+event.baliza_central.c1.hint,Requires having studied the beacon's system and two tones of the pulse,Requiere haber estudiado el sistema de la baliza y dos tonos del pulso
 event.baliza_central.c1.ok,The sequence succeeds. The beacon unfolds a map of unknown star routes.,La secuencia acierta. La baliza despliega un mapa de rutas estelares desconocidas.
 event.baliza_central.c1.fail,The sequence is incomplete. The beacon goes dark for a minute.,La secuencia es incompleta. La baliza se apaga durante un minuto.
 event.baliza_central.c2.text,Scan the beacon from a distance,Escanear la baliza a distancia
@@ -90,10 +90,13 @@ event.baliza_central.c2.res,You obtain a partial record without interfering with
 event.baliza_central.c3.text,Deactivate the beacon (Concordat order),Desactivar la baliza (orden del Concordato)
 event.baliza_central.c3.ok,"The beacon goes out. It is what the Concordat would order, but the silence feels like a loss.","La baliza se apaga. Es lo que el Concordato ordenaría, pero el silencio se siente como una pérdida."
 event.baliza_central.c3.fail,The beacon resists and releases a discharge.,La baliza resiste y libera una descarga.
+event.baliza_central.c4.text,Answer the pulse with all three tones,Responder al pulso con los tres tonos
+event.baliza_central.c4.hint,Requires all three tones of the pulse,Requiere los tres tonos del pulso
+event.baliza_central.c4.res,"The three tones fit together. For the first time, the beacon stops repeating its call and listens. The Vael, transformed into light, share their record and their routes: it was never a warning, it was an invitation.","Los tres tonos encajan. Por primera vez, la baliza deja de repetir su llamada y escucha. Los Vael, transformados en luz, comparten su registro y sus rutas: nunca fue una advertencia, sino una invitación."
 avatar.vance.name,Dr. Iria Vance,Dra. Iria Vance
 avatar.vance.role,Xenobiologist and analyst,Xenobióloga y analista
 avatar.vance.desc,"She analyzes before acting. Complex systems are legible to her, though she struggles to yield to what she does not understand.","Analiza antes de actuar. Los sistemas complejos le resultan legibles, aunque le cuesta ceder ante lo que no entiende."
-avatar.vance.perk,Science +20%; successes yield +1 data,Ciencia +20%; los éxitos dan +1 dato
+avatar.vance.perk,Science +20%; successes yield +1 data; forecasts contact reactions,Ciencia +20%; los éxitos dan +1 dato; prevé reacciones en contactos
 avatar.okafor.name,Cmdr. Tomás Okafor,Cmdte. Tomás Okafor
 avatar.okafor.role,First-contact officer,Oficial de primer contacto
 avatar.okafor.desc,Twenty years negotiating on frontiers without maps. He prefers to listen twice before speaking once.,Veinte años negociando en fronteras sin mapa. Prefiere escuchar dos veces antes de hablar una.
@@ -275,12 +278,9 @@ planet.nerea.outro_abort,You leave Nerea without reaching the garden. The mist c
 planet.nerea.epilogue.jardin_protegido,The garden on Nerea keeps growing undisturbed.,El jardín de Nerea sigue creciendo sin interferencias.
 planet.nerea.epilogue.jardin_cosechado,You harvested samples from Nerea's garden. It will never be the same.,Extrajiste muestras del jardín de Nerea. Nunca volverá a ser el mismo.
 planet.tessarine.name,Tessarine IV,Tessarine IV
-planet.tessarine.intro,"You have followed the three-tone pulse across the sector to its source: Tessarine IV, a rocky moon with no breathable atmosphere. The trail ends here.\n\nYou will descend with limited oxygen reserves. Explore, decide with judgment, and return to the ship. What you find at the beacon may change what the Concordat knows about the universe.","Has seguido el pulso de tres tonos a través del sector hasta su origen: Tessarine IV, una luna rocosa sin atmósfera respirable. Aquí termina el rastro.\n\nDescenderás con reservas limitadas de oxígeno. Explora, decide con criterio y regresa a la nave. Lo que encuentres en la baliza puede cambiar lo que el Concordato sabe del universo."
+planet.tessarine.intro,"You have followed the three-tone pulse across the sector to its source: Tessarine IV, a rocky moon with no breathable atmosphere. The trail ends here.\n\nYou will descend with limited oxygen reserves. Explore, decide with judgment, and return to the ship. What you find at the beacon may change what the Concordat knows about the universe. The more of the pulse's tones you bring, the more it will reveal.","Has seguido el pulso de tres tonos a través del sector hasta su origen: Tessarine IV, una luna rocosa sin atmósfera respirable. Aquí termina el rastro.\n\nDescenderás con reservas limitadas de oxígeno. Explora, decide con criterio y regresa a la nave. Lo que encuentres en la baliza puede cambiar lo que el Concordato sabe del universo. Cuantos más tonos del pulso traigas, más te revelará."
 planet.tessarine.outro_success,"You return to the Meridiana with the suit at its limit and the complete record of the expedition. On the bridge, no one speaks while the data uploads.","Regresas a la Meridiana con el traje al límite y el registro completo de la expedición. En el puente, nadie habla mientras se cargan los datos."
 planet.tessarine.outro_abort,"You order the evacuation before completing the mission. The Meridiana picks you up without questions; the report, however, will remain incomplete.","Ordenas la evacuación antes de completar la misión. La Meridiana te recoge sin preguntas; el informe, sin embargo, quedará incompleto."
-planet.tessarine.epilogue.baliza_dialogo,"The Vael, transformed into light, have opened a permanent channel with the Meridiana.","Los Vael, transformados en luz, han abierto un canal permanente con la Meridiana."
-planet.tessarine.epilogue.baliza_mapa,The beacon has revealed star routes unknown to the Concordat.,La baliza ha revelado rutas estelares desconocidas para el Concordato.
-planet.tessarine.epilogue.baliza_apagada,You carried out the order to silence the beacon. The three-tone pulse no longer sounds on Tessarine IV.,Cumpliste la orden de silenciar la baliza. El pulso de tres tonos ya no suena en Tessarine IV.
 planet.tessarine.epilogue.colonia_danada,The colony of filaments on the hillside has not lit up again.,La colonia de filamentos de la ladera no se ha vuelto a encender.
 planet.tessarine.epilogue.respeto_vael,You left the sealed chamber intact. Someone may have noticed.,Dejaste intacta la cámara sellada. Es posible que alguien lo haya notado.
 species.vael.name,The Vael,Los Vael
@@ -394,6 +394,8 @@ ui.hud.data,DATA  {n},DATOS  {n}
 ui.hud.fuel,FUEL  {cur} / {max},COMBUSTIBLE  {cur} / {max}
 ui.hud.scans,SCANS  {n},ESCANEOS  {n}
 ui.hud.rep,Reputation: {list},Reputación: {list}
+ui.hud.tones,TONES  {n}/{total},TONOS  {n}/{total}
+ui.tones.list,Pulse tones {n}/{total}: {list},Tonos del pulso {n}/{total}: {list}
 ui.map.goal_pending,Objective: reach the objective (east) and return to the ship.,Objetivo: alcanzar el objetivo (este) y volver a la nave.
 ui.map.goal_done,Objective complete. Return to the ship.,Objetivo cumplido. Regresa a la nave.
 ui.map.hint,Click a highlighted hexagon to advance (or use keys Q E / A D / Z C). The number is the oxygen it costs. Save air to get back.,Clic en un hexágono resaltado para avanzar (o teclas Q E / A D / Z C). El número es el oxígeno que cuesta. Guarda aire para volver.
@@ -441,8 +443,9 @@ ui.scan.tag.fuel,recoverable fuel,combustible recuperable
 ui.contact.trust,TRUST,CONFIANZA
 ui.contact.tension,TENSION,TENSIÓN
 ui.contact.you,You,Tú
-ui.contact.analysis,Analysis: they seem to value {value}.,Análisis: parecen valorar {value}.
+ui.contact.analysis,Analysis: they value {value}. Reactions forecast.,Análisis: valoran {value}. Prevé reacciones.
 ui.contact.experience,From experience: they value {value}.,Por experiencia: valoran {value}.
+ui.contact.no_analysis,No analysis: read the context.,Sin análisis: lee el contexto.
 ui.value.open,candor,la franqueza
 ui.value.careful,caution,la cautela
 ui.value.firm,firmness,la firmeza
@@ -456,8 +459,6 @@ ui.contact.result.deal,Agreement,Acuerdo
 ui.contact.result.wary,Wary distance,Distancia prudente
 ui.contact.result.hostile,Hostile,Hostil
 ui.contact.close,Close the channel,Cerrar el canal
-ending.victory.title,Expedition complete,Expedición completada
-ending.victory.body,"The Meridiana leaves the orbit of Tessarine IV. Behind it remain the three-tone pulse, the paths you chose and the voices you heard. The Concordat will read your report; the sector, your decisions.","La Meridiana abandona la órbita de Tessarine IV. Atrás quedan el pulso de tres tonos, los caminos que elegiste y las voces que escuchaste. El Concordato leerá tu informe; el sector, tus decisiones."
 ending.abort.title,The trail goes cold,El rastro se enfría
 ending.abort.body,"You leave Tessarine IV without completing the mission. The pulse keeps sounding behind you, and the Concordat will never know what it was saying.","Abandonas Tessarine IV sin completar la misión. El pulso sigue sonando a tu espalda, y el Concordato nunca sabrá qué decía."
 ending.fuel.title,Adrift,A la deriva
@@ -466,6 +467,16 @@ ending.oxygen.title,Expedition lost,Expedición perdida
 ending.oxygen.body,Oxygen reserves ran out far from the ship. The Meridiana logs the loss and suspends surface operations.,Las reservas de oxígeno se agotaron lejos de la nave. La Meridiana registra la pérdida y suspende las operaciones en la superficie.
 ending.morale.title,The crew turns back,La tripulación da la vuelta
 ending.morale.body,"The crew's morale broke. Without cohesion or trust, the expedition cannot continue.","La moral de la tripulación se quebró. Sin cohesión ni confianza, la expedición no puede continuar."
+ending.victory.answer.title,The answer,La respuesta
+ending.victory.answer.body,"The Meridiana leaves Tessarine IV carrying something no expedition had brought back: a conversation. The three tones opened the beacon, and the Vael are no longer a legend of the sector but neighbours. The Concordat will read your report twice.","La Meridiana abandona Tessarine IV con algo que ninguna expedición había traído: una conversación. Los tres tonos abrieron la baliza, y los Vael ya no son una leyenda del sector, sino vecinos. El Concordato leerá tu informe dos veces."
+ending.victory.dialogue.title,An open channel,Un canal abierto
+ending.victory.dialogue.body,"The Vael spoke to you from the beacon, though you understood only part of what they said. The channel remains open; perhaps the next expedition will know how to answer.","Los Vael te hablaron desde la baliza, aunque solo entendiste parte de lo que decían. El canal sigue abierto; quizá la próxima expedición sepa responder."
+ending.victory.map.title,Uncharted routes,Rutas nuevas
+ending.victory.map.body,The beacon handed you a map of routes no human has travelled. You don't know who drew it or why; the Concordat is already preparing the next expedition.,La baliza te entregó un mapa de rutas que ningún humano ha recorrido. No sabes quién lo trazó ni por qué; el Concordato ya prepara la próxima expedición.
+ending.victory.silence.title,Silence,Silencio
+ending.victory.silence.body,"You followed orders: the beacon is silent, and the three-tone pulse no longer sounds across the sector. The Concordat commends you. On the bridge, nobody talks about what it might have said.","Cumpliste la orden: la baliza calla y el pulso de tres tonos ya no suena en el sector. El Concordato te felicita. En el puente, nadie habla de lo que podría haber dicho."
+ending.victory.partial.title,Partial record,Registro parcial
+ending.victory.partial.body,"You return with an incomplete record of the beacon. The pulse keeps sounding behind you, undeciphered. Understanding it would take the three tones scattered across the sector.","Vuelves con un registro incompleto de la baliza. El pulso sigue sonando a tu espalda, sin descifrar. Entenderlo exigiría reunir los tres tonos dispersos por el sector."
 ending.stats,Data collected: {data}  ·  Jumps: {jumps}  ·  Morale: {morale}/{max},Datos reunidos: {data}  ·  Saltos: {jumps}  ·  Moral: {morale}/{max}
 ending.rep,Reputation {faction}: {value},Reputación {faction}: {value}
 fx.oxygen,Oxygen {delta},Oxígeno {delta}
@@ -476,6 +487,7 @@ fx.data,Data {delta},Datos {delta}
 fx.rep,Reputation {faction} {delta},Reputación {faction} {delta}
 fx.trust,Trust {delta},Confianza {delta}
 fx.tension,Tension {delta},Tensión {delta}
+fx.tone,{name} of the pulse recorded ({n}/{total}),{name} del pulso registrado ({n}/{total})
 ui.title.eyebrow,MERIDIANA  /  DEEP SPACE PROGRAM,MERIDIANA  /  PROGRAMA DE EXPLORACIÓN
 ui.title.intro,Three tones. An unknown sector. A crew counting on you.,Tres tonos. Un sector desconocido. Una tripulación que confía en ti.
 ui.title.footer,EXPLORE · MAKE CONTACT · FIND THE SOURCE    /    F11 Fullscreen · M Sound,EXPLORA · ESTABLECE CONTACTO · ENCUENTRA EL ORIGEN    /    F11 Pantalla · M Sonido
@@ -626,9 +638,10 @@ ui.map.return_danger,No oxygen margin. Return or use supplies.,Sin margen de ox�
 ui.map.return_margin,Low reserve for the return journey.,Queda poca reserva para el regreso.
 ui.help.title,Field guide,Guía de expedición
 ui.help.route,"Reach the eastern objective, resolve it and return to the ship. The dotted line is the cheapest known return route. Its oxygen estimate excludes events and undiscovered shortcuts.","Alcanza el objetivo del este, resuélvelo y vuelve a la nave. La línea discontinua marca la vuelta más barata por terreno conocido. Su estimación de oxígeno excluye eventos y atajos sin descubrir."
+ui.help.tones,"The pulse has three tones. The low tone echoes in the relays of Kaelora and Nerea (reach their objective); the middle tone is shared by species you reach an agreement or alliance with; the high tone is caught by decoding or answering the signal itself. At Tessarine's beacon, two tones open the dialogue or the map, and all three let you answer the pulse.","El pulso tiene tres tonos. El grave resuena en los relés de Kaelora y Nerea (alcanza su objetivo); el medio lo comparten las especies con las que logras un acuerdo o una alianza; el agudo se capta al descifrar o responder la propia señal. En la baliza de Tessarine, dos tonos abren el diálogo o el mapa, y los tres permiten responder al pulso."
 ui.help.terrain,Plain: 1 oxygen. Rock and ice: 2. Crater: 3. Rifts are impassable. Entering a hex pays its terrain cost; time spent reading uses no oxygen.,Llanura: 1 de oxígeno. Roca y hielo: 2. Cráter: 3. Las grietas son infranqueables. Pagas el terreno al entrar en un hexágono; leer no consume oxígeno.
 ui.help.resources,Oxygen is refilled on descent. Fuel pays for jumps; scans reveal nearby destinations. Data buys supplies and funds decisions. Morale persists between planets; reaching zero ends the expedition. Cargo items are used from Crew & cargo or Supplies & equipment.,El oxígeno se repone al descender. El combustible paga los saltos; los escaneos revelan destinos cercanos. Los datos compran suministros y financian decisiones. La moral persiste entre planetas; llegar a cero termina la expedición. Usa los objetos desde Equipo y bodega o Suministros y equipo.
-ui.help.contacts,"Read each context before responding. Cultural preferences help, but repeated stances lose credibility. Alliances and agreements open trade; reputation and promises can unlock future decisions.","Lee el contexto antes de responder. Las preferencias culturales orientan, pero repetir posturas resta credibilidad. Las alianzas y acuerdos abren el comercio; la reputación y las promesas pueden desbloquear decisiones futuras."
+ui.help.contacts,"Read each context before responding. Cultural preferences help, but repeated stances lose credibility. Only with Vance in command do you see each answer's expected reaction. Alliances and agreements open trade and grant the pulse's middle tone; promises can unlock future decisions.","Lee el contexto antes de responder. Las preferencias culturales orientan, pero repetir posturas resta credibilidad. Solo con Vance al mando ves la reacción prevista de cada respuesta. Las alianzas y acuerdos abren el comercio y aportan el tono medio del pulso; las promesas pueden desbloquear decisiones futuras."
 ui.help.controls,"Tap or click a highlighted hex to move. On touch screens, direction buttons show each step cost; swipe panels to reveal more options. On a keyboard use Q/E, A/D and Z/C. Back or Esc opens pause and saves your progress; F1 opens this guide.","Toca o pulsa un hexágono resaltado para moverte. En pantallas táctiles, los botones de dirección muestran el coste; desliza los paneles para ver más opciones. Con teclado usa Q/E, A/D y Z/C. Atrás o Esc abre la pausa y guarda el progreso; F1 abre esta guía."
 ui.choice.preview_risk,Success: {success} / Setback: {fail},Éxito: {success} / Revés: {fail}
 ui.choice.no_change,No resource change,Sin cambios de recursos
@@ -643,6 +656,7 @@ flag.archivo_testigo,Witness to the archive,Testigo del archivo
 flag.baliza_apagada,Beacon silenced,Baliza apagada
 flag.baliza_dialogo,Dialogue with the beacon,Diálogo con la baliza
 flag.baliza_mapa,Beacon charted,Baliza cartografiada
+flag.baliza_respuesta,Answer to the pulse,Respuesta al pulso
 flag.colonia_danada,Colony damaged,Colonia dañada
 flag.convoy_autonomo,Convoy keeps its supplies,El convoy conserva sus suministros
 flag.convoy_guiado,Convoy guided,Convoy guiado
@@ -657,5 +671,8 @@ flag.mapa_vael,Vael charts,Cartas Vael
 flag.respeto_vael,Vael respect,Respeto Vael
 flag.torre_reparada,Tower repaired,Torre reparada
 flag.torre_saqueada,Tower stripped,Torre saqueada
+flag.tono_agudo,High tone,Tono agudo
+flag.tono_grave,Low tone,Tono grave
+flag.tono_medio,Middle tone,Tono medio
 flag.vael_contacto,Vael connection,Contacto Vael
 flag.vael_transformacion,Vael transformation understood,Transformación Vael comprendida

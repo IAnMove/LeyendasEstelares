@@ -22,6 +22,8 @@ static func lock_reason(choice: Dictionary, state, hint := "") -> String:
 		locked = true
 	if req.has("min_data") and state.data < int(req["min_data"]):
 		locked = true
+	if req.has("min_tones") and state.tones() < int(req["min_tones"]):
+		locked = true
 	if not locked:
 		return ""
 	return hint if hint != "" else "locked"

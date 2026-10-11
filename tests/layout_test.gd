@@ -5,7 +5,7 @@ extends Node
 ## godot --headless --path . res://tests/layout_test.tscn -- --touch-ui  (botones táctiles)
 ## Adaptada de la prueba de la rama archive/pixel-art-ui.
 
-const FLAGS := ["met_vael", "met_hallen", "met_draeth", "vael_contacto", "mapa_vael", "gremio_amigo", "draeth_respeto"]
+const FLAGS := ["met_vael", "met_hallen", "met_draeth", "vael_contacto", "mapa_vael", "gremio_amigo", "draeth_respeto", "tono_grave", "tono_medio", "tono_agudo"]
 
 var _failures := 0
 var _checked := 0
@@ -140,13 +140,17 @@ func _audit_all(tag: String) -> void:
 	stage.queue_free()
 	await get_tree().process_frame
 
+	# Finales, y cada variante de victoria según la salida de la baliza ("" = registro parcial).
 	for ending in ["victory", "abort", "fuel", "oxygen", "morale"]:
-		_new_run("vance")
-		GameState.apply_effects({"rep": {"concordato": 2, "vael": -1}})
-		var end := EndScreen.new()
-		end.ending = ending
-		end.jumps = 7
-		await _show(end, "%s final %s" % [tag, ending])
+		for beacon in (EndScreen.VICTORY_TIERS.keys() + [""] if ending == "victory" else [""]):
+			_new_run("vance")
+			GameState.apply_effects({"rep": {"concordato": 2, "vael": -1}})
+			if beacon != "":
+				GameState.flags[beacon] = true
+			var end := EndScreen.new()
+			end.ending = ending
+			end.jumps = 7
+			await _show(end, "%s final %s %s" % [tag, ending, beacon])
 
 	# Guía (F1 / botón ?), dentro de la raíz real del juego.
 	var main: Control = load("res://scenes/main.tscn").instantiate()

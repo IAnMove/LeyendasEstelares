@@ -1,11 +1,23 @@
 class_name EndScreen
 extends Control
 ## Cierre de la campaña. `ending`: victory | abort | fuel | oxygen | morale.
+## La victoria tiene variantes según lo que se hizo en la baliza final (ver victory_tier).
 
 signal continue_pressed
 
+## Bandera de la baliza -> variante de victoria; sin ninguna, el registro fue parcial.
+const VICTORY_TIERS := {"baliza_respuesta": "answer", "baliza_dialogo": "dialogue", "baliza_mapa": "map", "baliza_apagada": "silence"}
+const PARTIAL := "partial"
+
 var ending := "victory"
 var jumps := 0
+
+
+static func victory_tier(state) -> String:
+	for flag in VICTORY_TIERS:
+		if state.has_flag(flag):
+			return VICTORY_TIERS[flag]
+	return PARTIAL
 
 
 func _ready() -> void:
@@ -29,9 +41,13 @@ func _ready() -> void:
 	v.add_theme_constant_override("separation", 8)
 	scroll.add_child(v)
 
-	var color := UITheme.GOOD if ending == "victory" else (UITheme.WARN if ending == "abort" else UITheme.BAD)
-	v.add_child(UITheme.label(T.t("ending.%s.title" % ending), color, 18))
-	v.add_child(UITheme.label(T.t("ending.%s.body" % ending), UITheme.TEXT, 12))
+	var key := ending
+	var color := UITheme.WARN if ending == "abort" else UITheme.BAD
+	if ending == "victory":
+		key = "victory." + victory_tier(GameState)
+		color = UITheme.WARN if victory_tier(GameState) == PARTIAL else UITheme.GOOD
+	v.add_child(UITheme.label(T.t("ending.%s.title" % key), color, 18))
+	v.add_child(UITheme.label(T.t("ending.%s.body" % key), UITheme.TEXT, 12))
 	for p in Content.planets:
 		for flag in p.get("epilogues", []):
 			if GameState.has_flag(flag):
@@ -44,6 +60,7 @@ func _ready() -> void:
 		v.add_child(UITheme.label(T.t("ui.story.pending_end", {"n": GameState.story_queue.size()}), UITheme.DIM, 11))
 	v.add_child(HSeparator.new())
 	v.add_child(UITheme.label(T.t("ending.stats", {"data": GameState.data, "jumps": jumps, "morale": GameState.morale, "max": GameState.max_morale}), UITheme.ACCENT, 12))
+	v.add_child(UITheme.label(T.t("ui.tones.list", {"n": GameState.tones(), "total": Content.TONES.size(), "list": GameState.tone_names()}), UITheme.ACCENT, 11))
 	for faction in GameState.rep:
 		var n: int = GameState.rep[faction]
 		v.add_child(UITheme.label(T.t("ending.rep", {"faction": T.t("faction." + faction), "value": ("+" if n > 0 else "") + str(n)}), UITheme.DIM, 11))

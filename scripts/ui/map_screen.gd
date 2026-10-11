@@ -177,7 +177,7 @@ func _refresh_hud() -> void:
 	_morale_label.text = T.t("ui.hud.morale", {"cur": GameState.morale, "max": GameState.max_morale})
 	_morale_bar.max_value = GameState.max_morale
 	_morale_bar.value = GameState.morale
-	_data_label.text = T.t("ui.hud.data", {"n": GameState.data})
+	_data_label.text = "%s     %s" % [T.t("ui.hud.data", {"n": GameState.data}), T.t("ui.hud.tones", {"n": GameState.tones(), "total": Content.TONES.size()})]
 	var parts: Array[String] = []
 	for f in GameState.rep:
 		parts.append("%s %+d" % [T.t("faction." + f), GameState.rep[f]])

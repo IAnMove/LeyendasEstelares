@@ -195,11 +195,12 @@ func _build_info() -> void:
 
 
 func _refresh() -> void:
-	_hud.text = "%s     %s     %s     %s" % [
+	_hud.text = "%s   %s   %s   %s   %s" % [
 		T.t("ui.hud.fuel", {"cur": GameState.fuel, "max": GameState.max_fuel}),
 		T.t("ui.hud.scans", {"n": GameState.scans}),
 		T.t("ui.hud.data", {"n": GameState.data}),
 		T.t("ui.hud.morale", {"cur": GameState.morale, "max": GameState.max_morale}),
+		T.t("ui.hud.tones", {"n": GameState.tones(), "total": Content.TONES.size()}),
 	]
 	for id in _buttons:
 		_style_node(id)

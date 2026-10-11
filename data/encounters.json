@@ -98,7 +98,8 @@
 					},
 					"set_flags": [
 						"vael_contacto",
-						"mapa_vael"
+						"mapa_vael",
+						"tono_medio"
 					]
 				}
 			},
@@ -111,7 +112,8 @@
 						"vael": 1
 					},
 					"set_flags": [
-						"mapa_vael"
+						"mapa_vael",
+						"tono_medio"
 					]
 				}
 			},
@@ -229,7 +231,8 @@
 					"fuel": 4,
 					"scans": 2,
 					"set_flags": [
-						"gremio_amigo"
+						"gremio_amigo",
+						"tono_medio"
 					]
 				}
 			},
@@ -238,7 +241,10 @@
 				"max_tension": 5,
 				"effects": {
 					"fuel": 3,
-					"scans": 1
+					"scans": 1,
+					"set_flags": [
+						"tono_medio"
+					]
 				}
 			},
 			"hostile": {
@@ -352,7 +358,8 @@
 						"concordato": 1
 					},
 					"set_flags": [
-						"draeth_respeto"
+						"draeth_respeto",
+						"tono_medio"
 					]
 				}
 			},
@@ -360,7 +367,10 @@
 				"min_trust": 4,
 				"max_tension": 5,
 				"effects": {
-					"morale": 1
+					"morale": 1,
+					"set_flags": [
+						"tono_medio"
+					]
 				}
 			},
 			"hostile": {

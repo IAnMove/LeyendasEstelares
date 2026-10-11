@@ -19,15 +19,22 @@ El juego tiene tres capas:
 2. **Comunicaciones de primer contacto.** Tres especies con valores distintos: los **Vael** (franqueza),
    el **Gremio de Hallen** (cautela) y el **Dominio Draeth** (firmeza). Cada respuesta es una *postura*
    (abierta, cauta, firme, engañosa) que sube o baja **confianza** y **tensión**. Según las barras
-   terminas en alianza, acuerdo, distancia prudente u hostilidad. La Dra. Vance analiza qué valora cada especie;
-   el Cmdte. Okafor templa la tensión.
+   terminas en alianza, acuerdo, distancia prudente u hostilidad. Con la Dra. Vance al mando ves la reacción
+   prevista de cada respuesta; el Cmdte. Okafor no la ve, pero empieza con más confianza y templa la tensión.
 3. **Exploración de planetas** (estilo *The Curious Expedition*). Mapa hexagonal con niebla, oxígeno que se
    gasta según el terreno, puntos de interés con decisiones (a veces arriesgadas) y un objetivo que alcanzar
    antes de volver a la nave.
 
-Lo que haces en una capa afecta a las otras: banderas y reputación (Concordato, Vael) abren o cierran opciones
-más adelante y cambian el epílogo. Un acuerdo con el Gremio de Hallen o el respeto del Dominio Draeth
+Lo que haces en una capa afecta a las otras: tus decisiones abren o cierran opciones más adelante y cambian
+el epílogo; la reputación (Concordato, Vael) queda reflejada en el informe final. Un acuerdo con el Gremio de Hallen o el respeto del Dominio Draeth
 desbloquean opciones propias en anomalías (salvamento de pecios, paso por campos de asteroides).
+
+**Los tres tonos del pulso.** El final depende de lo que lleves a la baliza de Tessarine. El tono **grave**
+resuena en los relés de Kaelora y Nerea (alcanzar su objetivo); el **medio** lo comparten las especies con
+las que logras un acuerdo o una alianza; el **agudo** se capta al descifrar o responder la propia señal.
+Con dos tonos la baliza abre el diálogo con los Vael o su mapa (si además sabes cómo); con los tres puedes
+responder al pulso. Silenciarla, como ordena el Concordato, siempre es posible; limitarse a escanearla deja
+un **registro parcial**. Cada salida tiene su propio final. El HUD y la bodega muestran los tonos reunidos.
 
 **Tripulación y bodega.** Vance y Okafor viajan juntos. Desde **Equipo y bodega**, en el mapa estelar,
 eliges quién lidera la expedición: su especialidad aporta +20 puntos porcentuales a las acciones
@@ -172,8 +179,9 @@ se conservan en `art/`; las versiones de retratos siguen disponibles desde el se
 ## Líderes con capacidades distintas
 
 Ambos oficiales disponen de 40 de oxígeno y comparten la moral de la tripulación. Vance añade
-un dato a cada acción científica exitosa y conserva su bonificación de probabilidad. Okafor empieza
-los contactos con una unidad adicional de confianza y reduce en uno la tensión positiva. Estas
+un dato a cada acción científica exitosa, conserva su bonificación de probabilidad y, en los contactos,
+prevé la reacción exacta de cada respuesta. Okafor empieza los contactos con una unidad adicional de
+confianza y reduce en uno la tensión positiva, pero sin previsión: hay que leer el contexto. Estas
 ventajas dependen del líder activo, que se cambia a bordo antes del siguiente encuentro.
 
 ## Consecuencias que viajan contigo
@@ -188,8 +196,8 @@ y la bitácora se guardan junto con la expedición.
 
 Las preferencias culturales son una orientación. Cada intercambio introduce una situación distinta:
 privacidad, pruebas, ofertas o compromisos. Repetir una postura reduce la confianza y puede aumentar
-la tensión. Las respuestas muestran sus efectos y el coste en datos antes de elegirlas; el motor
-rechaza pagos que no se pueden afrontar. La transmisión aparece letra a letra (tocarla la completa)
+la tensión. Las respuestas indican su coste en datos y si repiten postura; solo el análisis de Vance
+muestra además la confianza y la tensión previstas. El motor rechaza pagos que no se pueden afrontar. La transmisión aparece letra a letra (tocarla la completa)
 y las respuestas se pueden elegir desde el principio. El historial de posturas forma parte del guardado. Los resultados y el registro guardan claves de
 texto, no frases traducidas: al continuar en otro idioma todo se muestra en el idioma elegido.
 

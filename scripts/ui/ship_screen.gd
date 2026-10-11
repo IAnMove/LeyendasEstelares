@@ -76,6 +76,7 @@ func _refresh() -> void:
 		info.add_child(pick)
 		crew_col.add_child(HSeparator.new())
 	crew_col.add_child(UITheme.label(T.t("ui.ship.team_perks"), UITheme.ACCENT, 11))
+	crew_col.add_child(UITheme.label(T.t("ui.tones.list", {"n": GameState.tones(), "total": Content.TONES.size(), "list": GameState.tone_names()}), UITheme.WARN, 11))
 	var cargo := VBoxContainer.new()
 	cargo.custom_minimum_size.x = 324
 	cargo.add_child(UITheme.caption(T.t("ui.ship.cargo_heading")))

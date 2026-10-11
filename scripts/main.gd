@@ -374,7 +374,7 @@ func _open_help() -> void:
 		return
 	_pause_menu.open()
 	_pause_menu.title(T.t("ui.help.title"))
-	for key in ["ui.help.route", "ui.help.terrain", "ui.help.resources", "ui.help.contacts", "ui.help.controls"]:
+	for key in ["ui.help.route", "ui.help.tones", "ui.help.terrain", "ui.help.resources", "ui.help.contacts", "ui.help.controls"]:
 		_pause_menu.body(T.t(key))
 		_pause_menu.separator()
 	_pause_menu.button(T.t("ui.pause.resume"), _close_pause).grab_focus()
