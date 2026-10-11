@@ -4,6 +4,7 @@ extends Node
 signal settings_changed
 
 var muted := false
+var suspended := false
 var _ambience: AudioStreamPlayer
 var _players: Array[AudioStreamPlayer] = []
 var _streams: Dictionary = {}
@@ -26,14 +27,14 @@ func _ready() -> void:
 	_ambience.volume_db = -14.0
 	add_child(_ambience)
 	_ambience.finished.connect(func():
-		if not muted:
+		if not muted and not suspended:
 			_ambience.play())
 	if not muted and DisplayServer.get_name() != "headless":
 		_ambience.play()
 
 
 func play(cue: String) -> void:
-	if muted or DisplayServer.get_name() == "headless" or not _streams.has(cue) or _players.is_empty():
+	if muted or suspended or DisplayServer.get_name() == "headless" or not _streams.has(cue) or _players.is_empty():
 		return
 	var player := _players[_next]
 	_next = (_next + 1) % _players.size()
@@ -48,10 +49,20 @@ func set_muted(value: bool, save := true) -> void:
 		_ambience.stop()
 		for player in _players:
 			player.stop()
-	elif not _ambience.playing and DisplayServer.get_name() != "headless":
+	elif not suspended and not _ambience.playing and DisplayServer.get_name() != "headless":
 		_ambience.play()
 	if save:
 		var cfg := ConfigFile.new()
 		cfg.load(T.SETTINGS_PATH)
 		cfg.set_value("audio", "muted", muted)
 		cfg.save(T.SETTINGS_PATH)
+
+
+## Suspensión temporal independiente de la preferencia de sonido del jugador.
+func set_suspended(value: bool) -> void:
+	suspended = value
+	for player in _players:
+		player.stream_paused = value
+	_ambience.stream_paused = value
+	if not value and not muted and not _ambience.playing and DisplayServer.get_name() != "headless":
+		_ambience.play()

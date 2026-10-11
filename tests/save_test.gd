@@ -23,6 +23,26 @@ func _ready() -> void:
 	await frames()
 	check(main._campaign.snapshot() == campaign and GameState.data == 7, "sector y recursos conservados")
 
+	# Atrás, subpantallas y ciclo de vida Android sin salir ni cambiar el silencio elegido.
+	main._go_back()
+	check(is_instance_valid(main._pause_menu), "Atrás abre pausa")
+	check(Sound.suspended and main._current.process_mode == Node.PROCESS_MODE_DISABLED, "pausa audio e interacción")
+	main._go_back()
+	await frames()
+	check(not Sound.suspended, "Atrás reanuda")
+	var muted := Sound.muted
+	main._notification(Node.NOTIFICATION_APPLICATION_PAUSED)
+	check(Sound.suspended, "segundo plano suspende audio")
+	main._notification(Node.NOTIFICATION_APPLICATION_RESUMED)
+	check(Sound.suspended and Sound.muted == muted, "volver conserva pausa y preferencia de audio")
+	main._close_pause()
+	await frames()
+	main._current._open_ship()
+	await frames()
+	main._go_back()
+	await frames()
+	check(not is_instance_valid(main._pause_menu), "Atrás cierra bodega antes de pausar")
+
 	# Partida en superficie, con posición, niebla, POI y resultado pendiente.
 	var planet_id := ""
 	var contact_id := ""

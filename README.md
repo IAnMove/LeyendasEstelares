@@ -113,7 +113,9 @@ La partida se guarda después de cada decisión en `user://expedition.save`, con
 verificación de integridad y una copia de respaldo. **Continuar partida** recupera ruta, inventario,
 mercados, superficie, niebla, conversaciones y resultados pendientes. Una nueva expedición pide
 confirmación antes de sustituir la anterior; terminarla elimina su guardado. Los archivos son locales
-al dispositivo. Las partidas y sus copias no se incluyen en Git ni en las exportaciones.
+al dispositivo. Atrás en Android o Esc en escritorio cierra primero la bodega o el mercado;
+en una expedición abre el menú de pausa. Al cambiar de aplicación se guarda inmediatamente,
+se suspende el audio y se requiere reanudar de forma explícita. El silencio elegido se conserva. Las partidas y sus copias no se incluyen en Git ni en las exportaciones.
 
 ## Traducciones
 

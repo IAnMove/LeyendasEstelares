@@ -7,9 +7,13 @@ var _vignette: ColorRect
 var save_path := SaveStore.PATH
 var _save_queued := false
 var _last_save_error := OK
+var _pause_menu: Overlay
+var _backgrounded := false
 
 
 func _ready() -> void:
+	get_tree().quit_on_go_back = false
+	get_tree().auto_accept_quit = false
 	add_to_group("checkpoint_owner")
 	GameState.changed.connect(queue_checkpoint)
 	T.load_language()
@@ -42,7 +46,7 @@ func _show_title() -> void:
 	s.has_save = not save_path.is_empty() and not SaveStore.read(save_path).is_empty()
 	s.resume_pressed.connect(_resume)
 	s.start_pressed.connect(_request_new_run)
-	s.quit_pressed.connect(func(): get_tree().quit())
+	s.quit_pressed.connect(_request_quit)
 	s.language_changed.connect(_show_title)
 	_swap(s)
 
@@ -122,7 +126,10 @@ func _end(ending: String) -> void:
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
-		if event.keycode == KEY_F11:
+		if event.keycode == KEY_ESCAPE:
+			_go_back()
+			get_viewport().set_input_as_handled()
+		elif event.keycode == KEY_F11:
 			var full := DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED if full else DisplayServer.WINDOW_MODE_FULLSCREEN)
 		elif event.keycode == KEY_M:
@@ -134,8 +141,10 @@ func _request_new_run() -> void:
 		_show_avatars()
 		return
 	var modal := Overlay.new()
+	modal.add_to_group("dismissible")
 	_current.add_child(modal)
 	modal.open()
+	UITheme.isolate_focus(modal)
 	modal.title(T.t("ui.save.replace_title"))
 	modal.body(T.t("ui.save.replace_body"))
 	modal.button(T.t("ui.new_expedition"), _show_avatars)
@@ -183,3 +192,101 @@ func _resume() -> void:
 		_show_sector()
 	else:
 		_on_jumped(_campaign.current, saved["screen"])
+
+
+func _notification(what: int) -> void:
+	if not is_node_ready():
+		return
+	match what:
+		NOTIFICATION_WM_GO_BACK_REQUEST:
+			_go_back()
+		NOTIFICATION_WM_CLOSE_REQUEST:
+			_request_quit()
+		NOTIFICATION_APPLICATION_PAUSED:
+			_backgrounded = true
+			_save_checkpoint()
+			if not (_current is TitleScreen or _current is AvatarScreen or _current is EndScreen):
+				_open_pause()
+			Sound.set_suspended(true)
+		NOTIFICATION_APPLICATION_RESUMED:
+			_backgrounded = false
+			Sound.set_suspended(is_instance_valid(_pause_menu))
+
+
+func _go_back() -> void:
+	if is_instance_valid(_pause_menu):
+		_close_pause()
+		return
+	# Cierra la subpantalla más reciente sin abandonar la expedición.
+	if _dismiss_child(_current):
+		return
+	if _current is AvatarScreen or _current is EndScreen:
+		_show_title()
+	elif _current is TitleScreen:
+		_request_quit()
+	else:
+		_open_pause()
+
+
+func _dismiss_child(node: Node) -> bool:
+	var children := node.get_children()
+	children.reverse()
+	for child in children:
+		if child is ShipScreen or child is TradeScreen:
+			child.closed.emit()
+			return true
+		if child is Overlay and child.is_in_group("dismissible"):
+			child.queue_free()
+			return true
+		if _dismiss_child(child):
+			return true
+	return false
+
+
+func _open_pause() -> void:
+	if is_instance_valid(_pause_menu):
+		return
+	_save_checkpoint()
+	if _last_save_error != OK:
+		return
+	_current.process_mode = Node.PROCESS_MODE_DISABLED
+	Sound.set_suspended(true)
+	_pause_menu = Overlay.new()
+	add_child(_pause_menu)
+	_pause_menu.open()
+	_pause_menu.title(T.t("ui.pause.title"))
+	_pause_menu.body(T.t("ui.pause.body"))
+	_pause_menu.button(T.t("ui.pause.resume"), _close_pause).grab_focus()
+	_pause_menu.button(T.t("ui.pause.title_menu"), func():
+		_close_pause()
+		_show_title())
+	var sound_button := _pause_menu.button(T.t("ui.sound.off" if Sound.muted else "ui.sound.on"), func(): Sound.set_muted(not Sound.muted))
+	sound_button.pressed.connect(func(): sound_button.text = T.t("ui.sound.off" if Sound.muted else "ui.sound.on"))
+	UITheme.isolate_focus(_pause_menu)
+
+
+func _close_pause() -> void:
+	if not is_instance_valid(_pause_menu):
+		return
+	_pause_menu.queue_free()
+	_pause_menu = null
+	_current.process_mode = Node.PROCESS_MODE_INHERIT
+	Sound.set_suspended(_backgrounded)
+
+
+func _request_quit() -> void:
+	_save_checkpoint()
+	if _last_save_error != OK:
+		return
+	if not (_current is TitleScreen or _current is EndScreen):
+		_open_pause()
+		return
+	var modal := Overlay.new()
+	modal.add_to_group("dismissible")
+	_current.add_child(modal)
+	modal.open()
+	modal.title(T.t("ui.pause.quit_title"))
+	modal.body(T.t("ui.pause.quit_body"))
+	modal.button(T.t("ui.quit"), func(): get_tree().quit())
+	modal.button(T.t("ui.save.cancel"), modal.queue_free).grab_focus()
+	UITheme.isolate_focus(modal)

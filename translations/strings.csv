@@ -528,3 +528,9 @@ ui.save.replace_body,Choosing a new leader will replace your saved expedition.,A
 ui.save.cancel,Cancel,Cancelar
 ui.save.error_title,Could not save,No se ha podido guardar
 ui.save.error_body,Your expedition is still running. Free some storage before closing the game; the previous checkpoint is preserved.,La expedición sigue en marcha. Libera espacio antes de cerrar el juego; se conserva el punto de guardado anterior.
+ui.pause.title,Expedition paused,Expedición en pausa
+ui.pause.body,Your progress is saved after each decision.,Tu progreso se guarda tras cada decisión.
+ui.pause.resume,Resume expedition,Reanudar expedición
+ui.pause.title_menu,Save and return to title,Guardar y volver al título
+ui.pause.quit_title,Exit the game?,¿Salir del juego?
+ui.pause.quit_body,Your saved expedition will be available next time.,Podrás continuar tu expedición guardada al volver.
