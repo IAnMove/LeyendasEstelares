@@ -9,6 +9,7 @@ var _save_queued := false
 var _last_save_error := OK
 var _pause_menu: Overlay
 var _backgrounded := false
+var _safe_content: Control
 
 
 func _ready() -> void:
@@ -20,13 +21,19 @@ func _ready() -> void:
 	Art.load_settings()
 	theme = UITheme.build()
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_safe_content = Control.new()
+	_safe_content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_safe_content.size = SafeLayout.DESIGN
+	add_child(_safe_content)
+	get_viewport().size_changed.connect(_fit_safe_area)
+	_fit_safe_area()
 	_vignette = ColorRect.new()
 	_vignette.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	_vignette.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var mat := ShaderMaterial.new()
 	mat.shader = load("res://shaders/vignette.gdshader")
 	_vignette.material = mat
-	add_child(_vignette)
+	_safe_content.add_child(_vignette)
 	_show_title()
 
 
@@ -34,8 +41,8 @@ func _swap(screen: Control) -> void:
 	if _current != null:
 		_current.queue_free()
 	_current = screen
-	add_child(screen)
-	move_child(_vignette, -1)  # la viñeta siempre por encima
+	_safe_content.add_child(screen)
+	_safe_content.move_child(_vignette, -1)  # la viñeta siempre por encima
 	screen.modulate.a = 0.0
 	create_tween().tween_property(screen, "modulate:a", 1.0, 0.25)
 	queue_checkpoint()
@@ -209,6 +216,7 @@ func _notification(what: int) -> void:
 				_open_pause()
 			Sound.set_suspended(true)
 		NOTIFICATION_APPLICATION_RESUMED:
+			_fit_safe_area.call_deferred()
 			_backgrounded = false
 			Sound.set_suspended(is_instance_valid(_pause_menu))
 
@@ -252,7 +260,7 @@ func _open_pause() -> void:
 	_current.process_mode = Node.PROCESS_MODE_DISABLED
 	Sound.set_suspended(true)
 	_pause_menu = Overlay.new()
-	add_child(_pause_menu)
+	_safe_content.add_child(_pause_menu)
 	_pause_menu.open()
 	_pause_menu.title(T.t("ui.pause.title"))
 	_pause_menu.body(T.t("ui.pause.body"))
@@ -290,3 +298,12 @@ func _request_quit() -> void:
 	modal.button(T.t("ui.quit"), func(): get_tree().quit())
 	modal.button(T.t("ui.save.cancel"), modal.queue_free).grab_focus()
 	UITheme.isolate_focus(modal)
+
+
+func _fit_safe_area() -> void:
+	var safe := Rect2()
+	if OS.has_feature("mobile"):
+		safe = Rect2(DisplayServer.get_display_safe_area())
+	var fitted := SafeLayout.fit(Rect2(Vector2.ZERO, size), safe, get_viewport().get_screen_transform())
+	_safe_content.position = fitted.position
+	_safe_content.scale = fitted.size / SafeLayout.DESIGN

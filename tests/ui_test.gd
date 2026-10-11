@@ -76,6 +76,10 @@ func _ready() -> void:
 	await _frames()
 	_check(sector._buttons.values()[0].focus_mode == Control.FOCUS_ALL, "cerrar el menú restaura el foco del mapa")
 
+	if UITheme.touch_mode():
+		for node_button in sector._buttons.values():
+			_check(node_button.size.x >= 48 and node_button.size.y >= 48, "objetivo táctil de al menos 48 unidades")
+
 	# Seleccionar un nodo alcanzable, escanear y saltar con los botones reales
 	var target: String = camp.sector.nodes[camp.current]["edges"][0]
 	sector._buttons[target].pressed.emit()
@@ -154,7 +158,7 @@ func _ready() -> void:
 		var guard := 0
 		while _main._current is ContactScreen and guard < 20:
 			guard += 1
-			var btns := _enabled_buttons(_main._current)
+			var btns := _enabled_buttons(_main._current._options)
 			_check(not btns.is_empty(), "siempre hay un botón pulsable en el contacto")
 			if btns.is_empty():
 				break

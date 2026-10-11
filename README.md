@@ -107,6 +107,13 @@ software presenta incompatibilidades. Para contrastarlo, usar un emulador con GP
 de generar el APK; el script falla ante errores gráficos. La validación de una partida completa,
 reanudar tras interrupciones y el consumo en un teléfono se documentan por separado.
 
+## Interfaz táctil
+
+Android activa botones de al menos 48 unidades lógicas, desplazamiento de paneles y controles
+de dirección con el coste de cada movimiento. El mapa estelar separa los objetivos táctiles.
+La composición mantiene sus proporciones en teléfonos y tabletas y respeta el área segura
+del dispositivo. Puede revisarse en escritorio con `godot --path . -- --touch-ui`.
+
 ## Guardado de expediciones
 
 La partida se guarda después de cada decisión en `user://expedition.save`, con escritura temporal,

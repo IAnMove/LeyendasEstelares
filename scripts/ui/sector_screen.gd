@@ -71,6 +71,10 @@ class _Stars extends Control:
 func node_pos(id: String) -> Vector2:
 	var n: Dictionary = campaign.sector.nodes[id]
 	var cols: int = campaign.sector.columns.size()
+	if UITheme.touch_mode():
+		var column: Array = campaign.sector.columns[n["col"]]
+		var y := 174.0 if column.size() == 1 else lerpf(104, 244, float(column.find(id)) / (column.size() - 1))
+		return Vector2(lerpf(MAP_X0, MAP_X1, float(n["col"]) / (cols - 1)), y)
 	return Vector2(lerpf(MAP_X0, MAP_X1, float(n["col"]) / (cols - 1)), MAP_Y0 + float(n["y"]) * MAP_H)
 
 
@@ -89,9 +93,10 @@ func _ready() -> void:
 
 	for id in campaign.sector.nodes:
 		var b := Button.new()
-		b.custom_minimum_size = NODE_SIZE
-		b.size = NODE_SIZE
-		b.position = node_pos(id) - NODE_SIZE / 2.0
+		var target_size := Vector2(48, 48) if UITheme.touch_mode() else NODE_SIZE
+		b.custom_minimum_size = target_size
+		b.size = target_size
+		b.position = node_pos(id) - target_size / 2.0
 		b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		b.expand_icon = false
 		b.focus_mode = Control.FOCUS_ALL
@@ -140,6 +145,7 @@ func _build_hud() -> void:
 	ship.add_theme_font_size_override("font_size", 11)
 	ship.pressed.connect(_open_ship)
 	row.add_child(ship)
+	row.add_child(UITheme.pause_button())
 
 
 func _open_ship() -> void:
@@ -166,18 +172,18 @@ func _build_info() -> void:
 	col.add_child(_info_title)
 	_info_body = UITheme.label("", UITheme.DIM, 11)
 	col.add_child(_info_body)
-	var btns := VBoxContainer.new()
+	var btns: BoxContainer = HBoxContainer.new() if UITheme.touch_mode() else VBoxContainer.new()
 	btns.add_theme_constant_override("separation", 3)
 	row.add_child(btns)
 	_jump_btn = UITheme.button("")
 	UITheme.primary(_jump_btn)
 	_jump_btn.alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_jump_btn.custom_minimum_size = Vector2(170, 0)
+	_jump_btn.custom_minimum_size = Vector2(112 if UITheme.touch_mode() else 170, 0)
 	_jump_btn.pressed.connect(_on_jump)
 	btns.add_child(_jump_btn)
 	_scan_btn = UITheme.button("")
 	_scan_btn.alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_scan_btn.custom_minimum_size = Vector2(170, 0)
+	_scan_btn.custom_minimum_size = Vector2(112 if UITheme.touch_mode() else 170, 0)
 	_scan_btn.pressed.connect(_on_scan)
 	btns.add_child(_scan_btn)
 

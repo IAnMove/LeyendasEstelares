@@ -33,7 +33,15 @@ func _ready() -> void:
 	box.position = Vector2(28, 22)
 	box.size = Vector2(278, 300)
 	box.add_theme_constant_override("separation", 6)
-	add_child(box)
+	if UITheme.touch_mode():
+		var scroll := UITheme.scrolling(self)
+		scroll.position = Vector2(28, 22)
+		scroll.size = Vector2(320, 306)
+		box.position = Vector2.ZERO
+		box.size_flags_horizontal = SIZE_EXPAND_FILL
+		scroll.add_child(box)
+	else:
+		add_child(box)
 	box.add_child(UITheme.caption(T.t("ui.title.eyebrow"), UITheme.WARN))
 
 	var title := UITheme.label(T.t("ui.title"), UITheme.TEXT, 36)
@@ -93,7 +101,7 @@ func _ready() -> void:
 		quit.alignment = HORIZONTAL_ALIGNMENT_CENTER
 		quit.pressed.connect(func(): quit_pressed.emit())
 		settings.add_child(quit)
-	var footer := UITheme.label(T.t("ui.title.footer"), UITheme.DIM, 9)
+	var footer := UITheme.label(T.t("ui.touch.footer" if UITheme.touch_mode() else "ui.title.footer"), UITheme.DIM, 9)
 	footer.position = Vector2(28, 337)
 	footer.size.x = 570
 	add_child(footer)

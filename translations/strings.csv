@@ -534,3 +534,6 @@ ui.pause.resume,Resume expedition,Reanudar expedición
 ui.pause.title_menu,Save and return to title,Guardar y volver al título
 ui.pause.quit_title,Exit the game?,¿Salir del juego?
 ui.pause.quit_body,Your saved expedition will be available next time.,Podrás continuar tu expedición guardada al volver.
+ui.touch.move,Move one hex · oxygen cost below each direction,Mover un hexágono · coste de oxígeno bajo cada dirección
+ui.touch.footer,EXPLORE · MAKE CONTACT · FIND THE ORIGIN  /  Swipe to see more options,EXPLORA · ESTABLECE CONTACTO · ENCUENTRA EL ORIGEN  /  Desliza para ver más opciones
+ui.touch.map_hint,Tap a lit hex or use the direction buttons. Swipe this panel to see supplies and evacuation.,Toca un hexágono resaltado o usa los botones de dirección. Desliza este panel para ver los suministros y la evacuación.

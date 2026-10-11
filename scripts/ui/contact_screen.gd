@@ -98,13 +98,24 @@ func _build_right() -> void:
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override("separation", 6)
 	panel.add_child(v)
-	v.add_child(UITheme.caption(T.t("ui.contact.channel"), UITheme.WARN))
+	var head := HBoxContainer.new()
+	v.add_child(head)
+	var caption := UITheme.caption(T.t("ui.contact.channel"), UITheme.WARN)
+	caption.size_flags_horizontal = SIZE_EXPAND_FILL
+	head.add_child(caption)
+	head.add_child(UITheme.pause_button())
+	var scroll := UITheme.scrolling(v)
+	var body := VBoxContainer.new()
+	body.size_flags_horizontal = SIZE_EXPAND_FILL
+	body.add_theme_constant_override("separation", 6)
+	scroll.add_child(body)
+	v = body
 	v.add_child(HSeparator.new())
 	_speech = UITheme.label("", _color, 14)
-	_speech.custom_minimum_size = Vector2(380, 58)
+	_speech.custom_minimum_size = Vector2(360, 58)
 	v.add_child(_speech)
 	_extra = UITheme.label("", UITheme.DIM, 11)
-	_extra.custom_minimum_size = Vector2(380, 30)
+	_extra.custom_minimum_size = Vector2(360, 30)
 	v.add_child(_extra)
 	v.add_child(HSeparator.new())
 	_options = VBoxContainer.new()
@@ -127,7 +138,7 @@ func _clear_options() -> void:
 
 func _add_option(text: String, cb: Callable, disabled := false) -> Button:
 	var b := UITheme.button(text)
-	b.custom_minimum_size = Vector2(380, 0)
+	b.custom_minimum_size = Vector2(360, 0)
 	b.add_theme_font_size_override("font_size", 11)
 	b.disabled = disabled
 	b.pressed.connect(cb)

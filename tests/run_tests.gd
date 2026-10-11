@@ -7,6 +7,7 @@ var _failures := 0
 
 func _ready() -> void:
 	T.set_language("en", false)
+	_test_safe_layout()
 	_test_hex()
 	_test_content()
 	_test_translations()
@@ -539,3 +540,16 @@ func _bot_walk(ex: Expedition, gs, rng: RandomNumberGenerator, path: Array[Vecto
 			if gs.failure_reason() != "":
 				return "fail"
 	return ""
+
+
+func _test_safe_layout() -> void:
+	print("área segura: teléfono, muesca y tableta")
+	var viewport := Rect2(0, 0, 640, 360)
+	for physical in [Vector2(1920, 1080), Vector2(2400, 1080), Vector2(2560, 1600)]:
+		var scale_factor := minf(physical.x / 640, physical.y / 360)
+		var transform := Transform2D(Vector2(scale_factor, 0), Vector2(0, scale_factor), (physical - Vector2(640, 360) * scale_factor) / 2)
+		var safe := Rect2(Vector2(88, 0), physical - Vector2(88, 32))
+		var fitted := SafeLayout.fit(viewport, safe, transform)
+		_check(viewport.encloses(fitted), "área lógica contenida")
+		_check(safe.grow(0.01).encloses(transform * fitted), "respeta muesca y barra: %s" % physical)
+		_check(is_equal_approx(fitted.size.x / fitted.size.y, 640.0 / 360), "sin distorsión")

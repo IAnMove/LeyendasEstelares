@@ -10,6 +10,7 @@ var expedition: Expedition
 var restored: Dictionary = {}
 var _phase := "briefing"
 var _pending: Dictionary = {}
+var _step_buttons: Array[Button] = []
 
 var _view: PlanetMapView
 var _log: RichTextLabel
@@ -69,6 +70,26 @@ func _build_hud() -> void:
 	_log.add_theme_font_size_override("normal_font_size", 11)
 	_log.add_theme_stylebox_override("normal", UITheme.box(Color(0.04, 0.05, 0.09, 0.85), UITheme.PANEL_BORDER, 5))
 	add_child(_log)
+	if UITheme.touch_mode():
+		_log.hide()
+		var steps := HBoxContainer.new()
+		steps.position = Vector2(8, 282)
+		steps.add_theme_constant_override("separation", 5)
+		add_child(steps)
+		var caption := UITheme.label(T.t("ui.touch.move"), UITheme.DIM, 11)
+		caption.position = Vector2(8, 260)
+		caption.size.x = 354
+		add_child(caption)
+		for i in 6:
+			var direction := i
+			var b := UITheme.button(["→", "↗", "↖", "←", "↙", "↘"][i])
+			b.custom_minimum_size = Vector2(54, 56)
+			b.alignment = HORIZONTAL_ALIGNMENT_CENTER
+			b.pressed.connect(func():
+				if _view.enabled:
+					_on_cell_clicked(HexGrid.neighbors(expedition.player)[direction]))
+			steps.add_child(b)
+			_step_buttons.append(b)
 
 	var panel := PanelContainer.new()
 	panel.position = Vector2(370, 8)
@@ -76,8 +97,15 @@ func _build_hud() -> void:
 	add_child(panel)
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override("separation", 3)
-	panel.add_child(v)
-	v.add_child(UITheme.label(T.t("planet.%s.name" % planet["id"]), UITheme.ACCENT, 16))
+	var scroll := UITheme.scrolling(panel)
+	v.size_flags_horizontal = SIZE_EXPAND_FILL
+	scroll.add_child(v)
+	var head := HBoxContainer.new()
+	v.add_child(head)
+	var title := UITheme.label(T.t("planet.%s.name" % planet["id"]), UITheme.ACCENT, 16)
+	title.size_flags_horizontal = SIZE_EXPAND_FILL
+	head.add_child(title)
+	head.add_child(UITheme.pause_button())
 	v.add_child(UITheme.label(T.t("avatar.%s.name" % GameState.avatar["id"]), UITheme.TEXT, 12))
 	v.add_child(HSeparator.new())
 	_o2_label = UITheme.label("", UITheme.TEXT, 11)
@@ -95,7 +123,7 @@ func _build_hud() -> void:
 	v.add_child(HSeparator.new())
 	_goal_label = UITheme.label("", UITheme.WARN, 11)
 	v.add_child(_goal_label)
-	v.add_child(UITheme.label(T.t("ui.map.hint"), UITheme.DIM, 10))
+	v.add_child(UITheme.label(T.t("ui.touch.map_hint" if UITheme.touch_mode() else "ui.map.hint"), UITheme.DIM, 10))
 	var spacer := Control.new()
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	v.add_child(spacer)
@@ -134,6 +162,12 @@ func _refresh_hud() -> void:
 		parts.append("%s %+d" % [T.t("faction." + f), GameState.rep[f]])
 	_rep_label.text = T.t("ui.hud.rep", {"list": ", ".join(parts) if not parts.is_empty() else "—"})
 	_goal_label.text = T.t("ui.map.goal_done" if expedition.objective_done else "ui.map.goal_pending")
+	for i in _step_buttons.size():
+		var cell: Vector2i = HexGrid.neighbors(expedition.player)[i]
+		_step_buttons[i].disabled = not expedition.can_move(cell)
+		_step_buttons[i].text = ["→", "↗", "↖", "←", "↙", "↘"][i]
+		if expedition.can_move(cell):
+			_step_buttons[i].text += "\n−%d O₂" % expedition.map.move_cost(cell)
 
 
 func _say(text: String, color := UITheme.TEXT) -> void:
@@ -146,6 +180,7 @@ func _on_cell_clicked(cell: Vector2i) -> void:
 		return
 	var cost := expedition.map.move_cost(cell)
 	var res := expedition.move(cell)
+	_refresh_hud()
 	Sound.play("step")
 	_say(T.t("ui.log.move", {"cost": cost}), UITheme.DIM)
 	if res["failure"] != "":
@@ -188,6 +223,7 @@ func _open_event(poi: Dictionary) -> void:
 func _after_event(poi: Dictionary) -> void:
 	_phase = "explore"
 	_pending = {}
+	_refresh_hud()
 	_say("%s" % T.ev(poi["event_id"], "title"), UITheme.TEXT)
 	if poi["objective"]:
 		_say(T.t("ui.map.goal_done"), UITheme.GOOD)

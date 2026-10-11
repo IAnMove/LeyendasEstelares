@@ -94,9 +94,35 @@ static func bar(color: Color) -> ProgressBar:
 	return b
 
 
+static func touch_mode() -> bool:
+	return OS.has_feature("mobile") or DisplayServer.is_touchscreen_available() or "--touch-ui" in OS.get_cmdline_user_args()
+
+
+static func scrolling(parent: Control) -> ScrollContainer:
+	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.follow_focus = true
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	parent.add_child(scroll)
+	return scroll
+
+
+static func pause_button() -> Button:
+	var b := button("Ⅱ")
+	b.tooltip_text = T.t("ui.pause.title")
+	b.accessibility_name = T.t("ui.pause.title")
+	b.custom_minimum_size.x = 48
+	b.alignment = HORIZONTAL_ALIGNMENT_CENTER
+	b.pressed.connect(func(): b.get_tree().call_group("checkpoint_owner", "_open_pause"))
+	return b
+
+
 static func button(text: String) -> Button:
 	var b := Button.new()
 	b.text = text
+	if touch_mode():
+		b.ready.connect(func(): b.custom_minimum_size = b.custom_minimum_size.max(Vector2(48, 48)))
 	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND

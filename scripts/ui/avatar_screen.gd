@@ -28,12 +28,20 @@ func _build() -> void:
 	var hint := UITheme.label(T.t("ui.crew.selection_hint"), UITheme.DIM, 11)
 	hint.position = Vector2(20, 44)
 	hint.size.x = 596
+	hint.visible = not UITheme.touch_mode()
 	_layout.add_child(hint)
 	var row := HBoxContainer.new()
 	row.position = Vector2(20, 70)
 	row.size = Vector2(600, 272)
 	row.add_theme_constant_override("separation", 12)
-	_layout.add_child(row)
+	if UITheme.touch_mode():
+		var scroll := UITheme.scrolling(_layout)
+		scroll.position = Vector2(20, 76)
+		scroll.size = Vector2(610, 274)
+		row.position = Vector2.ZERO
+		scroll.add_child(row)
+	else:
+		_layout.add_child(row)
 	for a in Content.avatars:
 		row.add_child(_card(a))
 	row.get_child(0).find_children("*", "Button", true, false)[0].grab_focus()
