@@ -134,6 +134,7 @@ func text_keys() -> Array[String]:
 			keys.append("contact.%s.out.%s" % [id, o])
 		for x in enc["exchanges"].size():
 			keys.append("contact.%s.x%d.prompt" % [id, x])
+			keys.append("contact.%s.x%d.context" % [id, x])
 			for i in enc["exchanges"][x]["options"].size():
 				var opt: Dictionary = enc["exchanges"][x]["options"][i]
 				keys.append("contact.%s.x%d.o%d" % [id, x, i])
@@ -190,6 +191,12 @@ func validate() -> Array[String]:
 			for f in enc["outcomes"][o].get("effects", {}).get("set_flags", []):
 				set_flags[f] = true
 		for x in enc.get("exchanges", []).size():
+			for stance in enc["exchanges"][x].get("context_effects", {}):
+				if not stance in STANCES:
+					errors.append("contexto diplomático: postura desconocida")
+				for stat in enc["exchanges"][x]["context_effects"][stance]:
+					if not stat in ["trust", "tension"]:
+						errors.append("contexto diplomático: efecto desconocido")
 			for i in enc["exchanges"][x]["options"].size():
 				var opt: Dictionary = enc["exchanges"][x]["options"][i]
 				var where := "%s.x%d.o%d" % [enc["id"], x, i]

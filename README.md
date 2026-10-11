@@ -107,6 +107,13 @@ software presenta incompatibilidades. Para contrastarlo, usar un emulador con GP
 de generar el APK; el script falla ante errores gráficos. La validación de una partida completa,
 reanudar tras interrupciones y el consumo en un teléfono se documentan por separado.
 
+## Diplomacia contextual
+
+Las preferencias culturales son una orientación. Cada intercambio introduce una situación distinta:
+privacidad, pruebas, ofertas o compromisos. Repetir una postura reduce la confianza y puede aumentar
+la tensión. Las respuestas muestran sus efectos y el coste en datos antes de elegirlas; el motor
+rechaza pagos que no se pueden afrontar. El historial de posturas forma parte del guardado.
+
 ## Interfaz táctil
 
 Android activa botones de al menos 48 unidades lógicas, desplazamiento de paneles y controles

@@ -161,13 +161,19 @@ func _show_prompt() -> void:
 	var x := runner.index
 	_speech.add_theme_color_override("font_color", _color)
 	_speech.text = T.t("contact.%s.x%d.prompt" % [eid, x])
-	_extra.text = ""
+	_extra.text = T.t("contact.%s.x%d.context" % [eid, x]) + "\n" + T.t("ui.contact.repetition")
 	var first: Button = null
 	var opts: Array = runner.exchange()["options"]
 	for i in opts.size():
 		var hint := T.t("contact.%s.x%d.o%d.hint" % [eid, x, i]) if opts[i].has("requires") else ""
 		var lock := runner.lock_reason(i, hint)
 		var label := "[%s]  %s" % [T.t("ui.stance." + opts[i]["stance"]), T.t("contact.%s.x%d.o%d" % [eid, x, i])]
+		var forecast := runner.preview(i)
+		label += "\n" + T.t("ui.contact.forecast", {"trust": "%+d" % forecast["trust"], "tension": "%+d" % forecast["tension"]})
+		if forecast["cost"] > 0:
+			label += " · " + T.t("ui.contact.data_cost", {"n": forecast["cost"]})
+		if forecast["repeats"] > 0:
+			label += " · " + T.t("ui.contact.repeated")
 		if lock != "":
 			label += "   [%s]" % lock
 		var b := _add_option(label, _on_choose.bind(i), lock != "")

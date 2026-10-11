@@ -15,6 +15,7 @@ func _ready() -> void:
 	_test_event_rules()
 	_test_sector()
 	_test_contacts()
+	_test_contact_context()
 	_test_campaign_rules()
 	_test_crew_and_items()
 	_test_trade()
@@ -250,9 +251,8 @@ func _test_contacts() -> void:
 				for i in r.exchange()["options"].size():
 					if r.lock_reason(i) != "":
 						continue
-					var e: Dictionary = sp["stance_effects"][r.option(i)["stance"]]
-					var extra: Dictionary = r.option(i).get("effects", {})
-					var score: int = int(e["trust"]) + int(extra.get("trust", 0)) - int(e["tension"]) - int(extra.get("tension", 0))
+					var forecast := r.preview(i)
+					var score: int = forecast["trust"] - forecast["tension"]
 					if (label == "best" and score > best_score) or (label == "worst" and score < best_score):
 						best_score = score
 						pick = i
@@ -553,3 +553,28 @@ func _test_safe_layout() -> void:
 		_check(viewport.encloses(fitted), "área lógica contenida")
 		_check(safe.grow(0.01).encloses(transform * fitted), "respeta muesca y barra: %s" % physical)
 		_check(is_equal_approx(fitted.size.x / fitted.size.y, 640.0 / 360), "sin distorsión")
+
+
+func _test_contact_context() -> void:
+	print("contexto, repetición y costes diplomáticos")
+	var gs = _new_state("vance")
+	gs.data = 5
+	var r := ContactRunner.new(gs, Content.species_by_id("vael"), Content.encounter_for("vael"))
+	_check(r.preview(0)["trust"] > r.preview(1)["trust"], "franqueza al presentarse")
+	r.choose(0)
+	_check(r.preview(1)["trust"] > r.preview(0)["trust"], "prudencia ante recuerdos privados")
+	var forecast := r.preview(0)
+	_check(forecast["repeats"] == 1, "se recuerda la postura anterior")
+	var trust_before := r.trust
+	r.choose(0)
+	_check(r.trust - trust_before == forecast["trust"], "pronóstico coincide con resultado")
+	var restored := ContactRunner.new(gs, r.species, r.encounter)
+	restored.restore(r.snapshot())
+	_check(restored.preview(0) == r.preview(0), "historial persiste al reanudar")
+	gs.data = 0
+	var before := r.snapshot()
+	_check(not r.choose(0)["ok"] and r.snapshot() == before, "no se puede pagar con datos inexistentes")
+	r.choose(1)
+	before = r.snapshot()
+	_check(not r.choose(1)["ok"] and r.snapshot() == before, "contacto terminado no acepta más decisiones")
+	gs.free()

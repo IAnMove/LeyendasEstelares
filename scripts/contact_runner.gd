@@ -13,6 +13,7 @@ var tension := 0
 var index := 0  # intercambio actual
 var broke := false  # tensión al máximo: la conversación se rompe
 var _applied_outcome: Dictionary = {}
+var history: Array = []
 
 
 func _init(state_, species_: Dictionary, encounter_: Dictionary) -> void:
@@ -37,6 +38,11 @@ func option(i: int) -> Dictionary:
 
 
 func lock_reason(i: int, hint := "") -> String:
+	if finished() or i < 0 or i >= exchange()["options"].size():
+		return T.t("ui.contact.finished")
+	var cost := -int(option(i).get("effects", {}).get("data", 0))
+	if cost > state.data:
+		return T.t("ui.contact.data_required", {"n": cost})
 	return EventRunner.lock_reason(option(i), state, hint)
 
 
@@ -54,15 +60,31 @@ func best_stance() -> String:
 
 
 ## Elige la opción: aplica postura + efectos propios y devuelve {lines, key} (key = clave del texto de respuesta).
-func choose(i: int) -> Dictionary:
+func preview(i: int) -> Dictionary:
 	var opt := option(i)
-	var base: Dictionary = species["stance_effects"][opt["stance"]]
+	var stance: String = opt["stance"]
+	var base: Dictionary = species["stance_effects"][stance]
 	var extra: Dictionary = opt.get("effects", {})
-	var d_trust: int = int(base["trust"]) + int(extra.get("trust", 0))
-	var d_tension: int = int(base["tension"]) + int(extra.get("tension", 0))
-	# Rasgo diplomático: sabe templar los ánimos (la tensión que se gana baja en 1).
+	var context: Dictionary = exchange().get("context_effects", {}).get(stance, {})
+	var repeats := mini(history.count(stance), 2)
+	var d_trust := int(base["trust"]) + int(extra.get("trust", 0)) + int(context.get("trust", 0)) - repeats
+	var d_tension := int(base["tension"]) + int(extra.get("tension", 0)) + int(context.get("tension", 0)) + (1 if repeats > 0 else 0)
 	if state.has_crew_trait("diplomacia") and d_tension > 0:
 		d_tension -= 1
+	return {"trust": clampi(trust + d_trust, 0, MAX_METER) - trust,
+		"tension": clampi(tension + d_tension, 0, MAX_METER) - tension,
+		"cost": maxi(0, -int(extra.get("data", 0))), "repeats": repeats}
+
+
+func choose(i: int) -> Dictionary:
+	if lock_reason(i) != "":
+		return {"ok": false, "lines": [], "key": ""}
+	var opt := option(i)
+	var extra: Dictionary = opt.get("effects", {})
+	var forecast := preview(i)
+	var d_trust: int = forecast["trust"]
+	var d_tension: int = forecast["tension"]
+	history.append(opt["stance"])
 	var lines: Array[String] = []
 	var t0 := trust
 	var n0 := tension
@@ -81,7 +103,7 @@ func choose(i: int) -> Dictionary:
 	index += 1
 	if tension >= MAX_METER:
 		broke = true
-	return {"lines": lines, "key": key}
+	return {"ok": true, "lines": lines, "key": key}
 
 
 ## Desenlace según las barras: alliance, hostile, deal o wary.
@@ -117,7 +139,7 @@ func _signed(n: int) -> String:
 
 func snapshot() -> Dictionary:
 	var out := {}
-	for key in ["trust", "tension", "index", "broke", "_applied_outcome"]:
+	for key in ["trust", "tension", "index", "broke", "_applied_outcome", "history"]:
 		out[key] = get(key)
 	return out.duplicate(true)
 

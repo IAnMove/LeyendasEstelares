@@ -17,7 +17,12 @@
 					{
 						"stance": "deceive"
 					}
-				]
+				],
+				"context_effects": {
+					"open": {
+						"trust": 1
+					}
+				}
 			},
 			{
 				"options": [
@@ -30,7 +35,17 @@
 					{
 						"stance": "firm"
 					}
-				]
+				],
+				"context_effects": {
+					"open": {
+						"trust": -2,
+						"tension": 1
+					},
+					"careful": {
+						"trust": 2,
+						"tension": -1
+					}
+				}
 			},
 			{
 				"options": [
@@ -60,7 +75,15 @@
 							"flag": "vael_contacto"
 						}
 					}
-				]
+				],
+				"context_effects": {
+					"open": {
+						"trust": 1
+					},
+					"careful": {
+						"trust": -1
+					}
+				}
 			}
 		],
 		"outcomes": {
@@ -125,7 +148,12 @@
 					{
 						"stance": "deceive"
 					}
-				]
+				],
+				"context_effects": {
+					"careful": {
+						"trust": 1
+					}
+				}
 			},
 			{
 				"options": [
@@ -148,7 +176,20 @@
 							"tension": 1
 						}
 					}
-				]
+				],
+				"context_effects": {
+					"open": {
+						"trust": 2
+					},
+					"careful": {
+						"trust": -1,
+						"tension": 1
+					},
+					"firm": {
+						"trust": 1,
+						"tension": -1
+					}
+				}
 			},
 			{
 				"options": [
@@ -167,7 +208,17 @@
 							"tension": 1
 						}
 					}
-				]
+				],
+				"context_effects": {
+					"firm": {
+						"trust": 3,
+						"tension": -1
+					},
+					"careful": {
+						"trust": -1,
+						"tension": 1
+					}
+				}
 			}
 		],
 		"outcomes": {
@@ -220,7 +271,13 @@
 					{
 						"stance": "deceive"
 					}
-				]
+				],
+				"context_effects": {
+					"firm": {
+						"trust": 1,
+						"tension": -1
+					}
+				}
 			},
 			{
 				"options": [
@@ -240,7 +297,21 @@
 							"tension": 1
 						}
 					}
-				]
+				],
+				"context_effects": {
+					"open": {
+						"trust": 3,
+						"tension": -1
+					},
+					"firm": {
+						"trust": -2,
+						"tension": 2
+					},
+					"careful": {
+						"trust": 1,
+						"tension": -1
+					}
+				}
 			},
 			{
 				"options": [
@@ -253,7 +324,21 @@
 					{
 						"stance": "firm"
 					}
-				]
+				],
+				"context_effects": {
+					"careful": {
+						"trust": 3,
+						"tension": -1
+					},
+					"firm": {
+						"trust": -1,
+						"tension": 1
+					},
+					"open": {
+						"trust": 1,
+						"tension": -1
+					}
+				}
 			}
 		],
 		"outcomes": {

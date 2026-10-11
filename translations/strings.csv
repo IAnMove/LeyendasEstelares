@@ -537,3 +537,18 @@ ui.pause.quit_body,Your saved expedition will be available next time.,Podrás co
 ui.touch.move,Move one hex · oxygen cost below each direction,Mover un hexágono · coste de oxígeno bajo cada dirección
 ui.touch.footer,EXPLORE · MAKE CONTACT · FIND THE ORIGIN  /  Swipe to see more options,EXPLORA · ESTABLECE CONTACTO · ENCUENTRA EL ORIGEN  /  Desliza para ver más opciones
 ui.touch.map_hint,Tap a lit hex or use the direction buttons. Swipe this panel to see supplies and evacuation.,Toca un hexágono resaltado o usa los botones de dirección. Desliza este panel para ver los suministros y la evacuación.
+contact.vael_eco.x0.context,They want to understand your mission.,Quieren comprender vuestra misión.
+contact.vael_eco.x1.context,Their memories are private. Restraint matters more than curiosity.,Sus recuerdos son privados. La prudencia pesa más que la curiosidad.
+contact.vael_eco.x2.context,Reciprocity will decide whether they share their archives.,La reciprocidad decidirá si comparten sus archivos.
+contact.hallen_gremio.x0.context,They expect you to follow the guild protocol.,Esperan que respetéis el protocolo del gremio.
+contact.hallen_gremio.x1.context,A concrete offer carries more weight than another cautious answer.,Una oferta concreta vale más que otra respuesta cautelosa.
+contact.hallen_gremio.x2.context,The contract needs a firm commitment.,El contrato necesita un compromiso firme.
+contact.draeth_patrulla.x0.context,The patrol is testing your resolve.,La patrulla está poniendo a prueba vuestra determinación.
+contact.draeth_patrulla.x1.context,"They now want evidence, not a second show of authority.",Ahora piden pruebas; insistir en vuestra autoridad les irrita.
+contact.draeth_patrulla.x2.context,Leave room for them to withdraw without losing face.,Dejadles margen para retirarse sin perder prestigio.
+ui.contact.finished,Channel closed,Canal cerrado
+ui.contact.data_required,Requires {n} data,Necesita {n} datos
+ui.contact.forecast,Trust {trust} · Tension {tension},Confianza {trust} · Tensión {tension}
+ui.contact.data_cost,Costs {n} data,Cuesta {n} datos
+ui.contact.repeated,Repeated stance,Postura repetida
+ui.contact.repetition,Repeating a stance reduces trust and adds tension.,Repetir una postura reduce la confianza y añade tensión.

@@ -78,7 +78,7 @@ func _ready() -> void:
 	await frames()
 	var contact: ContactScreen = main._current
 	while not contact.runner.finished():
-		contact.runner.choose(0)
+		contact.runner.choose(0 if contact.runner.lock_reason(0) == "" else 1)
 	contact._show_outcome()
 	GameState.market_stock = {"test": {"fuel_cell": 1}}
 	main._save_checkpoint()
