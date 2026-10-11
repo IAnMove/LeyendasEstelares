@@ -98,7 +98,9 @@ func _ready() -> void:
 		b.size = target_size
 		b.position = node_pos(id) - target_size / 2.0
 		b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		b.expand_icon = false
+		b.expand_icon = true
+		b.add_theme_constant_override("icon_max_width", 24)
+		b.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		b.focus_mode = Control.FOCUS_ALL
 		b.pressed.connect(_select.bind(id))
 		b.focus_entered.connect(_select.bind(id))
@@ -106,7 +108,10 @@ func _ready() -> void:
 		_buttons[id] = b
 
 	_ship = TextureRect.new()
-	_ship.texture = Art.tex("sector_ship")
+	_ship.texture = Cartography.tex("sector_ship")
+	_ship.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	_ship.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_ship.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	_ship.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_ship.size = Vector2(16, 16)
 	add_child(_ship)
@@ -215,7 +220,7 @@ func _icon_for(id: String) -> String:
 func _style_node(id: String) -> void:
 	var b: Button = _buttons[id]
 	var n: Dictionary = campaign.node(id)
-	b.icon = Art.tex(_icon_for(id))
+	b.icon = Cartography.tex(_icon_for(id))
 	var border := UITheme.PANEL_BORDER
 	if id == campaign.current:
 		border = UITheme.ACCENT

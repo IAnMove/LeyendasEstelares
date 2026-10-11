@@ -28,6 +28,10 @@ func cell_at(local: Vector2) -> Vector2i:
 	return best
 
 
+func _ready() -> void:
+	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+
+
 func _process(delta: float) -> void:
 	_time += delta
 	var c := cell_at(get_local_mouse_position()) if enabled and expedition != null else Vector2i(-1, -1)
@@ -59,29 +63,30 @@ func _draw() -> void:
 	var biome: String = expedition.planet.get("biome", "frost")
 	for c in map.terrain:
 		var tile: String = "tile_fog" if not map.revealed.has(c) else "tile_%s_%s" % [biome, map.terrain[c]]
-		draw_texture(Art.tex(tile), HexGrid.center(c) - _HEX_OFFSET)
+		draw_texture_rect(Cartography.tex(tile), Rect2(HexGrid.center(c) - _HEX_OFFSET, Vector2(HexGrid.W, HexGrid.H)), false)
 
 	for p in map.pois:
 		if map.revealed.has(p["cell"]):
 			var pulse := 0.85 + 0.15 * sin(_time * 3.0 + p["cell"].x)
 			var tint := Color(1, 1, 1, 0.35) if p["resolved"] else Color(pulse, pulse, pulse, 1)
 			var bob := 0.0 if p["resolved"] else roundf(sin(_time * 2.0 + p["cell"].y) * 1.0)
-			draw_texture(Art.tex("poi_" + p["type"]), HexGrid.center(p["cell"]) - Vector2(8, 12 - bob), tint)
-	draw_texture(Art.tex("ship"), HexGrid.center(map.ship_cell) - Vector2(8, 12))
+			draw_texture_rect(Cartography.tex("poi_" + p["type"]), Rect2(HexGrid.center(p["cell"]) - Vector2(8, 12 - bob), Vector2(16, 24)), false, tint)
+	draw_texture_rect(Cartography.tex("ship"), Rect2(HexGrid.center(map.ship_cell) - Vector2(8, 12), Vector2(16, 24)), false)
 
-	var font := ThemeDB.fallback_font
+	var font := UITheme.MONO_FONT
 	var reach_alpha := 0.65 + 0.35 * sin(_time * 4.0)
 	for n in HexGrid.neighbors(expedition.player):
 		if expedition.can_move(n):
 			var pos := HexGrid.center(n)
-			draw_texture(Art.tex("hl_reach"), pos - _HEX_OFFSET, Color(1, 1, 1, reach_alpha))
+			draw_texture_rect(Cartography.tex("hl_reach"), Rect2(pos - _HEX_OFFSET, Vector2(HexGrid.W, HexGrid.H)), false, Color(1, 1, 1, reach_alpha))
 			if not map.poi_at(n).is_empty() and map.revealed.has(n):
 				continue
-			draw_string_outline(font, pos + Vector2(-8, 22), str(map.move_cost(n)), HORIZONTAL_ALIGNMENT_CENTER, 16, 10, 3, Color.BLACK)
-			draw_string(font, pos + Vector2(-8, 22), str(map.move_cost(n)), HORIZONTAL_ALIGNMENT_CENTER, 16, 10, UITheme.WARN)
+			var badge := pos + Vector2(8, 9)
+			draw_circle(badge, 6.5, UITheme.INK)
+			draw_string(font, badge + Vector2(-3, 3.5), str(map.move_cost(n)), HORIZONTAL_ALIGNMENT_LEFT, -1, 10, UITheme.WARN)
 	if enabled and _hover != Vector2i(-1, -1):
-		draw_texture(Art.tex("hl_hover"), HexGrid.center(_hover) - _HEX_OFFSET)
+		draw_texture_rect(Cartography.tex("hl_hover"), Rect2(HexGrid.center(_hover) - _HEX_OFFSET, Vector2(HexGrid.W, HexGrid.H)), false)
 
 	var breathe := roundf(sin(_time * 2.4) * 0.6)
-	var avatar_tex := Art.tex(GameState.avatar.get("sprite", "avatar_vance"))
-	draw_texture(avatar_tex, HexGrid.center(expedition.player) - Vector2(8, 13 - breathe))
+	var avatar_tex := Cartography.tex(GameState.avatar.get("sprite", "avatar_vance"))
+	draw_texture_rect(avatar_tex, Rect2(HexGrid.center(expedition.player) - Vector2(8, 13 - breathe), Vector2(16, 24)), false)

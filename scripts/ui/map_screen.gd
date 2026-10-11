@@ -39,6 +39,7 @@ func _ready() -> void:
 	add_child(UITheme.background())
 	_view = PlanetMapView.new()
 	_view.position = Vector2(8, 8)
+	_view.scale = Vector2.ONE * (354.0 / _view.size_px().x)
 	_view.expedition = expedition
 	_view.cell_clicked.connect(_on_cell_clicked)
 	add_child(_view)

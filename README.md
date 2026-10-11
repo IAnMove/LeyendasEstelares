@@ -107,6 +107,12 @@ software presenta incompatibilidades. Para contrastarlo, usar un emulador con GP
 de generar el APK; el script falla ante errores gráficos. La validación de una partida completa,
 reanudar tras interrupciones y el consumo en un teléfono se documentan por separado.
 
+## Cartografía de tinta y papel
+
+La superficie y el mapa estelar usan símbolos SVG propios en `art/cartography/`, con líneas nítidas,
+paletas diferenciadas por bioma y marcadores coherentes con la interfaz retro. Los sprites originales
+se conservan en `art/`; las versiones de retratos siguen disponibles desde el selector de estilo.
+
 ## Líderes con capacidades distintas
 
 Ambos oficiales disponen de 40 de oxígeno y comparten la moral de la tripulación. Vance añade
