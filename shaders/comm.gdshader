@@ -6,7 +6,7 @@ uniform float strength = 0.22;
 void fragment() {
 	vec2 uv = UV;
 	float row = floor(uv.y * 32.0);
-	float glitch = step(0.97, fract(sin(floor(TIME * 7.0) * 91.3 + row * 17.7) * 43758.5)) * 0.04;
+	float glitch = step(0.995, fract(sin(floor(TIME * 7.0) * 91.3 + row * 17.7) * 43758.5)) * 0.006;
 	uv.x += glitch;
 	vec4 c = texture(TEXTURE, uv);
 	float scan = 0.86 + 0.14 * sin(uv.y * 32.0 * 6.2831 * 0.5 + TIME * 3.0);

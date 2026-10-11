@@ -1,0 +1,62 @@
+[
+	{
+		"id": "oxygen_cell",
+		"kind": "consumable",
+		"context": "surface",
+		"price": 3,
+		"capacity": 4,
+		"effects": {
+			"oxygen": 12
+		}
+	},
+	{
+		"id": "rations",
+		"kind": "consumable",
+		"context": "any",
+		"price": 3,
+		"capacity": 4,
+		"effects": {
+			"morale": 3
+		}
+	},
+	{
+		"id": "fuel_cell",
+		"kind": "consumable",
+		"context": "sector",
+		"price": 4,
+		"capacity": 4,
+		"effects": {
+			"fuel": 2
+		}
+	},
+	{
+		"id": "scan_probe",
+		"kind": "consumable",
+		"context": "sector",
+		"price": 3,
+		"capacity": 4,
+		"effects": {
+			"scans": 2
+		}
+	},
+	{
+		"id": "survey_kit",
+		"kind": "equipment",
+		"context": "any",
+		"price": 6,
+		"capacity": 1,
+		"bonus": {
+			"risk": 0.1
+		}
+	},
+	{
+		"id": "translator",
+		"kind": "equipment",
+		"context": "any",
+		"price": 6,
+		"capacity": 1,
+		"bonus": {
+			"trust": 1
+		}
+	}
+]

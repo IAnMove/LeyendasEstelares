@@ -1,0 +1,19 @@
+{
+	"vael": {
+		"oxygen_cell": 3,
+		"scan_probe": 2,
+		"survey_kit": 1
+	},
+	"hallen": {
+		"oxygen_cell": 2,
+		"rations": 3,
+		"fuel_cell": 3,
+		"scan_probe": 2,
+		"translator": 1
+	},
+	"draeth": {
+		"fuel_cell": 3,
+		"rations": 2,
+		"survey_kit": 1
+	}
+}

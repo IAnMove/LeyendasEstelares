@@ -13,6 +13,7 @@ func _ready() -> void:
 	var main: Control = load("res://scenes/main.tscn").instantiate()
 	add_child(main)
 	T.set_language(lang, false)
+	Art.set_portrait_version(args[2] if args.size() > 2 else "v2_retro", false)
 	main._show_title()
 	await _shot("1_title")
 	main._show_avatars()
@@ -27,6 +28,15 @@ func _ready() -> void:
 	camp.scan(first)
 	main._current._select(first)
 	await _shot("4_sector_scanned")
+	var ship := ShipScreen.new()
+	main._swap(ship)
+	await _shot("4_ship")
+	GameState.relations["hallen"] = "alliance"
+	GameState.data = 12
+	var market := TradeScreen.new()
+	market.species_id = "hallen"
+	main._swap(market)
+	await _shot("4_trade")
 
 	for sp in ["vael", "hallen", "draeth"]:
 		var cs := ContactScreen.new()
@@ -41,6 +51,7 @@ func _ready() -> void:
 	for pid in ["kaelora", "nerea", "tessarine"]:
 		var planet: Dictionary = camp.sector.nodes[camp.sector.final_id]["planet"] if pid == "tessarine" else _planet_of(camp, pid)
 		var ms := MapScreen.new()
+		GameState.begin_planet()
 		ms.planet = planet
 		main._swap(ms)
 		await _shot("6_%s_briefing" % pid)
@@ -63,6 +74,11 @@ func _ready() -> void:
 	await _shot("8_anomaly")
 	main._end("victory")
 	await _shot("9_end")
+	Sound.set_muted(true, false)
+	main.queue_free()
+	await get_tree().process_frame
+	# Deja al mezclador liberar las reproducciones antes de cerrar el driver Dummy.
+	await get_tree().create_timer(0.2).timeout
 	get_tree().quit()
 
 

@@ -6,7 +6,8 @@
 		],
 		"max_oxygen": 40,
 		"max_morale": 9,
-		"sprite": "avatar_vance"
+		"sprite": "avatar_vance",
+		"portrait": "generated/crew_vance"
 	},
 	{
 		"id": "okafor",
@@ -15,6 +16,7 @@
 		],
 		"max_oxygen": 36,
 		"max_morale": 12,
-		"sprite": "avatar_okafor"
+		"sprite": "avatar_okafor",
+		"portrait": "generated/crew_okafor"
 	}
 ]

@@ -15,11 +15,18 @@ func _ready() -> void:
 	center.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	add_child(center)
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size = Vector2(480, 0)
+	panel.custom_minimum_size = Vector2(540, 328)
 	center.add_child(panel)
+	var outer := VBoxContainer.new()
+	panel.add_child(outer)
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	outer.add_child(scroll)
 	var v := VBoxContainer.new()
+	v.size_flags_horizontal = SIZE_EXPAND_FILL
 	v.add_theme_constant_override("separation", 8)
-	panel.add_child(v)
+	scroll.add_child(v)
 
 	var color := UITheme.GOOD if ending == "victory" else (UITheme.WARN if ending == "abort" else UITheme.BAD)
 	v.add_child(UITheme.label(T.t("ending.%s.title" % ending), color, 18))
@@ -36,5 +43,5 @@ func _ready() -> void:
 	var btn := UITheme.button(T.t("ui.back_title"))
 	btn.alignment = HORIZONTAL_ALIGNMENT_CENTER
 	btn.pressed.connect(func(): continue_pressed.emit())
-	v.add_child(btn)
+	outer.add_child(btn)
 	btn.grab_focus()

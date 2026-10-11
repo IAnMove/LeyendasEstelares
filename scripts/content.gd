@@ -3,8 +3,8 @@ extends Node
 ## Los JSON solo contienen mecánica; todo el texto sale de las traducciones por clave convencional
 ## (ver text_keys()).
 
-const VALID_EFFECTS := ["oxygen", "morale", "data", "fuel", "scans", "rep", "set_flags"]
-const VALID_CONTACT_EFFECTS := ["trust", "tension", "oxygen", "morale", "data", "fuel", "scans", "rep", "set_flags"]
+const VALID_EFFECTS := ["oxygen", "morale", "data", "fuel", "scans", "rep", "set_flags", "items"]
+const VALID_CONTACT_EFFECTS := ["trust", "tension", "oxygen", "morale", "data", "fuel", "scans", "rep", "set_flags", "items"]
 const VALID_REQUIRES := ["trait", "flag", "any_flag", "not_flag", "min_data"]
 const VALID_TYPES := ["signal", "ruins", "wreck", "life", "beacon", "anomaly"]
 const VALID_BIOMES := ["frost", "dust", "verdant"]
@@ -18,6 +18,8 @@ var factions := {}
 var species: Array = []
 var encounters: Array = []
 var campaign := {}
+var items: Array = []
+var markets: Dictionary = {}
 
 
 func _init() -> void:
@@ -27,8 +29,17 @@ func _init() -> void:
 	species = _read("res://data/species.json")
 	encounters = _read("res://data/encounters.json")
 	campaign = _read("res://data/campaign.json")
+	items = _read("res://data/items.json")
+	markets = _read("res://data/markets.json")
 	for e in _read("res://data/events.json"):
 		events[e["id"]] = e
+
+
+func item_by_id(id: String) -> Dictionary:
+	for item in items:
+		if item["id"] == id:
+			return item
+	return {}
 
 
 func avatar_by_id(id: String) -> Dictionary:
@@ -89,6 +100,9 @@ func _branches(c: Dictionary) -> Array:
 ## Todas las claves de traducción que exigen los datos (por convención de nombres).
 func text_keys() -> Array[String]:
 	var keys: Array[String] = []
+	for item in items:
+		keys.append("item.%s.name" % item["id"])
+		keys.append("item.%s.desc" % item["id"])
 	for id in factions:
 		keys.append("faction." + id)
 	for a in avatars:
@@ -132,6 +146,28 @@ func text_keys() -> Array[String]:
 ## Lista de problemas de coherencia en los datos (vacía si todo está bien).
 func validate() -> Array[String]:
 	var errors: Array[String] = []
+	var item_ids := {}
+	for item in items:
+		var id: String = item.get("id", "")
+		if id == "" or item_ids.has(id):
+			errors.append("objeto: id vacío o duplicado")
+		item_ids[id] = true
+		if int(item.get("price", 0)) < 2 or int(item.get("capacity", 0)) < 1:
+			errors.append("objeto %s: precio o capacidad inválidos" % id)
+		if item.get("kind", "") not in ["consumable", "equipment"] or item.get("context", "") not in ["any", "surface", "sector"]:
+			errors.append("objeto %s: tipo o contexto inválidos" % id)
+		for stat in item.get("effects", {}):
+			if stat not in ["oxygen", "morale", "fuel", "scans"] or int(item["effects"][stat]) <= 0:
+				errors.append("objeto %s: efecto inválido" % id)
+	for species_id in markets:
+		if species_by_id(species_id).is_empty():
+			errors.append("mercado: especie inexistente %s" % species_id)
+		for id in markets[species_id]:
+			if not item_ids.has(id) or int(markets[species_id][id]) < 1:
+				errors.append("mercado %s: objeto o existencias inválidos %s" % [species_id, id])
+	for id in campaign.get("starting_items", {}):
+		if not item_ids.has(id) or int(campaign["starting_items"][id]) < 0 or int(campaign["starting_items"][id]) > int(item_by_id(id).get("capacity", 0)):
+			errors.append("inventario inicial inválido: %s" % id)
 	var set_flags := {}
 	for id in events:
 		var e: Dictionary = events[id]
@@ -225,6 +261,9 @@ func _validate_choice(c: Dictionary, where: String, valid_effects: Array, errors
 		if chance < 0.0 or chance > 1.0:
 			errors.append("%s: chance fuera de rango" % where)
 	for b in _branches(c):
+		for id in b[1].get("effects", {}).get("items", {}):
+			if item_by_id(id).is_empty():
+				errors.append("%s: objeto desconocido '%s'" % [where, id])
 		for k in b[1].get("effects", {}):
 			if not (k in valid_effects):
 				errors.append("%s: efecto desconocido '%s'" % [where, k])

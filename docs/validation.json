@@ -1,0 +1,55 @@
+{
+  "date": "2026-10-11",
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "logic": "passed, 600 bot campaigns including trade and supplies",
+  "ui": "passed; mouse, keyboard, crew, cargo, trade, focus isolation, sound, panel bounds; V1/V2 portrait selection, live refresh and saved preference",
+  "linux_release": "headless startup passed outside source directory after retro UI export",
+  "web": "Chromium: desktop mouse switched V2 → V1 → V2 with visible portrait updates; mobile touch selected a leader and opened cargo at 960x540; no console errors",
+  "android": "debug APK signature verified; installed and launched in x86_64 emulator; engine logged SceneShaderGLES3 linking errors (GL_MAX_FRAGMENT_UNIFORM_VECTORS); native gameplay not validated",
+  "macos": "universal app exported with local ad-hoc signing; ZIP integrity verified",
+  "not_tested": [
+    "Windows native runtime",
+    "macOS native runtime",
+    "Android native runtime"
+  ],
+  "artifacts": [
+    {
+      "path": "build/linux/leyendas-estelares.x86_64",
+      "bytes": 107332328,
+      "sha256": "8010bb0c752f31e23166ef4ccf385b3cb6d42760d40858de082b7dec4af0287b"
+    },
+    {
+      "path": "build/windows/leyendas-estelares.exe",
+      "bytes": 142990264,
+      "sha256": "0ed29d0bc3692b175b31c27566d9bddc06e08e54109f4f8275220cb56c2dfdb5"
+    },
+    {
+      "path": "build/macos/leyendas-estelares.zip",
+      "bytes": 67840187,
+      "sha256": "d51a89179fd7bd44726a94700227c7d7f86fd5f4bdda191fb3c93d7e6e842454"
+    },
+    {
+      "path": "build/web/index.html",
+      "bytes": 5541,
+      "sha256": "240630264d5f7b658631830e8b99b3b1e3a7c6081b5728eab45fbde83ba76931"
+    },
+    {
+      "path": "build/web/index.pck",
+      "bytes": 33812908,
+      "sha256": "3b77eee316002a0172d07f2fbb9cff23beaa01212221a8c80a16b7979a83b461"
+    },
+    {
+      "path": "build/web/index.wasm",
+      "bytes": 39514754,
+      "sha256": "fc74679e3b97f76878947fcd4fbe1268cbfa6188182a2e33bbc3f5dc9bfa57d0"
+    },
+    {
+      "path": "build/android/leyendas-estelares.apk",
+      "bytes": 90815785,
+      "sha256": "34d8735fc8f30acd6b64b32d9fdb4a40b0badda44cd14d831140663a2501b30d"
+    }
+  ],
+  "art": "5 retro comic edits; source hashes confirm all 9 original illustrations unchanged",
+  "screenshots": "24 Spanish and 24 English screens at 1920x1080",
+  "android_startup_log": "docs/android-startup.log"
+}

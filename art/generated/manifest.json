@@ -1,0 +1,51 @@
+{
+  "generator": "OpenAI built-in image_gen",
+  "date": "2026-10-11",
+  "assets": [
+    {
+      "file": "art/generated/meridiana_title.png",
+      "sha256": "6ecf2c407737db3d361fc093fccd2b1bda2c766ee123d0200de0523a06cf0b59",
+      "prompt": "Use case: stylized-concept. Asset type: wide 16:9 title-screen background for the serious exploration game Leyendas Estelares. Primary request: cinematic painted science-fiction cover art of the research vessel Meridiana following a mysterious three-tone signal above a remote icy alien planet. Composition: left 48 percent mostly deep midnight navy negative space for live UI title and buttons; right half a spectacular crescent turquoise ice planet, fine bright atmospheric rim, a small believable long-range research spacecraft seen from behind in lower right traveling toward three delicate concentric signal arcs. Distant indigo nebula, fine stars, muted amber cockpit and engine lights. Rich hand-painted editorial concept art with realistic materials, restrained retro science-fiction paperback sensibility, atmospheric scale, elegant crisp silhouettes. No lettering, no words, no UI, no watermarks. Wide landscape 1536x1024 or wider."
+    },
+    {
+      "file": "art/generated/portrait_vael.png",
+      "sha256": "31523961f638ee6e94f1c59a0452fe29b96eb4c6e7518cb4f4b8a7ea3bbee40c",
+      "prompt": "Use case: stylized-concept. Asset type: square alien ambassador portrait for the narrative science-fiction game Leyendas Estelares. Subject: a Vael, an ancient sentient being of translucent crystalline light, a subtly humanoid faceted quartz head and shoulders, elongated crown of ice-blue crystal shards, deep luminous cyan eyes, internal branching light like a star chart, quiet dignified and curious presence. Centered bust fills the frame, readable silhouette at small sizes, dark midnight navy communication chamber behind it, soft teal rim lighting, exquisite hand-painted science-fiction paperback concept art, restrained luminous highlights, natural mineral facets, serious believable alien design. No text, no border, no UI, no symbols, no watermark. Square 1024x1024."
+    },
+    {
+      "file": "art/generated/portrait_hallen.png",
+      "sha256": "881602cdf32086d288b6a45c55b744202255bdb6974bc8dc6879b28924669192",
+      "prompt": "Use case: stylized-concept. Asset type: square alien ambassador portrait for Leyendas Estelares, serious exploration science fiction. A Hallen Guild itinerant merchant, a thoughtful nonhuman tortoise-like alien with ochre ridged skin, subtle secondary small eyes, broad calm face, amber glass ocular lens over one eye, wearing a layered indigo traveling mantle and intricate brushed brass breathing collar, no weapons. Centered head and shoulders readable at small sizes against dark midnight navy ship interior. Warm amber side lighting and faint cool cyan rim, beautifully detailed painted science-fiction paperback concept art, realistic tactile materials, contemplative first-contact mood. No text, no border, no interface, no watermark. Square 1024x1024."
+    },
+    {
+      "file": "art/generated/portrait_draeth.png",
+      "sha256": "81f914c573d5391bafb7a85dcda70491b29c545dcb54c02681b17cb65d70c729",
+      "prompt": "Use case: stylized-concept. Asset type: square alien ambassador portrait for Leyendas Estelares, serious exploration science fiction. A Draeth Dominion patrol commander, unmistakably nonhuman stern alien with deep dark red basalt-like plated skin, angular cranial ridges, narrow glowing amber eyes, no hair, imposing upright head and shoulders, wearing practical charcoal ceramic uniform armor with small copper inlays and a high collar, no weapons. Centered bust against dark navy starship command chamber. Restrained warm crimson rim lighting with cool steel-blue fill. Detailed hand-painted science-fiction paperback concept art with realistic tactile materials, dignified and formidable rather than a monster, readable at small sizes. No lettering, no border, no interface, no watermark. Square 1024x1024."
+    },
+    {
+      "file": "art/generated/crew_vance.png",
+      "sha256": "8580f88235e945da3fa712afc720410cf98438cc93e57495a1b6145da1a7cbe1",
+      "prompt": "Use case: stylized-concept. Asset type: square crew portrait for the serious narrative exploration game Leyendas Estelares. Dr. Iria Vance, a human xenobiologist and analytical explorer about forty, thoughtful focused expression, warm olive skin, short dark wavy hair with a few silver strands, brown eyes, wearing a practical ivory and dark navy scientific expedition suit, turquoise neck seal and small amber status lights, no helmet. Head and shoulders portrait centered against a softly lit midnight-blue research ship laboratory. Elegant detailed hand-painted science-fiction paperback concept art, natural human anatomy, believable textile and ceramic materials, soft teal rim light and warm reflected light, restrained contemplative mood. Readable at small sizes. No text, logos, border or watermark. Square 1024x1024."
+    },
+    {
+      "file": "art/generated/crew_okafor.png",
+      "sha256": "a4c3d3651afb40b568b41d6429eae6278115db0cdf99ee5601263cc8a193c896",
+      "prompt": "Use case: stylized-concept. Asset type: square crew portrait for serious narrative space exploration game Leyendas Estelares. Commander Tomás Okafor, experienced human first-contact officer in his early fifties, dark brown skin, close cropped salt-and-pepper hair, short neat graying beard, watchful warm eyes, calm self-possessed expression, wearing a practical navy blue expedition command uniform with muted copper collar trim, discreet cyan status light, no medals, no weapons, no helmet. Centered head and shoulders against midnight-blue research spacecraft bridge. Elegant detailed hand-painted science-fiction paperback concept art, natural anatomy and realistic worn textile materials, cool turquoise rim lighting and soft warm amber face illumination, dignified thoughtful explorer. Readable at small sizes. No lettering, logos, border or watermark. Square 1024x1024."
+    },
+    {
+      "file": "art/generated/planet_kaelora.png",
+      "sha256": "e2c5470b88d271fd1594ebde33d44341cc4d15d55479f6a6a8859ec482e4d589",
+      "prompt": "Use case: stylized-concept. Asset type: wide panoramic planet landing illustration for Leyendas Estelares. Planet Kaelora: a remote dry ochre world with great copper-colored dunes, exposed dark basalt plateaus, a fallen ancient narrow communication tower half buried in sand in the middle distance, a faint blue signal light in its broken crown. A tiny expedition lander far left for scale. Storm haze on horizon and pale distant ringed moon. Wide horizontal composition intended for a shallow panoramic strip, place all focal details across middle third, expansive atmosphere. Detailed hand-painted serious science-fiction paperback concept art, burnt amber and muted rust with deep indigo shadows, soft dusty sunlight. No text, no letters, no UI, no watermark. Landscape 16:9."
+    },
+    {
+      "file": "art/generated/planet_nerea.png",
+      "sha256": "a1c1b83634688a849b0ce1587a52291cd4d6ef99a3953503300945d2b166cf9f",
+      "prompt": "Use case: stylized-concept. Asset type: panoramic planet landing illustration for the serious exploration game Leyendas Estelares. Nerea, a mysterious alien world of low bioluminescent forests, shallow mirror-still lagoons and perpetual blue-green mist. An ancient central garden formed by arching living crystalline roots with pale cyan luminous blooms rises from a small island in the middle distance. Alien luminous lichen, delicate low mushroom canopies, tiny muted amber seed-like lights. Wide horizontal composition for a shallow panoramic UI strip: place central garden and horizon across middle third, reflections below, quiet open mist above. Exquisite detailed painted science-fiction paperback landscape, teal and deep indigo palette, realistic wet surfaces and soft atmospheric depth. Wonder and caution, no fantasy people, no text, no border, no watermark. Landscape 16:9."
+    },
+    {
+      "file": "art/generated/planet_tessarine.png",
+      "sha256": "56de13b88e94fe4361212a03db5a80537b20f8d5bba8059bdc462c02c21c1892",
+      "prompt": "Use case: stylized-concept. Asset type: panoramic planet landing illustration for serious narrative exploration game Leyendas Estelares. Tessarine IV, a remote airless rocky ice moon, the source of a mysterious three-tone signal. A single elegant ancient crystalline beacon on a jagged ridge in the middle distance emits three fine concentric cyan arcs above the terrain. Silver-blue ice sheets, dark fractured slate rock, frozen craters and low mountains, a black star-filled sky, pale distant planet. Wide cinematic horizontal composition intended for a shallow panoramic strip, keep the beacon and mountains across middle third. Detailed hand-painted science-fiction paperback cover concept art, physical believable hard rim lighting, deep navy shadows and silver-blue highlights, immense solitude and quiet discovery. No text, no UI, no border, no watermark. Landscape 16:9."
+    }
+  ]
+}

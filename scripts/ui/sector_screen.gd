@@ -6,8 +6,8 @@ signal jumped(node_id: String)
 
 const MAP_X0 := 44.0
 const MAP_X1 := 596.0
-const MAP_Y0 := 56.0
-const MAP_H := 224.0
+const MAP_Y0 := 74.0
+const MAP_H := 178.0
 const NODE_SIZE := Vector2(34, 34)
 
 var campaign: Campaign
@@ -33,10 +33,13 @@ class _Lines extends Control:
 			var a: Dictionary = c.sector.nodes[id]
 			for to in a["edges"]:
 				var reachable: bool = id == c.current and c.can_jump(to)
-				var col := Color(1.0, 0.84, 0.4, 0.9) if reachable else Color(0.35, 0.42, 0.6, 0.55)
+				var col := UITheme.WARN if reachable else Color(0.35, 0.55, 0.58, 0.45)
 				var a_pos := screen.node_pos(id)
 				var b_pos := screen.node_pos(to)
-				draw_line(a_pos, b_pos, col, 2.0 if reachable else 1.0)
+				if reachable:
+					draw_line(a_pos, b_pos, col, 2.0, true)
+				else:
+					draw_dashed_line(a_pos, b_pos, col, 1.0, 5.0, true)
 				var cost: int = a["costs"][to]
 				if cost > 1:
 					var mid := (a_pos + b_pos) * 0.5
@@ -124,17 +127,33 @@ func _process(delta: float) -> void:
 func _build_hud() -> void:
 	var panel := PanelContainer.new()
 	panel.position = Vector2(8, 6)
-	panel.size = Vector2(624, 30)
+	panel.size = Vector2(624, 42)
 	add_child(panel)
-	_hud = UITheme.label("", UITheme.TEXT, 12)
+	var row := HBoxContainer.new()
+	panel.add_child(row)
+	_hud = UITheme.label("", UITheme.TEXT, 11)
 	_hud.autowrap_mode = TextServer.AUTOWRAP_OFF
-	panel.add_child(_hud)
+	_hud.size_flags_horizontal = SIZE_EXPAND_FILL
+	row.add_child(_hud)
+	var ship := UITheme.button(T.t("ui.ship.open"))
+	ship.autowrap_mode = TextServer.AUTOWRAP_OFF
+	ship.add_theme_font_size_override("font_size", 11)
+	ship.pressed.connect(_open_ship)
+	row.add_child(ship)
+
+
+func _open_ship() -> void:
+	var screen := ShipScreen.new()
+	screen.closed.connect(func():
+		screen.queue_free()
+		_refresh())
+	add_child(screen)
 
 
 func _build_info() -> void:
 	var panel := PanelContainer.new()
-	panel.position = Vector2(8, 296)
-	panel.size = Vector2(624, 58)
+	panel.position = Vector2(8, 274)
+	panel.size = Vector2(624, 78)
 	add_child(panel)
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 10)
@@ -151,6 +170,7 @@ func _build_info() -> void:
 	btns.add_theme_constant_override("separation", 3)
 	row.add_child(btns)
 	_jump_btn = UITheme.button("")
+	UITheme.primary(_jump_btn)
 	_jump_btn.alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_jump_btn.custom_minimum_size = Vector2(170, 0)
 	_jump_btn.pressed.connect(_on_jump)
@@ -196,11 +216,12 @@ func _style_node(id: String) -> void:
 	elif campaign.node(campaign.current)["edges"].has(id) and not n["done"]:
 		border = UITheme.WARN
 	elif n["done"]:
-		border = Color("2a3350")
+		border = UITheme.PANEL_BORDER
 	if id == _selected:
 		border = Color.WHITE
 	for state in ["normal", "hover", "pressed", "focus", "disabled"]:
-		var sb := UITheme.box(Color("111729") if state != "hover" else Color("25325a"), border, 4, 2 if id == _selected else 1)
+		var sb := UITheme.box(UITheme.PANEL if state != "hover" else Color("315761"), border, 4, 2 if id == _selected else 1)
+		sb.set_corner_radius_all(17)
 		b.add_theme_stylebox_override(state, sb)
 	b.self_modulate = Color(1, 1, 1, 0.45 if n["done"] and id != campaign.current else 1.0)
 
@@ -262,10 +283,12 @@ func _on_jump() -> void:
 	if campaign.can_jump(_selected):
 		var id := _selected
 		campaign.jump(id)
+		Sound.play("jump")
 		jumped.emit(id)
 
 
 func _on_scan() -> void:
 	if campaign.can_scan(_selected):
 		campaign.scan(_selected)
+		Sound.play("scan")
 		_refresh()

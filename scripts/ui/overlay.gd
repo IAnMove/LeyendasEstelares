@@ -8,6 +8,7 @@ signal closed
 var _dim: ColorRect
 var _panel: PanelContainer
 var _box: VBoxContainer
+var _scroll: ScrollContainer
 
 
 func _init() -> void:
@@ -21,11 +22,16 @@ func _init() -> void:
 	add_child(_dim)
 	_panel = PanelContainer.new()
 	_panel.position = Vector2(64, 28)
-	_panel.size = Vector2(512, 100)
+	_panel.size = Vector2(512, 304)
 	add_child(_panel)
+	_scroll = ScrollContainer.new()
+	_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_scroll.follow_focus = true
+	_panel.add_child(_scroll)
 	_box = VBoxContainer.new()
+	_box.size_flags_horizontal = SIZE_EXPAND_FILL
 	_box.add_theme_constant_override("separation", 8)
-	_panel.add_child(_box)
+	_scroll.add_child(_box)
 
 
 func is_open() -> bool:
@@ -36,7 +42,8 @@ func open() -> void:
 	for c in _box.get_children():
 		_box.remove_child(c)
 		c.queue_free()
-	_panel.size = Vector2(512, 100)
+	_panel.size = Vector2(512, 304)
+	_scroll.scroll_vertical = 0
 	visible = true
 	opened.emit()
 
@@ -52,8 +59,12 @@ func title(text: String, color := UITheme.ACCENT) -> void:
 
 func body(text: String) -> void:
 	var l := UITheme.label(text, UITheme.TEXT, 12)
-	l.custom_minimum_size = Vector2(490, 0)
+	l.custom_minimum_size = Vector2(478, 0)
 	_box.add_child(l)
+
+
+func art(tex_name: String) -> void:
+	_box.add_child(UITheme.illustration(tex_name, Vector2(478, 82)))
 
 
 func note(text: String, color := UITheme.WARN) -> void:
@@ -66,7 +77,7 @@ func separator() -> void:
 
 func button(text: String, cb: Callable, disabled := false) -> Button:
 	var b := UITheme.button(text)
-	b.custom_minimum_size = Vector2(490, 0)
+	b.custom_minimum_size = Vector2(478, 0)
 	b.disabled = disabled
 	b.pressed.connect(cb)
 	_box.add_child(b)

@@ -376,7 +376,7 @@ ui.subtitle,"Exploration, judgment and consequences","Exploración, criterio y c
 ui.new_expedition,New expedition,Nueva expedición
 ui.quit,Quit,Salir
 ui.language,Language,Idioma
-ui.choose_traveler,Choose your traveler,Elige a tu viajero
+ui.choose_traveler,Choose your leader,Elige líder de expedición
 ui.avatar_stats,Oxygen {oxygen} · Morale {morale},Oxígeno {oxygen} · Moral {morale}
 ui.choose,Choose,Elegir
 ui.continue,Continue,Continuar
@@ -469,3 +469,56 @@ fx.data,Data {delta},Datos {delta}
 fx.rep,Reputation {faction} {delta},Reputación {faction} {delta}
 fx.trust,Trust {delta},Confianza {delta}
 fx.tension,Tension {delta},Tensión {delta}
+ui.title.eyebrow,MERIDIANA  /  DEEP SPACE PROGRAM,MERIDIANA  /  PROGRAMA DE EXPLORACIÓN
+ui.title.intro,Three tones. An unknown sector. A crew counting on you.,Tres tonos. Un sector desconocido. Una tripulación que confía en ti.
+ui.title.footer,EXPLORE · MAKE CONTACT · FIND THE SOURCE    /    F11 Fullscreen · M Sound,EXPLORA · ESTABLECE CONTACTO · ENCUENTRA EL ORIGEN    /    F11 Pantalla · M Sonido
+ui.sound.on,Sound: on,Sonido: activado
+ui.sound.off,Sound: off,Sonido: desactivado
+ui.crew.selection_hint,Both officers travel with you. Change the surface leader aboard the ship.,Ambos oficiales viajan contigo. Puedes cambiar de líder a bordo.
+ui.ship.title,Meridiana / Crew & cargo,Meridiana / Tripulación y bodega
+ui.ship.open,Crew & cargo,Equipo y bodega
+ui.ship.back,Return,Volver
+ui.ship.brief,Assign the next surface leader. Supplies and equipment stay with the crew.,Asigna al líder del próximo descenso. El equipo y los suministros son compartidos.
+ui.ship.surface,Surface expedition: leadership is fixed until you return to the ship.,En superficie: el líder se mantiene hasta regresar a la nave.
+ui.ship.leader,Expedition leader,Líder de expedición
+ui.ship.assign,Assign leader,Asignar líder
+ui.ship.team_perks,"On comms: Vance analyzes species; Okafor reduces tension. On the surface, your leader provides the action bonus.","En comunicaciones: Vance analiza especies y Okafor reduce tensión. En superficie, el líder aporta su bonificación."
+ui.cargo.open,Supplies & equipment,Suministros y equipo
+ui.cargo.use,Use,Usar
+ui.cargo.equipped,Passive,Pasivo
+ui.cargo.empty,No units in cargo.,Sin unidades en la bodega.
+ui.cargo.passive,Automatically active while carried.,Se activa automáticamente al llevarlo.
+ui.cargo.surface_only,Use during a surface expedition.,Se usa durante una expedición de superficie.
+ui.cargo.sector_only,Use aboard the ship.,Se usa a bordo de la nave.
+ui.cargo.full,Resource already at maximum.,El recurso ya está al máximo.
+ui.trade.open,Open trade channel,Abrir canal de comercio
+ui.trade.title,Trade / {species},Comercio / {species}
+ui.trade.back,Close market,Cerrar mercado
+ui.trade.hint,Exchange scientific data for supplies. Each species carries limited stock.,Intercambia datos científicos por suministros. Cada especie tiene existencias limitadas.
+ui.trade.balance,Scientific data: {n},Datos científicos: {n}
+ui.trade.discount,Alliance discount: −1,Descuento por alianza: −1
+ui.trade.stock,In stock: {stock} · In cargo: {owned},Existencias: {stock} · En bodega: {owned}
+ui.trade.buy,Buy · {n} data,Comprar · {n} datos
+ui.trade.sell,Sell · {n} data,Vender · {n} datos
+ui.trade.closed,Trade requires a deal or an alliance.,El comercio requiere un acuerdo o una alianza.
+ui.trade.sold_out,Out of stock.,Sin existencias.
+ui.trade.capacity,Cargo capacity reached for this item.,Capacidad máxima de este objeto alcanzada.
+ui.trade.no_data,Not enough scientific data.,No hay suficientes datos científicos.
+fx.item,{name} {delta},{name} {delta}
+item.oxygen_cell.name,Oxygen cartridge,Cartucho de oxígeno
+item.oxygen_cell.desc,Restores 12 oxygen on the surface. Single use.,Recupera 12 de oxígeno en superficie. Un solo uso.
+item.rations.name,Crew rations,Raciones de tripulación
+item.rations.desc,Restores 3 morale. Use aboard or on the surface.,Recupera 3 de moral. Se usa a bordo o en superficie.
+item.fuel_cell.name,Fuel cell,Celda de combustible
+item.fuel_cell.desc,Restores 2 fuel aboard the ship. Single use.,Recupera 2 de combustible a bordo. Un solo uso.
+item.scan_probe.name,Scanner probe,Sonda de escaneo
+item.scan_probe.desc,Restores 2 scans aboard the ship. Single use.,Recupera 2 escaneos a bordo. Un solo uso.
+item.survey_kit.name,Survey kit,Equipo de prospección
+item.survey_kit.desc,Passive: +10 percentage points to risky actions (maximum 95%).,Pasivo: +10 puntos porcentuales en acciones arriesgadas (máximo 95 %).
+item.translator.name,Resonance translator,Traductor de resonancia
+item.translator.desc,Passive: +1 starting trust in future contacts.,Pasivo: +1 de confianza inicial en los próximos contactos.
+ui.art.original,V1 original,V1 original
+ui.art.retro,V2 comic,V2 cómic
+ui.contact.channel,COMMUNICATIONS / LIVE LINK,COMUNICACIONES / ENLACE ACTIVO
+ui.ship.crew_heading,01 / CREW MANIFEST,01 / TRIPULACIÓN
+ui.ship.cargo_heading,02 / SUPPLIES & EQUIPMENT,02 / SUMINISTROS Y EQUIPO

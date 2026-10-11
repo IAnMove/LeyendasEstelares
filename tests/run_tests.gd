@@ -15,9 +15,13 @@ func _ready() -> void:
 	_test_sector()
 	_test_contacts()
 	_test_campaign_rules()
+	_test_crew_and_items()
+	_test_trade()
 	for avatar in ["vance", "okafor"]:
 		_test_bot_campaigns(avatar)
 	print("\n%s (%d fallos)" % ["TODO OK" if _failures == 0 else "FALLOS", _failures])
+	Sound.set_muted(true, false)
+	await get_tree().process_frame
 	get_tree().quit(0 if _failures == 0 else 1)
 
 
@@ -269,6 +273,7 @@ func _test_contacts() -> void:
 	# El rasgo diplomático templa la tensión.
 	var dip = _new_state("okafor")
 	var sci = _new_state("vance")
+	sci.crew = [Content.avatar_by_id("vance")]
 	var dr := ContactRunner.new(dip, Content.species_by_id("draeth"), Content.encounter_for("draeth"))
 	var sr := ContactRunner.new(sci, Content.species_by_id("draeth"), Content.encounter_for("draeth"))
 	dr.choose(0)  # open: tensión +1 base
@@ -313,6 +318,83 @@ func _test_campaign_rules() -> void:
 	gs.free()
 
 
+func _test_crew_and_items() -> void:
+	print("tripulación e inventario")
+	var gs = _new_state("vance")
+	_check(gs.crew.size() == 2 and gs.has_crew_trait("diplomacia"), "ambos oficiales viajan en equipo")
+	_check(gs.select_leader("okafor") and gs.has_trait("diplomacia"), "se puede cambiar de líder a bordo")
+	_check(not gs.select_leader("unknown"), "no se asigna un tripulante inexistente")
+	_check(not gs.use_item("oxygen_cell")["ok"], "el oxígeno solo se usa en superficie")
+	gs.begin_planet()
+	_check(not gs.select_leader("vance"), "el líder no cambia durante el descenso")
+	_check(not gs.use_item("oxygen_cell")["ok"] and gs.item_count("oxygen_cell") == 1, "un recurso lleno no consume objetos")
+	gs.spend_oxygen(8)
+	_check(gs.use_item("oxygen_cell")["ok"] and gs.oxygen == gs.max_oxygen, "el cartucho repone sin superar el máximo")
+	_check(gs.item_count("oxygen_cell") == 0 and not gs.use_item("oxygen_cell")["ok"], "el objeto se consume una sola vez")
+	gs.apply_effects({"items": {"survey_kit": 8, "fuel_cell": 1}})
+	_check(gs.item_count("survey_kit") == 1, "equipo único, sin acumulación")
+	var choice := {"risk": {"chance": 0.5}}
+	_check(is_equal_approx(EventRunner.success_chance(choice, gs), 0.6), "el equipo mejora las acciones arriesgadas")
+	_check(not gs.use_item("survey_kit")["ok"], "el equipo pasivo no se consume")
+	_check(not gs.use_item("fuel_cell")["ok"], "no se reposta en superficie")
+	gs.on_surface = false
+	var camp := Campaign.new(gs, Content.campaign, 5)
+	gs.fuel = 0
+	_check(camp.end_reason() == "", "la reserva permite rescatar la nave sin combustible")
+	_check(gs.use_item("fuel_cell")["ok"] and gs.fuel == 2, "se puede repostar la reserva")
+	gs.fuel = 0
+	_check(camp.end_reason() == "fuel", "sin reserva se pierde por combustible")
+	gs.start_run(Content.avatar_by_id("vance"), Content.factions, Content.campaign)
+	_check(gs.item_count("survey_kit") == 0 and gs.item_count("oxygen_cell") == 1 and not gs.on_surface, "una nueva campaña reinicia la bodega y el contexto")
+	gs.free()
+
+
+func _test_trade() -> void:
+	print("comercio y relaciones")
+	var gs = _new_state("vance")
+	var market := TradeRunner.new(gs, "hallen")
+	gs.data = 30
+	_check(not market.transact("fuel_cell"), "sin acuerdo no hay comercio")
+	gs.relations["hallen"] = "hostile"
+	_check(not market.transact("fuel_cell"), "la hostilidad cierra el comercio")
+	gs.relations["hallen"] = "deal"
+	var initial_stock := market.stock("fuel_cell")
+	var initial_data: int = gs.data
+	_check(market.transact("fuel_cell"), "compra permitida con acuerdo")
+	_check(gs.data == initial_data - 4 and gs.item_count("fuel_cell") == 1 and market.stock("fuel_cell") == initial_stock - 1, "compra atómica: datos, objeto y existencias")
+	var reopened := TradeRunner.new(gs, "hallen")
+	_check(reopened.stock("fuel_cell") == initial_stock - 1, "reabrir no regenera existencias")
+	_check(market.transact("fuel_cell", true) and gs.item_count("fuel_cell") == 0, "vender devuelve datos y retira el objeto")
+	_check(gs.data < initial_data and not market.transact("fuel_cell", true), "no se duplican datos ni se venden objetos ausentes")
+	gs.relations["hallen"] = "alliance"
+	_check(market.price("fuel_cell") == 3, "la alianza descuenta un dato")
+	for id in market.offers():
+		_check(market.price(id, true) <= market.price(id), "no existe arbitraje entre compra y venta")
+	gs.data = 0
+	var before := market.stock("fuel_cell")
+	_check(not market.transact("fuel_cell") and market.stock("fuel_cell") == before, "compra fallida no altera existencias")
+	gs.data = 100
+	_check(not market.transact("unknown"), "rechaza objetos desconocidos")
+	for i in initial_stock:
+		market.transact("fuel_cell")
+	_check(not market.transact("fuel_cell") and market.stock("fuel_cell") == 0, "las existencias son finitas")
+	_check(market.transact("translator") and not market.transact("translator"), "equipo único")
+	var runner := ContactRunner.new(gs, Content.species_by_id("vael"), Content.encounter_for("vael"))
+	_check(runner.trust == 4, "el traductor mejora la confianza inicial")
+	_check(runner.apply_outcome().is_empty(), "no se cobran recompensas antes de terminar el contacto")
+	while not runner.finished():
+		runner.choose(0)
+	runner.apply_outcome()
+	var data_after: int = gs.data
+	var fuel_after: int = gs.fuel
+	runner.apply_outcome()
+	_check(gs.data == data_after and gs.fuel == fuel_after, "reabrir el resultado no duplica recompensas")
+	_check(gs.relations.has("vael"), "el contacto persiste su relación comercial")
+	gs.start_run(Content.avatar_by_id("vance"), Content.factions, Content.campaign)
+	_check(gs.market_stock.is_empty() and gs.relations.is_empty(), "la siguiente campaña reinicia mercados y relaciones")
+	gs.free()
+
+
 # ---------------------------------------------------------------- simulación
 func _test_bot_campaigns(avatar_id: String) -> void:
 	print("bot de campaña (%s)" % avatar_id)
@@ -333,6 +415,13 @@ func _test_bot_campaigns(avatar_id: String) -> void:
 
 func _bot_campaign(camp: Campaign, gs, rng: RandomNumberGenerator) -> String:
 	for _step in 20:
+		gs.on_surface = false
+		if gs.fuel <= 3:
+			gs.use_item("fuel_cell")
+		if gs.scans == 0:
+			gs.use_item("scan_probe")
+		if gs.morale <= gs.max_morale - 3:
+			gs.use_item("rations")
 		var here: Dictionary = camp.node(camp.current)
 		# Escanea al azar mientras queden cargas.
 		for id in camp.sector.nodes:
@@ -359,6 +448,7 @@ func _bot_campaign(camp: Campaign, gs, rng: RandomNumberGenerator) -> String:
 		camp.jump(best)
 		var node: Dictionary = camp.node(best)
 		var outcome := _bot_node(camp, gs, rng, node)
+		gs.on_surface = false
 		if outcome != "":
 			return outcome
 		camp.finish_node(best)
@@ -389,6 +479,10 @@ func _bot_node(camp: Campaign, gs, rng: RandomNumberGenerator, node: Dictionary)
 						opts.append(i)
 				r.choose(opts[rng.randi() % opts.size()])
 			r.apply_outcome()
+			var market := TradeRunner.new(gs, node["ref"])
+			for item in ["fuel_cell", "oxygen_cell", "rations", "survey_kit"]:
+				if gs.item_count(item) == 0:
+					market.transact(item)
 		_:
 			var ev: Dictionary = Content.events[node["ref"]]
 			var opts: Array = []
@@ -426,6 +520,10 @@ func _bot_planet(ex: Expedition, gs, rng: RandomNumberGenerator) -> String:
 
 func _bot_walk(ex: Expedition, gs, rng: RandomNumberGenerator, path: Array[Vector2i]) -> String:
 	for c in path:
+		if gs.oxygen <= 12:
+			gs.use_item("oxygen_cell")
+		if gs.morale <= gs.max_morale - 3:
+			gs.use_item("rations")
 		var res := ex.move(c)
 		if res["home"]:
 			return "home"

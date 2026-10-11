@@ -17,6 +17,7 @@ var _tension_label: Label
 var _speech: Label
 var _extra: Label
 var _options: VBoxContainer
+var _outcome: Dictionary = {}
 
 
 func _ready() -> void:
@@ -38,21 +39,20 @@ func _build_left() -> void:
 	panel.add_theme_stylebox_override("panel", UITheme.box(UITheme.PANEL, _color.darkened(0.3), 8, 1))
 	add_child(panel)
 	var v := VBoxContainer.new()
-	v.add_theme_constant_override("separation", 6)
+	v.add_theme_constant_override("separation", 4)
 	panel.add_child(v)
 	var portrait := TextureRect.new()
 	portrait.texture = Art.tex(_species["portrait"])
-	portrait.custom_minimum_size = Vector2(128, 128)
+	portrait.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	portrait.custom_minimum_size = Vector2(178, 145)
 	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	var mat := ShaderMaterial.new()
 	mat.shader = load("res://shaders/comm.gdshader")
 	mat.set_shader_parameter("tint", _color)
 	portrait.material = mat
-	var frame := CenterContainer.new()
-	frame.add_child(portrait)
-	v.add_child(frame)
-	v.add_child(UITheme.label(T.t("species.%s.name" % species_id), _color, 14))
+	v.add_child(portrait)
+	v.add_child(UITheme.label(T.t("species.%s.name" % species_id), _color, 16))
 	var desc := UITheme.label(T.t("species.%s.desc" % species_id), UITheme.DIM, 10)
 	v.add_child(desc)
 	_trust_label = UITheme.label("", UITheme.TEXT, 10)
@@ -72,7 +72,7 @@ func _build_left() -> void:
 
 func _hint_text() -> String:
 	var value := T.t("ui.value." + runner.best_stance())
-	if GameState.has_trait("ciencia"):
+	if GameState.has_crew_trait("ciencia"):
 		return T.t("ui.contact.analysis", {"value": value})
 	if GameState.has_flag("met_" + species_id):
 		return T.t("ui.contact.experience", {"value": value})
@@ -87,7 +87,9 @@ func _build_right() -> void:
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override("separation", 6)
 	panel.add_child(v)
-	_speech = UITheme.label("", _color, 13)
+	v.add_child(UITheme.caption(T.t("ui.contact.channel"), UITheme.WARN))
+	v.add_child(HSeparator.new())
+	_speech = UITheme.label("", _color, 14)
 	_speech.custom_minimum_size = Vector2(380, 58)
 	v.add_child(_speech)
 	_extra = UITheme.label("", UITheme.DIM, 11)
@@ -175,8 +177,22 @@ func _after_reply() -> void:
 func _show_outcome() -> void:
 	_clear_options()
 	var out := runner.apply_outcome()
+	_outcome = out
 	var colors := {"alliance": UITheme.GOOD, "deal": UITheme.ACCENT, "wary": UITheme.DIM, "hostile": UITheme.BAD}
 	_speech.add_theme_color_override("font_color", colors[out["id"]])
 	_speech.text = "%s\n\n%s" % [T.t("ui.contact.result." + out["id"]), T.t(out["key"])]
 	_extra.text = "  ·  ".join(out["lines"])
 	_add_option(T.t("ui.contact.close"), func(): finished.emit({"result": out["id"]})).grab_focus()
+	if out["id"] in ["alliance", "deal"]:
+		_add_option(T.t("ui.trade.open"), _open_trade)
+	else:
+		_extra.text += "\n" + T.t("ui.trade.closed")
+
+
+func _open_trade() -> void:
+	var screen := TradeScreen.new()
+	screen.species_id = species_id
+	screen.closed.connect(func():
+		screen.queue_free()
+		_show_outcome())
+	add_child(screen)

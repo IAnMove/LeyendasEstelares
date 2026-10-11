@@ -1,0 +1,44 @@
+{
+  "version": "v2_retro",
+  "date": "2026-10-11",
+  "tool": "OpenAI built-in image_gen",
+  "operation": "style-transfer edit of the original portraits",
+  "style_reference": "crew_vance.png (v2) for the remaining four portraits",
+  "assets": [
+    {
+      "file": "crew_vance.png",
+      "source": "../crew_vance.png",
+      "source_sha256": "8580f88235e945da3fa712afc720410cf98438cc93e57495a1b6145da1a7cbe1",
+      "sha256": "e36e740a7c6f81a3439adc589b44e3a25a85996875bdca63a7c77352f2523586",
+      "prompt": "Use case: style-transfer. Asset type: version 2 portrait for the science-fiction game Leyendas Estelares. Input image 1 is the EDIT TARGET. Redraw this exact woman as a sophisticated late-1970s / early-1980s American science-fiction comic-book illustration. Preserve her recognizable face, apparent age, olive complexion, short wavy dark hair with grey strands, calm intelligent expression, three-quarter pose, ivory scientific space suit, teal neck cloth, black harness, and the spaceship biology laboratory behind her. Keep the square head-and-shoulders framing. Use expressive confident black brush-ink contours, angular sculpted shadow shapes, fine selective crosshatching and visible but restrained Ben-Day dots, flat printed color with slightly imperfect ink registration. Palette of warm ivory, deep petrol navy, faded turquoise and restrained burnt orange; natural warm skin. Strong graphic readability at small portrait size, mature realistic anatomy, polished hand-drawn comic art. Change only the rendering style and simplify detail into ink and color. No text, labels, frames, watermark, anime, plastic 3D rendering, or photographic skin."
+    },
+    {
+      "file": "crew_okafor.png",
+      "source": "../crew_okafor.png",
+      "source_sha256": "a4c3d3651afb40b568b41d6429eae6278115db0cdf99ee5601263cc8a193c896",
+      "sha256": "14d952d09483d0f050709896f017f991de673f710dc45ff7ff7c79e5a38af941",
+      "prompt": "Use case: style-transfer. Asset type: version 2 portrait for the science-fiction game Leyendas Estelares. Input image 1 is the EDIT TARGET and locks the character identity, costume, pose and setting. Input image 2 is a STYLE REFERENCE ONLY, from the same portrait set: match its late-1970s / early-1980s American science-fiction comic-book aesthetic, confident black brush-ink contours, sculpted shadow shapes, fine selective crosshatching, restrained Ben-Day dots and printed color on subtly warm paper. Keep the square head-and-shoulders framing and realistic anatomy, legible at small UI size. Change the rendering style only; preserve the specific identity and all distinctive features of image 1. No text, frames, logos, watermark, anime, plastic 3D rendering or photographic texture. Preserve this mature Black male captain, his recognizable facial proportions, kind but resolute expression, short salt-and-pepper curls and beard, dark navy command uniform with narrow copper trim and cyan collar light, and the starship bridge with a planet through its windows. Preserve his dark skin tone. Match the style reference's limited deep petrol navy, warm ivory, muted turquoise and burnt orange palette."
+    },
+    {
+      "file": "portrait_vael.png",
+      "source": "../portrait_vael.png",
+      "source_sha256": "31523961f638ee6e94f1c59a0452fe29b96eb4c6e7518cb4f4b8a7ea3bbee40c",
+      "sha256": "443e9cbad7fbaf3bd617101a68270963a5b950a903ee4f2bf5e69d24e8ccaaeb",
+      "prompt": "Use case: style-transfer. Asset type: version 2 portrait for the science-fiction game Leyendas Estelares. Input image 1 is the EDIT TARGET and locks the character identity, costume, pose and setting. Input image 2 is a STYLE REFERENCE ONLY, from the same portrait set: match its late-1970s / early-1980s American science-fiction comic-book aesthetic, confident black brush-ink contours, sculpted shadow shapes, fine selective crosshatching, restrained Ben-Day dots and printed color on subtly warm paper. Keep the square head-and-shoulders framing and realistic anatomy, legible at small UI size. Change the rendering style only; preserve the specific identity and all distinctive features of image 1. No text, frames, logos, watermark, anime, plastic 3D rendering or photographic texture. Preserve the graceful alien's translucent faceted crystalline head and shoulders, tall crown of irregular crystal spires, luminous cyan eyes and light branching through its neck, symmetrical frontal pose, and dark arched chamber. Express the crystal as bold ink facets and printed ice-blue, turquoise and warm ivory color planes, deep petrol navy shadows, small restrained amber accents. Keep its calm intelligence and distinctive anatomy."
+    },
+    {
+      "file": "portrait_hallen.png",
+      "source": "../portrait_hallen.png",
+      "source_sha256": "881602cdf32086d288b6a45c55b744202255bdb6974bc8dc6879b28924669192",
+      "sha256": "0e2ee7cf7cbb8cb71667b997857ea3a43eb5fb8c1286f36360a191fb4e99ae80",
+      "prompt": "Use case: style-transfer. Asset type: version 2 portrait for the science-fiction game Leyendas Estelares. Input image 1 is the EDIT TARGET and locks the character identity, costume, pose and setting. Input image 2 is a STYLE REFERENCE ONLY, from the same portrait set: match its late-1970s / early-1980s American science-fiction comic-book aesthetic, confident black brush-ink contours, sculpted shadow shapes, fine selective crosshatching, restrained Ben-Day dots and printed color on subtly warm paper. Keep the square head-and-shoulders framing and realistic anatomy, legible at small UI size. Change the rendering style only; preserve the specific identity and all distinctive features of image 1. No text, frames, logos, watermark, anime, plastic 3D rendering or photographic texture. Preserve this ochre reptilian trader's exact broad tortoise-like face, unusual multiple eyes in their original arrangement, brass optical monocle over the eye at image right, metal communication collar, indigo robe with gold patterns and metal ornaments, and starship trading chamber. Preserve its thoughtful expression. Use ochre, muted amber, warm ivory, indigo and petrol navy ink colors consistent with the style reference."
+    },
+    {
+      "file": "portrait_draeth.png",
+      "source": "../portrait_draeth.png",
+      "source_sha256": "81f914c573d5391bafb7a85dcda70491b29c545dcb54c02681b17cb65d70c729",
+      "sha256": "00a5643184314187f2cefcd3b6519d4af16f30936cc676cde9dc71459735c6c3",
+      "prompt": "Use case: style-transfer. Asset type: version 2 portrait for the science-fiction game Leyendas Estelares. Input image 1 is the EDIT TARGET and locks the character identity, costume, pose and setting. Input image 2 is a STYLE REFERENCE ONLY, from the same portrait set: match its late-1970s / early-1980s American science-fiction comic-book aesthetic, confident black brush-ink contours, sculpted shadow shapes, fine selective crosshatching, restrained Ben-Day dots and printed color on subtly warm paper. Keep the square head-and-shoulders framing and realistic anatomy, legible at small UI size. Change the rendering style only; preserve the specific identity and all distinctive features of image 1. No text, frames, logos, watermark, anime, plastic 3D rendering or photographic texture. Preserve the red basalt alien commander's angular layered rock face, tall central crest and lateral jagged plates, two narrow amber eyes, stern closed mouth, dark armored high collar and shoulders with bronze geometric trim, and spaceship interior behind it. Keep the same three-quarter pose. Use muted brick red, burnt orange, warm ivory and deep petrol navy printed colors consistent with the style reference."
+    }
+  ]
+}

@@ -59,11 +59,10 @@ func _build_hud() -> void:
 	panel.size = Vector2(262, 344)
 	add_child(panel)
 	var v := VBoxContainer.new()
-	v.add_theme_constant_override("separation", 5)
+	v.add_theme_constant_override("separation", 3)
 	panel.add_child(v)
 	v.add_child(UITheme.label(T.t("planet.%s.name" % planet["id"]), UITheme.ACCENT, 16))
 	v.add_child(UITheme.label(T.t("avatar.%s.name" % GameState.avatar["id"]), UITheme.TEXT, 12))
-	v.add_child(UITheme.label(T.t("avatar.%s.role" % GameState.avatar["id"]), UITheme.DIM, 10))
 	v.add_child(HSeparator.new())
 	_o2_label = UITheme.label("", UITheme.TEXT, 11)
 	v.add_child(_o2_label)
@@ -85,9 +84,25 @@ func _build_hud() -> void:
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	v.add_child(spacer)
 	var abort := UITheme.button(T.t("ui.map.abort"))
+	var cargo := UITheme.button(T.t("ui.cargo.open"))
+	cargo.alignment = HORIZONTAL_ALIGNMENT_CENTER
+	cargo.pressed.connect(_open_cargo)
+	v.add_child(cargo)
 	abort.alignment = HORIZONTAL_ALIGNMENT_CENTER
 	abort.pressed.connect(_confirm_abort)
 	v.add_child(abort)
+
+
+func _open_cargo() -> void:
+	if _overlay.is_open() or not _view.enabled:
+		return
+	_view.enabled = false
+	var screen := ShipScreen.new()
+	screen.closed.connect(func():
+		screen.queue_free()
+		_view.enabled = true
+		_refresh_hud())
+	add_child(screen)
 
 
 func _refresh_hud() -> void:
@@ -115,6 +130,7 @@ func _on_cell_clicked(cell: Vector2i) -> void:
 		return
 	var cost := expedition.map.move_cost(cell)
 	var res := expedition.move(cell)
+	Sound.play("step")
 	_say(T.t("ui.log.move", {"cost": cost}), UITheme.DIM)
 	if res["failure"] != "":
 		_fail(res["failure"])
@@ -129,9 +145,11 @@ func _show_briefing() -> void:
 	var pid: String = planet["id"]
 	_overlay.open()
 	_overlay.title(T.t("ui.briefing.title", {"planet": T.t("planet.%s.name" % pid)}))
+	_overlay.art("generated/planet_" + pid)
 	_overlay.body(T.t("planet.%s.intro" % pid))
 	_overlay.button(T.t("ui.descend"), func():
 		_overlay.close()
+		Sound.play("signal")
 		_say(T.t("ui.log.descend"), UITheme.ACCENT)
 	).grab_focus()
 	if not planet.get("final", false):

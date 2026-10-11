@@ -12,6 +12,7 @@ var trust := 0
 var tension := 0
 var index := 0  # intercambio actual
 var broke := false  # tensión al máximo: la conversación se rompe
+var _applied_outcome: Dictionary = {}
 
 
 func _init(state_, species_: Dictionary, encounter_: Dictionary) -> void:
@@ -19,6 +20,7 @@ func _init(state_, species_: Dictionary, encounter_: Dictionary) -> void:
 	species = species_
 	encounter = encounter_
 	trust = int(species["start"]["trust"])
+	trust = mini(trust + int(state.item_bonus("trust")), MAX_METER)
 	tension = int(species["start"]["tension"])
 
 
@@ -59,7 +61,7 @@ func choose(i: int) -> Dictionary:
 	var d_trust: int = int(base["trust"]) + int(extra.get("trust", 0))
 	var d_tension: int = int(base["tension"]) + int(extra.get("tension", 0))
 	# Rasgo diplomático: sabe templar los ánimos (la tensión que se gana baja en 1).
-	if state.has_trait("diplomacia") and d_tension > 0:
+	if state.has_crew_trait("diplomacia") and d_tension > 0:
 		d_tension -= 1
 	var lines: Array[String] = []
 	var t0 := trust
@@ -96,11 +98,17 @@ func outcome() -> String:
 
 ## Aplica los efectos del desenlace y devuelve {id, key, lines}.
 func apply_outcome() -> Dictionary:
+	if not _applied_outcome.is_empty():
+		return _applied_outcome
+	if not finished():
+		return {}
 	var id := outcome()
+	state.relations[species["id"]] = id
 	var lines: Array[String] = state.apply_effects(encounter["outcomes"][id].get("effects", {}))
 	if not state.has_flag("met_" + species["id"]):
 		state.flags["met_" + species["id"]] = true
-	return {"id": id, "key": "contact.%s.out.%s" % [encounter["id"], id], "lines": lines}
+	_applied_outcome = {"id": id, "key": "contact.%s.out.%s" % [encounter["id"], id], "lines": lines}
+	return _applied_outcome
 
 
 func _signed(n: int) -> String:

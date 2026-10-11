@@ -8,6 +8,7 @@ var _vignette: ColorRect
 
 func _ready() -> void:
 	T.load_language()
+	Art.load_settings()
 	theme = UITheme.build()
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_vignette = ColorRect.new()
@@ -48,6 +49,7 @@ func _show_avatars() -> void:
 
 
 func _show_sector() -> void:
+	GameState.on_surface = false
 	var s := SectorScreen.new()
 	s.campaign = _campaign
 	s.jumped.connect(_on_jumped)
@@ -95,8 +97,19 @@ func _after_node(id: String) -> void:
 
 
 func _end(ending: String) -> void:
+	GameState.on_surface = false
+	Sound.play("signal" if ending == "victory" else "warning")
 	var s := EndScreen.new()
 	s.ending = ending
 	s.jumps = _campaign.jumps
 	s.continue_pressed.connect(_show_title)
 	_swap(s)
+
+
+func _unhandled_key_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_F11:
+			var full := DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED if full else DisplayServer.WINDOW_MODE_FULLSCREEN)
+		elif event.keycode == KEY_M:
+			Sound.set_muted(not Sound.muted)

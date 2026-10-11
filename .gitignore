@@ -163,6 +163,5 @@ cython_debug/
 .godot/
 .import/
 *.translation
-export_presets.cfg
 /android/
 *.tmp

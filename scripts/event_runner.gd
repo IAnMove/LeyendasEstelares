@@ -33,6 +33,7 @@ static func success_chance(choice: Dictionary, state) -> float:
 	var chance: float = choice["risk"]["chance"]
 	if choice.has("tag") and state.has_trait(choice["tag"]):
 		chance += TAG_BONUS
+	chance += state.item_bonus("risk")
 	return clampf(chance, 0.05, 0.95)
 
 

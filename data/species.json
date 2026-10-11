@@ -2,7 +2,7 @@
 	{
 		"id": "vael",
 		"color": "5cc8e8",
-		"portrait": "portrait_vael",
+		"portrait": "generated/portrait_vael",
 		"start": {
 			"trust": 3,
 			"tension": 1
@@ -29,7 +29,7 @@
 	{
 		"id": "hallen",
 		"color": "e8b45c",
-		"portrait": "portrait_hallen",
+		"portrait": "generated/portrait_hallen",
 		"start": {
 			"trust": 3,
 			"tension": 2
@@ -56,7 +56,7 @@
 	{
 		"id": "draeth",
 		"color": "e0605c",
-		"portrait": "portrait_draeth",
+		"portrait": "generated/portrait_draeth",
 		"start": {
 			"trust": 2,
 			"tension": 3

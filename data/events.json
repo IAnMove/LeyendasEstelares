@@ -200,6 +200,9 @@
 							"data": 3,
 							"rep": {
 								"concordato": 1
+							},
+							"items": {
+								"scan_probe": 1
 							}
 						}
 					},
@@ -247,7 +250,10 @@
 							"data": 2,
 							"set_flags": [
 								"diagrama_baliza"
-							]
+							],
+							"items": {
+								"oxygen_cell": 1
+							}
 						}
 					},
 					"fail": {
@@ -479,7 +485,10 @@
 							"data": 2,
 							"set_flags": [
 								"guia_baliza"
-							]
+							],
+							"items": {
+								"fuel_cell": 1
+							}
 						}
 					},
 					"fail": {
@@ -855,7 +864,10 @@
 					"chance": 0.6,
 					"success": {
 						"effects": {
-							"fuel": 3
+							"fuel": 3,
+							"items": {
+								"rations": 1
+							}
 						}
 					},
 					"fail": {

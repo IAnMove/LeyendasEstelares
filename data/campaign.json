@@ -28,5 +28,9 @@
 		"nebulosa_ionizada",
 		"pulso_de_tres_tonos",
 		"tormenta_solar"
-	]
+	],
+	"starting_items": {
+		"oxygen_cell": 1,
+		"rations": 1
+	}
 }
