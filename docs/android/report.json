@@ -1,0 +1,47 @@
+{
+  "model": "sdk_gphone64_x86_64",
+  "android": "17",
+  "ending": "victory",
+  "jumps": 5,
+  "moves": 36,
+  "stages": [
+    "AnomalyScreen",
+    "AvatarScreen",
+    "ContactScreen",
+    "EndScreen",
+    "MapScreen",
+    "SectorScreen",
+    "TitleScreen"
+  ],
+  "trade_opened": true,
+  "trade_purchase": true,
+  "touch_scroll_actions": 1,
+  "back_and_resume": true,
+  "process_death_recovery": true,
+  "errors": [],
+  "warnings": [
+    "10-11 04:35:38.473  5196  5264 E godot   : WARNING: Failed to load cached shader, recompiling.",
+    "10-11 04:35:38.473  5196  5264 E godot   :    at: _load_from_cache (drivers/gles3/shader_gles3.cpp:615)",
+    "10-11 04:36:03.516  5664  5683 E godot   : WARNING: Failed to load cached shader, recompiling.",
+    "10-11 04:36:03.516  5664  5683 E godot   :    at: _load_from_cache (drivers/gles3/shader_gles3.cpp:615)"
+  ],
+  "fps_median": 27.0,
+  "process_ms_median": 42.74030500000005,
+  "static_memory_peak_mb": 48.11948490142822,
+  "scope": "QA build; read-only state observer; all actions use Android touch events. Path selection uses full map for deterministic test coverage. No battery-life claim.",
+  "log_scope": "Retained logs for QA application UID across process restarts.",
+  "total_pss_mb_at_end": 157.314453125,
+  "wide_screen_check": {
+    "display": [
+      1200,
+      540
+    ],
+    "game_rect": [
+      120,
+      0,
+      960,
+      540
+    ],
+    "passed": true
+  }
+}

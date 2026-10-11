@@ -13,6 +13,8 @@ var _safe_content: Control
 
 
 func _ready() -> void:
+	if OS.has_feature("mobile"):
+		Engine.max_fps = 30
 	get_tree().quit_on_go_back = false
 	get_tree().auto_accept_quit = false
 	add_to_group("checkpoint_owner")

@@ -1,0 +1,7 @@
+{
+  "model": "SM-S928B",
+  "android": "16",
+  "status": "pending",
+  "reason": "Device remained locked/asleep. User was asked to unlock it; no unlock was observed.",
+  "battery_measurement": "not performed"
+}

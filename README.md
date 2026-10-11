@@ -29,9 +29,10 @@ Lo que haces en una capa afecta a las otras: banderas y reputación (Concordato,
 más adelante y cambian el epílogo.
 
 **Tripulación y bodega.** Vance y Okafor viajan juntos. Desde **Equipo y bodega**, en el mapa estelar,
-eliges quién lidera el próximo descenso: su especialidad aporta +20 puntos porcentuales a las acciones
-correspondientes y determina el oxígeno disponible. En comunicaciones colaboran ambos: Vance analiza
-las posturas y Okafor reduce la tensión ganada. La moral es compartida; cambiar de líder no la recarga.
+eliges quién lidera la expedición: su especialidad aporta +20 puntos porcentuales a las acciones
+correspondientes. Ambos tienen 40 de oxígeno. Vance obtiene datos adicionales al acertar acciones
+científicas; Okafor mejora la confianza inicial y reduce la tensión ganada. Solo se activan las
+capacidades del líder asignado. La moral es compartida; cambiar de líder no la recarga.
 
 **Objetos y comercio.** Comienzas con un cartucho de oxígeno y unas raciones. También puedes recuperar
 objetos en pecios y sondas. Los cartuchos recuperan 12 de oxígeno en superficie; las raciones, 3 de moral;
@@ -126,9 +127,32 @@ firmado, añade `--package org.leyendasestelares.game --apk build/android/releas
 El error `GL_MAX_FRAGMENT_UNIFORM_VECTORS (261)` observado en SwiftShader coincide con
 [Godot #109550](https://github.com/godotengine/godot/issues/109550): su compilador OpenGL ES por
 software presenta incompatibilidades. Para contrastarlo, usar un emulador con GPU del host
-(`-gpu host`) o un dispositivo físico. No se considera superada la validación por el mero hecho
+(`-gpu host`), ANGLE (`-gpu swangle`) o un dispositivo físico. El emulador con ANGLE
+ha completado una campaña nativa con esta versión. No se considera superada la validación por el mero hecho
 de generar el APK; el script falla ante errores gráficos. La validación de una partida completa,
 reanudar tras interrupciones y el consumo en un teléfono se documentan por separado.
+
+## Prueba Android de una campaña completa
+
+El perfil **Android QA** usa el mismo juego con un observador de solo lectura, dentro de un paquete
+`.qa` independiente. El controlador pulsa y arrastra mediante ADB; el observador no ejecuta acciones.
+
+```sh
+godot --headless --path . --export-debug "Android QA"
+python3 tools/android_playthrough.py --serial SERIE --adb /ruta/adb
+```
+
+Guarda capturas, acciones y un informe en `build/android/playthrough/`. Comprueba Atrás, Home/reanudación,
+audio suspendido, recuperación exacta tras `force-stop`, navegación, contactos, comercio y superficie.
+El planificador de la prueba puede consultar el mapa completo para elegir el recorrido. La escena QA
+se excluye de los paquetes normales y de distribución.
+
+Android limita el renderizado a 30 FPS. La campaña nativa de referencia terminó en victoria con cinco
+saltos y 36 movimientos en el emulador Android 17 con ANGLE a 960×540; también pasó una compra y el
+arrastre sobre botones. No sustituye una medición de autonomía, temperatura y fluidez en un teléfono:
+la prueba física quedó pendiente porque el dispositivo conectado estaba bloqueado.
+El [informe de referencia](docs/android/report.json) y las [capturas nativas](docs/android/ending-victory.png)
+registran el alcance y el resultado de la comprobación.
 
 ## Ayuda para decidir
 
@@ -270,7 +294,7 @@ son síntesis original reproducible; no incorporan grabaciones ni música de ter
 - [x] Fase 2: mapa estelar con combustible y escaneos, 3 especies con comunicaciones, 3 planetas con biomas, español/inglés
 - [x] Fase 3: tripulación como equipo, objetos, botín y comercio con las tres especies
 - [x] Fase 4: ilustraciones propias generadas, sonido, pulido de interfaz y exportaciones locales (PC, Android y web)
-- [ ] Distribución pública: pruebas en dispositivos Windows/macOS/Android, firma de producción y publicación en tiendas si se desea
+- [ ] Distribución pública: pruebas físicas en Windows/macOS/Android, firma de escritorio y publicación en tiendas si se desea
 
 ## Licencia
 

@@ -12,6 +12,26 @@ ROOT = Path(__file__).resolve().parents[1]
 PACKAGE = "org.leyendasestelares.game.debug"
 
 
+
+def log_issues(log):
+    """Godot writes warnings to Android's E stream too; keep them distinct."""
+    errors, warnings = [], []
+    warning_block = False
+    for line in log.splitlines():
+        godot_error_stream = bool(re.search(r"E godot\s*:", line))
+        if godot_error_stream and "WARNING:" in line:
+            warning_block = True
+            warnings.append(line)
+            continue
+        if warning_block and godot_error_stream and re.search(r":\s+(?:at:|GDScript backtrace|\[\d+\])", line):
+            warnings.append(line)
+            continue
+        warning_block = False
+        if re.search(r"(?:E (?:godot|GLSurfaceView)\s*:|FATAL EXCEPTION|SCRIPT ERROR|shader.*(?:failed|exceed))", line, re.I):
+            errors.append(line)
+    return errors, warnings
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--serial", required=True, help="Exact serial from adb devices")
@@ -45,11 +65,11 @@ def main():
         raise RuntimeError("The game did not stay running")
     log = adb("logcat", "-d", "--pid=" + pid, "-t", "1000")
     engine_ready = bool(re.search(r"(?:OpenGL.*(?:API|Renderer)|Vulkan.*API)", log, re.I))
-    foreground = args.package in adb("shell", "dumpsys", "window", "windows").split("mCurrentFocus=")[-1].splitlines()[0]
+    foreground = args.package in adb("shell", "dumpsys", "window").split("mCurrentFocus=")[-1].splitlines()[0]
     (args.out / "startup.log").write_text(log)
     if foreground:
         (args.out / "title.png").write_bytes(adb("exec-out", "screencap", "-p", binary=True))
-    errors = [line for line in log.splitlines() if re.search(r"(?:E (?:godot|GLSurfaceView)\s*:|FATAL EXCEPTION|SCRIPT ERROR|shader.*(?:failed|exceed))", line, re.I)]
+    errors, warnings = log_issues(log)
     report = {
         "model": adb("shell", "getprop", "ro.product.model"),
         "android": adb("shell", "getprop", "ro.build.version.release"),
@@ -58,6 +78,7 @@ def main():
         "engine_renderer_ready": engine_ready,
         "foreground": foreground,
         "errors": errors,
+        "warnings": warnings,
         "scope": "Installation, engine startup and screenshot only; not a complete gameplay or battery test.",
     }
     (args.out / "report.json").write_text(json.dumps(report, indent=2) + "\n")
