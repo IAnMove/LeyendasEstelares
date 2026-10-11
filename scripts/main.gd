@@ -68,8 +68,26 @@ func _show_avatars() -> void:
 		GameState.start_run(Content.avatar_by_id(id), Content.factions, Content.campaign)
 		_campaign = Campaign.new(GameState, Content.campaign, randi())
 		_last_saved_bytes = PackedByteArray()
-		_show_sector())
+		_show_sector()
+		_show_prologue())
 	_swap(s)
+
+
+## Orden de misión al empezar: plantea la pregunta que responde la baliza final. No se guarda;
+## al reanudar ya se ha leído.
+func _show_prologue() -> void:
+	var modal := Overlay.new()
+	modal.add_to_group("dismissible")
+	_current.add_child(modal)
+	modal.open()
+	UITheme.isolate_focus(modal)
+	modal.title(T.t("ui.prologue.title"))
+	modal.body(T.t("ui.prologue.body"))
+	modal.button(T.t("ui.prologue.accept"), modal.queue_free).grab_focus()
+	var screen := _current
+	modal.tree_exited.connect(func():
+		if is_instance_valid(screen) and screen is SectorScreen and screen.is_inside_tree():
+			screen.focus_route())
 
 
 func _show_sector() -> void:

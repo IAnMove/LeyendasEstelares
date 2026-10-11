@@ -24,6 +24,9 @@ static func lock_reason(choice: Dictionary, state, hint := "") -> String:
 		locked = true
 	if req.has("min_tones") and state.tones() < int(req["min_tones"]):
 		locked = true
+	for faction in req.get("min_rep", {}):
+		if int(state.rep.get(faction, 0)) < int(req["min_rep"][faction]):
+			locked = true
 	if not locked:
 		return ""
 	return hint if hint != "" else "locked"
@@ -59,7 +62,10 @@ static func resolve(event_id: String, index: int, choice: Dictionary, state, rng
 		lines.append(T.later("ui.story.queued"))
 	if branch.has("follow_up") or not state.story_active.is_empty():
 		state.journal.append({"event": event_id, "choice": index, "suffix": suffix})
-	return {"text": T.later("event.%s.c%d.%s" % [event_id, index, suffix]), "lines": lines, "success": success}
+	var result := {"text": T.later("event.%s.c%d.%s" % [event_id, index, suffix]), "lines": lines, "success": success}
+	if branch.has("voice") and state.has_method("voice"):
+		result["voice"] = state.voice(branch["voice"])
+	return result
 
 
 static func preview(choice: Dictionary, state) -> String:

@@ -22,6 +22,7 @@ func _ready() -> void:
 	_test_crew_and_items()
 	_test_leader_specialties()
 	_test_pulse_tones()
+	_test_story_memory()
 	_test_trade()
 	for avatar in ["vance", "okafor"]:
 		_test_bot_campaigns(avatar)
@@ -99,6 +100,11 @@ func _dynamic_keys() -> Array[String]:
 	for tier in EndScreen.VICTORY_TIERS.values() + [EndScreen.PARTIAL]:
 		keys.append("ending.victory.%s.title" % tier)
 		keys.append("ending.victory.%s.body" % tier)
+		for a in Content.avatars:
+			keys.append("voice.%s.end.%s" % [a["id"], tier])
+	for sp in Content.campaign["species"]:
+		for o in Content.OUTCOMES:
+			keys.append("ending.contact.%s.%s" % [sp, o])
 	for t in ["signal", "ruins", "wreck", "life", "fuel"]:
 		keys.append("ui.scan.tag." + t)
 	for t in ["planet", "contact", "anomaly", "start", "final"]:
@@ -707,6 +713,88 @@ func _test_pulse_tones() -> void:
 		tiers[EndScreen.victory_tier(probe)] = true
 		probe.free()
 	_check(tiers.size() == EndScreen.VICTORY_TIERS.size() and EndScreen.victory_tier(gs) == EndScreen.PARTIAL, "cada salida de la baliza tiene su final; sin ella, registro parcial")
+	gs.free()
+
+
+func _test_story_memory() -> void:
+	print("historias: eventos sin repetir, memoria de contactos, hilo, oficiales")
+	# Ningún evento se repite entre planetas de un mismo sector.
+	var repeated := 0
+	for seed_value in 200:
+		var sec := SectorData.new()
+		sec.generate(Content.campaign, seed_value)
+		var seen := {}
+		for id in sec.nodes:
+			for ev_id in sec.nodes[id].get("planet", {}).get("event_pool", []):
+				repeated += 1 if seen.has(ev_id) else 0
+				seen[ev_id] = true
+	_check(repeated == 0, "ningún evento repetido entre planetas en 200 sectores (%d)" % repeated)
+
+	# Las especies recuerdan lo hecho antes del encuentro y eso mueve las barras de partida.
+	var vael := Content.species_by_id("vael")
+	var gs = _new_state("vance")
+	var plain := ContactRunner.new(gs, vael, Content.encounter_for("vael"))
+	_check(plain.memory_ids.is_empty() and plain.memory_lines().is_empty(), "sin antecedentes no hay recuerdos")
+	gs.apply_effects({"set_flags": ["jardin_cosechado"], "rep": {"vael": 2}})
+	var looted := ContactRunner.new(gs, vael, Content.encounter_for("vael"))
+	_check(looted.memory_ids == ["expolio", "eco"], "el expolio y la reputación se recuerdan (%s)" % [looted.memory_ids])
+	_check(looted.trust == plain.trust - 1 and looted.tension == plain.tension, "recuerdos: confianza −1, tensión +1 −1")
+	_check(T.join(looted.memory_lines()).contains("Trust"), "los recuerdos se anuncian como efecto")
+	var saved := looted.snapshot()
+	gs.apply_effects({"set_flags": ["jardin_protegido"]})
+	var resumed := ContactRunner.new(gs, vael, Content.encounter_for("vael"))
+	resumed.restore(saved)
+	_check(resumed.memory_ids == looted.memory_ids and resumed.trust == looted.trust, "al reanudar se conservan los recuerdos del inicio")
+	gs.free()
+	gs = _new_state("vance")
+	var hallen := Content.species_by_id("hallen")
+	gs.apply_effects({"set_flags": ["deuda_gremio"]})
+	_check(ContactRunner.new(gs, hallen, Content.encounter_for("hallen")).memory_ids == ["deuda"], "el Gremio recuerda la deuda")
+	gs.apply_effects({"set_flags": ["gremio_saldado"]})
+	_check(ContactRunner.new(gs, hallen, Content.encounter_for("hallen")).memory_ids == ["saldado"], "una deuda saldada ya no pesa")
+	gs.free()
+
+	# Hilo de la campaña: las pistas se cuentan y la revelación exige el umbral.
+	var thread: Dictionary = Content.campaign["thread"]
+	gs = _new_state("vance")
+	_check(gs.thread_clues().is_empty(), "sin pistas al empezar")
+	for i in int(thread["reveal"]):
+		gs.apply_effects({"set_flags": [thread["clues"][i]]})
+	_check(gs.thread_clues().size() == int(thread["reveal"]), "las pistas encontradas se cuentan")
+	var draeth: Dictionary = Content.encounter_for("draeth")
+	_check("pista_draeth" in draeth["outcomes"]["deal"]["effects"]["set_flags"] and not "pista_draeth" in draeth["outcomes"]["wary"]["effects"].get("set_flags", []), "solo un acuerdo con los Draeth cuenta lo de la exploradora")
+	gs.free()
+
+	# Oficiales: el que no baja se queda a bordo y comenta; cada líder tiene opciones propias.
+	gs = _new_state("vance")
+	_check(gs.aboard() == "okafor" and gs.voice("brief.kaelora")["args"]["line"]["key"] == "voice.okafor.brief.kaelora", "con Vance al mando, Okafor habla desde la nave")
+	var tower: Array = Content.events["torre_caida"]["choices"]
+	var science: Dictionary = tower.filter(func(c): return c.get("requires", {}).get("trait", "") == "ciencia")[0]
+	var rng := RandomNumberGenerator.new()
+	var res := EventRunner.resolve("torre_caida", tower.find(science), science, gs, rng)
+	_check(gs.has_flag("torre_reparada") and res["voice"]["args"]["line"]["key"] == "voice.okafor.torre_reparada", "la opción de Vance repara la torre y Okafor la comenta")
+	gs.select_leader("okafor")
+	_check(gs.aboard() == "vance" and EventRunner.lock_reason(science, gs) != "", "con Okafor al mando la opción de Vance queda bloqueada")
+	var garden: Array = Content.events["jardin_central"]["choices"]
+	var diplomacy: Dictionary = garden.filter(func(c): return c.get("requires", {}).get("trait", "") == "diplomacia")[0]
+	_check(EventRunner.lock_reason(diplomacy, gs) == "", "Okafor tiene su propia opción en el jardín")
+	var per_leader := {"ciencia": 0, "diplomacia": 0}
+	for ev_id in Content.events:
+		for c in Content.events[ev_id]["choices"]:
+			if per_leader.has(c.get("requires", {}).get("trait", "")):
+				per_leader[c["requires"]["trait"]] += 1
+	_check(per_leader["ciencia"] >= 3 and per_leader["diplomacia"] >= 3, "cada líder tiene al menos tres opciones exclusivas %s" % [per_leader])
+	gs.free()
+
+	# Las marcas que antes no leía nadie ahora abren algo.
+	gs = _new_state("vance")
+	var beacon: Dictionary = Content.events["baliza_central"]["choices"][0]
+	gs.apply_effects({"set_flags": ["vael_transformacion", "tono_grave", "tono_agudo"]})
+	_check(EventRunner.lock_reason(beacon, gs) == "", "entender los relieves vael basta para presentarse ante la baliza")
+	gs.apply_effects({"set_flags": ["gremio_reparacion", "convoy_autonomo"]})
+	for pair in [["deposito_restaurado", "gremio_reparacion"], ["destino_del_convoy", "convoy_autonomo"]]:
+		var gated: Array = Content.events[pair[0]]["choices"].filter(func(c): return c.get("requires", {}).get("flag", "") == pair[1])
+		_check(gated.size() == 1 and EventRunner.lock_reason(gated[0], gs) == "", "%s premia '%s'" % pair)
 	gs.free()
 
 

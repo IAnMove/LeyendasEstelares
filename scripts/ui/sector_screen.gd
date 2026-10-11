@@ -121,11 +121,15 @@ func _ready() -> void:
 	GameState.changed.connect(_refresh)
 	_select(campaign.current)
 	_refresh()
-	# Foco inicial en un nodo alcanzable para poder jugar solo con teclado.
+	focus_route()
+
+
+## Foco en un nodo alcanzable para poder jugar solo con teclado (al entrar y al cerrar avisos encima).
+func focus_route() -> void:
 	for to in campaign.sector.nodes[campaign.current]["edges"]:
 		if campaign.can_jump(to):
 			_buttons[to].grab_focus()
-			break
+			return
 
 
 func _process(delta: float) -> void:

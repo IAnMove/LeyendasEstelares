@@ -57,6 +57,14 @@ func _ready() -> void:
 	_buttons(_main._current, "Choose")[0].pressed.emit()
 	await _frames()
 	_check(_main._current is SectorScreen, "mapa estelar tras elegir avatar")
+	var accept := _buttons(_main._current, "Accept the mission")
+	_check(not accept.is_empty(), "la orden de misión se muestra al empezar")
+	if not accept.is_empty():
+		accept[0].pressed.emit()
+		await _frames()
+		var owner := get_viewport().gui_get_focus_owner()
+		_check(_buttons(_main._current, "Accept the mission").is_empty(), "aceptar la misión cierra la orden")
+		_check(owner != null and owner in (_main._current as SectorScreen)._buttons.values(), "tras la orden, el foco vuelve a la ruta")
 	# Fixture estable: los recorridos posteriores prueban pantallas por separado.
 	_main._campaign = Campaign.new(GameState, Content.campaign, 12)
 	_main._show_sector()

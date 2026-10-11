@@ -32,5 +32,16 @@
 	"starting_items": {
 		"oxygen_cell": 1,
 		"rations": 1
+	},
+	"thread": {
+		"id": "ysel",
+		"clues": [
+			"pista_refugio",
+			"pista_marcas",
+			"pista_draeth",
+			"pista_nave",
+			"pista_relieve"
+		],
+		"reveal": 2
 	}
 }

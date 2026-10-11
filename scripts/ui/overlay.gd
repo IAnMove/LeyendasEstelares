@@ -64,6 +64,13 @@ func body(text: String) -> void:
 	_box.add_child(l)
 
 
+## Comentario de un personaje: como el cuerpo, en otro color.
+func quote(text: String) -> void:
+	var l := UITheme.label(text, UITheme.ACCENT, 12)
+	l.custom_minimum_size = Vector2(478, 0)
+	_box.add_child(l)
+
+
 func art(tex_name: String) -> void:
 	_box.add_child(UITheme.illustration(tex_name, Vector2(478, 82)))
 
@@ -132,4 +139,6 @@ func show_result(event_id: String, index: int, result: Dictionary, on_done: Call
 	body(T.show(result["text"]))
 	if not result["lines"].is_empty():
 		note(T.join(result["lines"]))
+	if not result.get("voice", {}).is_empty():
+		quote(T.show(result["voice"]))
 	button(T.t("ui.continue"), on_done).grab_focus()

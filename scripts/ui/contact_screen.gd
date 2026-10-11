@@ -172,9 +172,14 @@ func _add_option(text: String, cb: Callable, disabled := false) -> Button:
 
 func _show_intro() -> void:
 	_clear_options()
-	_type(T.t("contact.%s.intro" % runner.encounter["id"]))
+	var eid: String = runner.encounter["id"]
+	var text := T.t("contact.%s.intro" % eid)
+	for id in runner.memory_ids:
+		text += "\n\n" + T.t("contact.%s.memory.%s" % [eid, id])
+	_type(text)
 	_speech.add_theme_color_override("font_color", UITheme.TEXT)
-	_extra.text = ""
+	var lines := runner.memory_lines()
+	_extra.text = T.t("ui.contact.memory", {"effects": T.join(lines)}) if not lines.is_empty() else ""
 	_add_option(T.t("ui.continue"), _show_prompt).grab_focus()
 
 

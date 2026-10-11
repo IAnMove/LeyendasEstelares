@@ -48,10 +48,18 @@ func _ready() -> void:
 		color = UITheme.WARN if victory_tier(GameState) == PARTIAL else UITheme.GOOD
 	v.add_child(UITheme.label(T.t("ending.%s.title" % key), color, 18))
 	v.add_child(UITheme.label(T.t("ending.%s.body" % key), UITheme.TEXT, 12))
+	var closing := GameState.voice("end." + victory_tier(GameState)) if ending == "victory" else {}
+	if not closing.is_empty():
+		v.add_child(UITheme.label(T.show(closing), UITheme.ACCENT, 12))
 	for p in Content.planets:
 		for flag in p.get("epilogues", []):
 			if GameState.has_flag(flag):
 				v.add_child(UITheme.label("· " + T.t("planet.%s.epilogue.%s" % [p["id"], flag]), UITheme.DIM, 11))
+	# Cómo acabó cada contacto (las facciones sin reputación propia solo se ven aquí).
+	for sp in Content.campaign.get("species", []):
+		if GameState.relations.has(sp):
+			v.add_child(UITheme.label("· " + T.t("ending.contact.%s.%s" % [sp, GameState.relations[sp]]), UITheme.DIM, 11))
+	_add_thread(v)
 	if not GameState.journal.is_empty():
 		v.add_child(UITheme.label(T.t("ui.story.journal"), UITheme.WARN, 14))
 		for entry in GameState.journal:
@@ -69,3 +77,19 @@ func _ready() -> void:
 	btn.pressed.connect(func(): continue_pressed.emit())
 	outer.add_child(btn)
 	btn.grab_focus()
+
+
+## Hilo de la campaña: las pistas encontradas y, con suficientes, lo que pasó.
+func _add_thread(v: VBoxContainer) -> void:
+	var thread: Dictionary = Content.campaign.get("thread", {})
+	var found := GameState.thread_clues()
+	if found.is_empty():
+		return
+	var id: String = thread["id"]
+	v.add_child(UITheme.label(T.t("ui.thread.progress", {"title": T.t("thread.%s.title" % id), "n": found.size(), "total": thread["clues"].size()}), UITheme.WARN, 14))
+	for clue in found:
+		v.add_child(UITheme.label("· " + T.t("thread.%s.%s" % [id, clue]), UITheme.DIM, 11))
+	if found.size() >= int(thread["reveal"]):
+		v.add_child(UITheme.label(T.t("thread.%s.reveal" % id), UITheme.TEXT, 12))
+	else:
+		v.add_child(UITheme.label(T.t("thread.%s.open" % id), UITheme.DIM, 11))

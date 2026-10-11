@@ -25,9 +25,14 @@ El juego tiene tres capas:
    gasta según el terreno, puntos de interés con decisiones (a veces arriesgadas) y un objetivo que alcanzar
    antes de volver a la nave.
 
+La partida empieza con la **orden de misión**: el Concordato manda seguir el pulso, que en el puente llaman
+«la advertencia», y apagarlo si es una amenaza; el Dominio Draeth lo reclama como suyo y exige que calle.
+
 Lo que haces en una capa afecta a las otras: tus decisiones abren o cierran opciones más adelante y cambian
-el epílogo; la reputación (Concordato, Vael) queda reflejada en el informe final. Un acuerdo con el Gremio de Hallen o el respeto del Dominio Draeth
-desbloquean opciones propias en anomalías (salvamento de pecios, paso por campos de asteroides).
+el epílogo. Un acuerdo con el Gremio de Hallen o el respeto del Dominio Draeth desbloquean opciones propias
+en anomalías (salvamento de pecios, paso por campos de asteroides). Las especies **recuerdan** lo que hiciste
+antes de encontrarlas (saquear o proteger, deudas con el Gremio, cartas vael, tu reputación con el Concordato
+o los Vael) y eso cambia su saludo y las barras de partida.
 
 **Los tres tonos del pulso.** El final depende de lo que lleves a la baliza de Tessarine. El tono **grave**
 resuena en los relés de Kaelora y Nerea (alcanzar su objetivo); el **medio** lo comparten las especies con
@@ -35,6 +40,12 @@ las que logras un acuerdo o una alianza; el **agudo** se capta al descifrar o re
 Con dos tonos la baliza abre el diálogo con los Vael o su mapa (si además sabes cómo); con los tres puedes
 responder al pulso. Silenciarla, como ordena el Concordato, siempre es posible; limitarse a escanearla deja
 un **registro parcial**. Cada salida tiene su propio final. El HUD y la bodega muestran los tonos reunidos.
+
+**Los que vinieron antes.** Alguien siguió el pulso hace cuarenta ciclos. Hay cinco pistas repartidas por
+el sector: un refugio en Kaelora, un camino marcado en Nerea, el testimonio de los Draeth (por acuerdo, o
+contándoles el rastro que encontraste), una nave de un asiento y un relieve reciente en Tessarine (este, solo
+con Vance). Con dos, el informe final cuenta qué pasó. El final compone además la frase de cada especie
+contactada, los epílogos de los planetas y el comentario del oficial que se quedó a bordo.
 
 **Tripulación y bodega.** Vance y Okafor viajan juntos. Desde **Equipo y bodega**, en el mapa estelar,
 eliges quién lidera la expedición: su especialidad aporta +20 puntos porcentuales a las acciones
@@ -184,11 +195,17 @@ prevé la reacción exacta de cada respuesta. Okafor empieza los contactos con u
 confianza y reduce en uno la tensión positiva, pero sin previsión: hay que leer el contexto. Estas
 ventajas dependen del líder activo, que se cambia a bordo antes del siguiente encuentro.
 
+Cada líder tiene además **decisiones propias** (`requires.trait`): Vance lee el núcleo de la torre, mide el
+bosque luminoso y data los relieves vael; Okafor espera a que el jardín le hable, deja que las criaturas de la
+arena se acerquen y saluda a la forma cristalina. El oficial que no baja se queda al mando de la Meridiana y
+**comenta por radio** el descenso, las decisiones clave (torre, jardín) y el final.
+
 ## Consecuencias que viajan contigo
 
 Tres cadenas enlazan seis nuevos eventos con rescates, señales Vael y depósitos del gremio.
 Las transmisiones llegan tras saltos posteriores, pueden abrir opciones según promesas anteriores
-y se intercalan antes del destino sin sustituirlo. La **Bitácora** de la bodega conserva las decisiones;
+(dejar sus suministros al convoy, trabajar para el Gremio, preservar el archivo vael, que también abre
+la baliza) y se intercalan antes del destino sin sustituirlo. La **Bitácora** de la bodega conserva las decisiones;
 el final recoge sus consecuencias y las transmisiones que quedaron pendientes. La cola, los resultados
 y la bitácora se guardan junto con la expedición.
 
@@ -279,7 +296,13 @@ Capturas (requiere display, p. ej. `xvfb-run`): `godot --path . res://tests/scre
 - **Evento:** añádelo a `data/events.json` (cada opción tiene `result` o `risk`; opcional `tag` y `requires`),
   escribe sus textos en el CSV y añade su id al `event_pool` de un planeta o a `anomaly_pool` en `data/campaign.json`.
 - **Encuentro:** añádelo a `data/encounters.json` con su especie, intercambios y desenlaces (`data/species.json`
-  define cómo reacciona cada especie a cada postura).
+  define cómo reacciona cada especie a cada postura). `memories` lista lo que la especie recuerda: cada recuerdo
+  tiene `requires` (como las opciones, con `min_rep` por facción), ajusta `trust`/`tension` de partida y su
+  texto es `contact.<id>.memory.<recuerdo>`.
+- **Comentarios del oficial a bordo:** una rama con `"voice": "<clave>"` muestra `voice.<oficial>.<clave>`;
+  los briefings usan `voice.<oficial>.brief.<planeta>` y los finales `voice.<oficial>.end.<final>`.
+- **Hilo de la campaña:** `thread` en `data/campaign.json` (pistas = flags, umbral `reveal`); textos
+  `thread.<id>.title/open/reveal/<pista>`. Ningún evento se repite entre planetas mientras queden eventos propios.
 - **Objeto:** añádelo a `data/items.json`, traduce `item.<id>.name/desc` y añádelo al catálogo de una especie en `data/markets.json`. Los eventos entregan objetos con `effects.items`.
 - Regenerar los sprites tácticos: `python3 tools/gen_art.py`. Esto no sobrescribe las ilustraciones de `art/generated/`.
 - Regenerar el sonido: `python3 tools/gen_audio.py` (solo biblioteca estándar de Python).

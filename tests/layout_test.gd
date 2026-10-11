@@ -5,7 +5,9 @@ extends Node
 ## godot --headless --path . res://tests/layout_test.tscn -- --touch-ui  (botones táctiles)
 ## Adaptada de la prueba de la rama archive/pixel-art-ui.
 
-const FLAGS := ["met_vael", "met_hallen", "met_draeth", "vael_contacto", "mapa_vael", "gremio_amigo", "draeth_respeto", "tono_grave", "tono_medio", "tono_agudo"]
+const FLAGS := ["met_vael", "met_hallen", "met_draeth", "vael_contacto", "mapa_vael", "gremio_amigo", "draeth_respeto", "tono_grave", "tono_medio", "tono_agudo",
+	# Antecedentes que activan todos los recuerdos de los contactos y las opciones de las cadenas (textos más largos).
+	"jardin_cosechado", "torre_reparada", "archivo_preservado", "deuda_gremio", "convoy_guiado", "convoy_autonomo", "gremio_reparacion", "pista_refugio"]
 
 var _failures := 0
 var _checked := 0
@@ -55,7 +57,7 @@ func _show(screen: Control, label: String, setup := Callable()) -> void:
 
 func _new_run(avatar: String) -> void:
 	GameState.start_run(Content.avatar_by_id(avatar), Content.factions, Content.campaign)
-	GameState.apply_effects({"set_flags": FLAGS, "data": 6})
+	GameState.apply_effects({"set_flags": FLAGS, "data": 6, "rep": {"vael": 2, "concordato": 2}})
 
 
 func _audit_all(tag: String) -> void:
@@ -134,7 +136,7 @@ func _audit_all(tag: String) -> void:
 			_audit(holder, "%s evento %s (flags=%s)" % [tag, id, flagged])
 		var suffix := "ok" if Content.events[id]["choices"][0].has("risk") else "res"
 		var lines := [T.later("fx.oxygen", {"delta": "−3"}), T.later("fx.rep", {"faction": T.later("faction.concordato"), "delta": "+1"}), T.later("fx.data", {"delta": "+2"})]
-		holder._overlay.show_result(id, 0, {"text": T.later("event.%s.c0.%s" % [id, suffix]), "lines": lines, "success": true}, func(): pass)
+		holder._overlay.show_result(id, 0, {"text": T.later("event.%s.c0.%s" % [id, suffix]), "lines": lines, "success": true, "voice": GameState.voice("torre_reparada")}, func(): pass)
 		await _settle()
 		_audit(holder, "%s resultado de %s" % [tag, id])
 	stage.queue_free()
@@ -144,7 +146,8 @@ func _audit_all(tag: String) -> void:
 	for ending in ["victory", "abort", "fuel", "oxygen", "morale"]:
 		for beacon in (EndScreen.VICTORY_TIERS.keys() + [""] if ending == "victory" else [""]):
 			_new_run("vance")
-			GameState.apply_effects({"rep": {"concordato": 2, "vael": -1}})
+			GameState.apply_effects({"rep": {"concordato": 2, "vael": -1}, "set_flags": Content.campaign["thread"]["clues"]})
+			GameState.relations = {"vael": "alliance", "hallen": "hostile", "draeth": "deal"}
 			if beacon != "":
 				GameState.flags[beacon] = true
 			var end := EndScreen.new()
@@ -160,6 +163,10 @@ func _audit_all(tag: String) -> void:
 	main._open_help()
 	await _settle()
 	_audit(main._pause_menu, tag + " guía")
+	main._close_pause()
+	main._show_prologue()
+	await _settle()
+	_audit(main, tag + " orden de misión")
 	vp.queue_free()
 	await get_tree().process_frame
 

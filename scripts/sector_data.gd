@@ -7,6 +7,7 @@ var nodes := {}  # id -> Dictionary {id, col, y, type, ref, edges, scanned, done
 var columns: Array = []  # columns[c] = Array de ids ordenados de arriba abajo
 var start_id := ""
 var final_id := ""
+var _used_events := {}  # eventos ya repartidos a otro planeta de este sector
 
 
 func generate(cfg: Dictionary, seed_value: int) -> void:
@@ -14,6 +15,7 @@ func generate(cfg: Dictionary, seed_value: int) -> void:
 	rng.seed = seed_value
 	nodes.clear()
 	columns.clear()
+	_used_events.clear()
 	var col_sizes: Array = cfg["columns"]
 	for c in col_sizes.size():
 		var ids: Array[String] = []
@@ -32,8 +34,9 @@ func generate(cfg: Dictionary, seed_value: int) -> void:
 	nodes[start_id].merge({"type": "start", "scanned": true, "done": true}, true)
 
 	_connect(rng)
-	_assign_types(cfg, rng)
+	# El planeta final elige primero: los intermedios tienen eventos propios de sobra para no repetir los suyos.
 	_make_planet(nodes[final_id], cfg["final_planet"], rng)
+	_assign_types(cfg, rng)
 	nodes[final_id]["final"] = true
 	nodes[final_id]["planet"]["final"] = true
 	nodes[final_id]["scanned"] = true
@@ -99,7 +102,12 @@ func _make_planet(node: Dictionary, planet_id: String, rng: RandomNumberGenerato
 	var planet: Dictionary = Content.planet_by_id(planet_id).duplicate(true)
 	var pool: Array = planet["event_pool"].duplicate()
 	_shuffle(pool, rng)
+	# Primero los eventos que ningún otro planeta del sector tiene ya; solo se repiten si no hay más.
+	var fresh := pool.filter(func(id): return not _used_events.has(id))
+	pool = fresh + pool.filter(func(id): return _used_events.has(id))
 	planet["event_pool"] = pool.slice(0, mini(int(planet.get("poi_count", 6)), pool.size()))
+	for id in planet["event_pool"]:
+		_used_events[id] = true
 	planet["seed"] = rng.randi()
 	node["type"] = "planet"
 	node["ref"] = planet_id

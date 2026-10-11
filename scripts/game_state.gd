@@ -147,6 +147,31 @@ func tone_names() -> String:
 	return ", ".join(names) if not names.is_empty() else "—"
 
 
+## Oficial que se queda al mando de la Meridiana mientras el líder baja ("" si no hay otro).
+func aboard() -> String:
+	for member in crew:
+		if member["id"] != avatar.get("id", ""):
+			return member["id"]
+	return ""
+
+
+## Comentario del oficial a bordo (`voice.<oficial>.<key>`) como `T.later`, o {} si no hay nadie a bordo.
+func voice(key: String) -> Dictionary:
+	var officer := aboard()
+	if officer == "":
+		return {}
+	return T.later("ui.voice", {"name": T.later("avatar.%s.name" % officer), "line": T.later("voice.%s.%s" % [officer, key])})
+
+
+## Pistas del hilo de la campaña ya encontradas, en el orden de campaign.json.
+func thread_clues() -> Array:
+	var found := []
+	for clue in Content.campaign.get("thread", {}).get("clues", []):
+		if flags.has(clue):
+			found.append(clue)
+	return found
+
+
 func spend_oxygen(n: int) -> void:
 	oxygen = maxi(oxygen - n, 0)
 	changed.emit()

@@ -5,7 +5,7 @@ extends Node
 
 const VALID_EFFECTS := ["oxygen", "morale", "data", "fuel", "scans", "rep", "set_flags", "items"]
 const VALID_CONTACT_EFFECTS := ["trust", "tension", "oxygen", "morale", "data", "fuel", "scans", "rep", "set_flags", "items"]
-const VALID_REQUIRES := ["trait", "flag", "any_flag", "not_flag", "min_data", "min_tones"]
+const VALID_REQUIRES := ["trait", "flag", "any_flag", "not_flag", "min_data", "min_tones", "min_rep"]
 const VALID_TYPES := ["signal", "ruins", "wreck", "life", "beacon", "anomaly"]
 const VALID_BIOMES := ["frost", "dust", "verdant"]
 const STANCES := ["open", "careful", "firm", "deceive"]
@@ -132,6 +132,8 @@ func text_keys() -> Array[String]:
 	for enc in encounters:
 		var id: String = enc["id"]
 		keys.append("contact.%s.intro" % id)
+		for memory in enc.get("memories", []):
+			keys.append("contact.%s.memory.%s" % [id, memory["id"]])
 		for o in OUTCOMES:
 			keys.append("contact.%s.out.%s" % [id, o])
 		for x in enc["exchanges"].size():
@@ -145,7 +147,27 @@ func text_keys() -> Array[String]:
 					keys.append("contact.%s.x%d.o%d.hint" % [id, x, i])
 	for flag in _known_flags():
 		keys.append("flag." + flag)
+	for a in avatars:
+		for p in planets:
+			keys.append("voice.%s.brief.%s" % [a["id"], p["id"]])
+		for key in _voice_keys():
+			keys.append("voice.%s.%s" % [a["id"], key])
+	var thread: Dictionary = campaign.get("thread", {})
+	if not thread.is_empty():
+		for s in ["title", "open", "reveal"] + thread["clues"]:
+			keys.append("thread.%s.%s" % [thread["id"], s])
 	return keys
+
+
+## Comentarios del oficial a bordo que piden las ramas de los eventos ("voice").
+func _voice_keys() -> Array:
+	var keys := {}
+	for event in events.values():
+		for choice in event["choices"]:
+			for branch in _branches(choice):
+				if branch[1].has("voice"):
+					keys[branch[1]["voice"]] = true
+	return keys.keys()
 
 
 func _known_flags() -> Array:
@@ -208,6 +230,18 @@ func validate() -> Array[String]:
 					errors.append("encuentro %s/%s: efecto desconocido '%s'" % [enc["id"], o, k])
 			for f in enc["outcomes"][o].get("effects", {}).get("set_flags", []):
 				set_flags[f] = true
+		var memory_ids := {}
+		for memory in enc.get("memories", []):
+			var where := "%s.memoria.%s" % [enc.get("id", "?"), memory.get("id", "?")]
+			if memory.get("id", "") == "" or memory_ids.has(memory["id"]) or not memory.has("requires"):
+				errors.append("%s: id vacío o repetido, o sin requisitos" % where)
+			memory_ids[memory.get("id", "")] = true
+			for k in memory:
+				if not k in ["id", "requires", "trust", "tension"]:
+					errors.append("%s: campo desconocido '%s'" % [where, k])
+			for k in memory.get("requires", {}):
+				if not (k in VALID_REQUIRES):
+					errors.append("%s: requisito desconocido '%s'" % [where, k])
 		for x in enc.get("exchanges", []).size():
 			for stance in enc["exchanges"][x].get("context_effects", {}):
 				if not stance in STANCES:
@@ -241,18 +275,29 @@ func validate() -> Array[String]:
 		for ex in enc.get("exchanges", []):
 			for opt in ex["options"]:
 				required.append(opt.get("requires", {}))
+		for memory in enc.get("memories", []):
+			required.append(memory.get("requires", {}))
 	for tone in TONES:
 		if not set_flags.has(tone):
 			errors.append("el tono '%s' nunca se consigue" % tone)
 	for req in required:
 		if int(req.get("min_tones", 0)) > TONES.size():
 			errors.append("min_tones mayor que el número de tonos")
+		for faction in req.get("min_rep", {}):
+			if not factions.has(faction):
+				errors.append("min_rep: facción desconocida '%s'" % faction)
 		var needed: Array = req.get("any_flag", []).duplicate()
 		if req.has("flag"):
 			needed.append(req["flag"])
 		for f in needed:
 			if not set_flags.has(f):
 				errors.append("el flag '%s' nunca se activa" % f)
+	var thread: Dictionary = campaign.get("thread", {})
+	for clue in thread.get("clues", []):
+		if not set_flags.has(clue):
+			errors.append("hilo: la pista '%s' nunca se consigue" % clue)
+	if not thread.is_empty() and (int(thread.get("reveal", 0)) < 1 or int(thread["reveal"]) > thread.get("clues", []).size()):
+		errors.append("hilo: umbral de revelación fuera de rango")
 	for p in planets:
 		var pid: String = p.get("id", "?")
 		if not (p.get("biome", "") in VALID_BIOMES):
@@ -309,6 +354,8 @@ func _validate_choice(c: Dictionary, where: String, valid_effects: Array, errors
 	for k in c.get("requires", {}):
 		if not (k in VALID_REQUIRES):
 			errors.append("%s: requisito desconocido '%s'" % [where, k])
+	if c.get("requires", {}).has("trait") and not _any_avatar_has_trait(c["requires"]["trait"]):
+		errors.append("%s: ningún líder puede cumplir el rasgo '%s'" % [where, c["requires"]["trait"]])
 	if c.has("tag") and not _any_avatar_has_trait(c["tag"]):
 		errors.append("%s: ningún avatar tiene el rasgo '%s'" % [where, c["tag"]])
 

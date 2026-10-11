@@ -230,6 +230,9 @@ func _show_briefing() -> void:
 	_overlay.title(T.t("ui.briefing.title", {"planet": T.t("planet.%s.name" % pid)}))
 	_overlay.art("generated/planet_" + pid)
 	_overlay.body(T.t("planet.%s.intro" % pid))
+	var voice := GameState.voice("brief." + pid)
+	if not voice.is_empty():
+		_overlay.quote(T.show(voice))
 	_overlay.button(T.t("ui.descend"), func():
 		_phase = "explore"
 		_overlay.close()

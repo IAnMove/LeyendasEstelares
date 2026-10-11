@@ -11,7 +11,8 @@
 			"campamento_minero",
 			"caravana_varada",
 			"nido_de_arena",
-			"radiofaro_duna"
+			"radiofaro_duna",
+			"refugio_de_paso"
 		],
 		"epilogues": [
 			"torre_reparada",
@@ -30,7 +31,8 @@
 			"bosque_luminoso",
 			"templo_sumergido",
 			"pecio_orbital",
-			"voces_en_la_niebla"
+			"voces_en_la_niebla",
+			"marcas_en_los_troncos"
 		],
 		"epilogues": [
 			"jardin_protegido",

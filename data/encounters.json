@@ -2,6 +2,45 @@
 	{
 		"id": "vael_eco",
 		"species": "vael",
+		"memories": [
+			{
+				"id": "expolio",
+				"requires": {
+					"any_flag": [
+						"jardin_cosechado",
+						"torre_saqueada"
+					]
+				},
+				"trust": -1,
+				"tension": 1
+			},
+			{
+				"id": "cuidado",
+				"requires": {
+					"any_flag": [
+						"jardin_protegido",
+						"torre_reparada"
+					]
+				},
+				"trust": 1
+			},
+			{
+				"id": "archivo",
+				"requires": {
+					"flag": "archivo_preservado"
+				},
+				"trust": 1
+			},
+			{
+				"id": "eco",
+				"requires": {
+					"min_rep": {
+						"vael": 2
+					}
+				},
+				"tension": -1
+			}
+		],
 		"exchanges": [
 			{
 				"options": [
@@ -135,6 +174,31 @@
 	{
 		"id": "hallen_gremio",
 		"species": "hallen",
+		"memories": [
+			{
+				"id": "deuda",
+				"requires": {
+					"flag": "deuda_gremio",
+					"not_flag": "gremio_saldado"
+				},
+				"trust": -1,
+				"tension": 1
+			},
+			{
+				"id": "saldado",
+				"requires": {
+					"flag": "gremio_saldado"
+				},
+				"trust": 1
+			},
+			{
+				"id": "convoy",
+				"requires": {
+					"flag": "convoy_guiado"
+				},
+				"trust": 1
+			}
+		],
 		"exchanges": [
 			{
 				"options": [
@@ -262,6 +326,35 @@
 	{
 		"id": "draeth_patrulla",
 		"species": "draeth",
+		"memories": [
+			{
+				"id": "cartas",
+				"requires": {
+					"flag": "mapa_vael"
+				},
+				"tension": 1
+			},
+			{
+				"id": "huella",
+				"requires": {
+					"any_flag": [
+						"pista_refugio",
+						"pista_marcas"
+					]
+				},
+				"trust": 1,
+				"tension": -1
+			},
+			{
+				"id": "respaldo",
+				"requires": {
+					"min_rep": {
+						"concordato": 2
+					}
+				},
+				"trust": 1
+			}
+		],
 		"exchanges": [
 			{
 				"options": [
@@ -301,6 +394,21 @@
 						"stance": "firm",
 						"effects": {
 							"tension": 1
+						}
+					},
+					{
+						"stance": "open",
+						"requires": {
+							"any_flag": [
+								"pista_refugio",
+								"pista_marcas"
+							]
+						},
+						"effects": {
+							"trust": 1,
+							"set_flags": [
+								"pista_draeth"
+							]
 						}
 					}
 				],
@@ -359,7 +467,8 @@
 					},
 					"set_flags": [
 						"draeth_respeto",
-						"tono_medio"
+						"tono_medio",
+						"pista_draeth"
 					]
 				}
 			},
@@ -369,7 +478,8 @@
 				"effects": {
 					"morale": 1,
 					"set_flags": [
-						"tono_medio"
+						"tono_medio",
+						"pista_draeth"
 					]
 				}
 			},

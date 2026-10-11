@@ -14,6 +14,7 @@ var index := 0  # intercambio actual
 var broke := false  # tensión al máximo: la conversación se rompe
 var _applied_outcome: Dictionary = {}
 var history: Array = []
+var memory_ids: Array = []  # recuerdos de la especie que se cumplieron al empezar (ver encounters.json)
 
 
 func _init(state_, species_: Dictionary, encounter_: Dictionary) -> void:
@@ -23,6 +24,12 @@ func _init(state_, species_: Dictionary, encounter_: Dictionary) -> void:
 	trust = int(species["start"]["trust"])
 	trust = mini(trust + int(state.item_bonus("trust")) + (1 if state.has_trait("diplomacia") else 0), MAX_METER)
 	tension = int(species["start"]["tension"])
+	# La especie recuerda lo que hiciste antes de encontrarla: ajusta las barras de partida.
+	for memory in encounter.get("memories", []):
+		if EventRunner.lock_reason(memory, state) == "":
+			memory_ids.append(memory["id"])
+			trust = clampi(trust + int(memory.get("trust", 0)), 0, MAX_METER)
+			tension = clampi(tension + int(memory.get("tension", 0)), 0, MAX_METER)
 
 
 func finished() -> bool:
@@ -44,6 +51,22 @@ func lock_reason(i: int, hint := "") -> String:
 	if cost > state.data:
 		return T.t("ui.contact.data_required", {"n": cost})
 	return EventRunner.lock_reason(option(i), state, hint)
+
+
+## Efecto conjunto de los recuerdos sobre las barras, como líneas `T.later` (vacío si se compensan).
+func memory_lines() -> Array:
+	var d_trust := 0
+	var d_tension := 0
+	for memory in encounter.get("memories", []):
+		if memory["id"] in memory_ids:
+			d_trust += int(memory.get("trust", 0))
+			d_tension += int(memory.get("tension", 0))
+	var lines: Array = []
+	if d_trust != 0:
+		lines.append(T.later("fx.trust", {"delta": _signed(d_trust)}))
+	if d_tension != 0:
+		lines.append(T.later("fx.tension", {"delta": _signed(d_tension)}))
+	return lines
 
 
 ## Postura que la especie valora más (para la pista del analista / experiencia previa).
@@ -139,7 +162,7 @@ func _signed(n: int) -> String:
 
 func snapshot() -> Dictionary:
 	var out := {}
-	for key in ["trust", "tension", "index", "broke", "_applied_outcome", "history"]:
+	for key in ["trust", "tension", "index", "broke", "_applied_outcome", "history", "memory_ids"]:
 		out[key] = get(key)
 	return out.duplicate(true)
 
