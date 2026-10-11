@@ -117,8 +117,11 @@ func _chance_text(choice: Dictionary) -> String:
 
 
 func _on_pick(event_id: String, index: int, resolve: Callable, on_done: Callable) -> void:
+	show_result(event_id, index, resolve.call(index), on_done)
+
+
+func show_result(event_id: String, index: int, result: Dictionary, on_done: Callable) -> void:
 	var choice: Dictionary = Content.events[event_id]["choices"][index]
-	var result: Dictionary = resolve.call(index)
 	open()
 	var headline := T.ev(event_id, "title")
 	if choice.has("risk"):

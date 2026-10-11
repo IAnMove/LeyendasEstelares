@@ -185,3 +185,16 @@ func _apply_stat(effects: Dictionary, stat: String, max_stat: String, lines: Arr
 
 func _signed(n: int) -> String:
 	return ("+%d" % n) if n > 0 else ("−%d" % absi(n))
+
+
+func snapshot() -> Dictionary:
+	var out := {}
+	for key in ["avatar", "oxygen", "max_oxygen", "morale", "max_morale", "data", "fuel", "max_fuel", "scans", "max_scans", "rep", "flags", "faction_ids", "crew", "inventory", "relations", "market_stock", "on_surface"]:
+		out[key] = get(key)
+	return out.duplicate(true)
+
+
+func restore(saved: Dictionary) -> void:
+	for key in snapshot():
+		if saved.has(key):
+			set(key, saved[key])

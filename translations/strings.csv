@@ -522,3 +522,9 @@ ui.art.retro,V2 comic,V2 cómic
 ui.contact.channel,COMMUNICATIONS / LIVE LINK,COMUNICACIONES / ENLACE ACTIVO
 ui.ship.crew_heading,01 / CREW MANIFEST,01 / TRIPULACIÓN
 ui.ship.cargo_heading,02 / SUPPLIES & EQUIPMENT,02 / SUMINISTROS Y EQUIPO
+ui.save.resume,Continue game,Continuar partida
+ui.save.replace_title,Start a new expedition?,¿Empezar una nueva expedición?
+ui.save.replace_body,Choosing a new leader will replace your saved expedition.,Al elegir un nuevo líder se sustituirá la expedición guardada.
+ui.save.cancel,Cancel,Cancelar
+ui.save.error_title,Could not save,No se ha podido guardar
+ui.save.error_body,Your expedition is still running. Free some storage before closing the game; the previous checkpoint is preserved.,La expedición sigue en marcha. Libera espacio antes de cerrar el juego; se conserva el punto de guardado anterior.

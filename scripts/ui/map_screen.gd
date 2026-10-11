@@ -7,6 +7,9 @@ signal finished(outcome: Dictionary)
 
 var planet: Dictionary = {}
 var expedition: Expedition
+var restored: Dictionary = {}
+var _phase := "briefing"
+var _pending: Dictionary = {}
 
 var _view: PlanetMapView
 var _log: RichTextLabel
@@ -26,6 +29,11 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE  # si no, este Control se come los clics del mapa
 	_rng.randomize()
 	expedition = Expedition.new(GameState, planet, Content.events, int(planet.get("seed", 1)))
+	if not restored.is_empty():
+		expedition.restore(restored["expedition"])
+		_rng.state = restored["rng"]
+		_phase = restored["phase"]
+		_pending = restored["pending"]
 
 	add_child(UITheme.background())
 	_view = PlanetMapView.new()
@@ -40,8 +48,16 @@ func _ready() -> void:
 	add_child(_overlay)
 	GameState.changed.connect(_refresh_hud)
 	_refresh_hud()
-	_view.enabled = false
-	_show_briefing()
+	_view.enabled = true
+	match _phase:
+		"briefing": _show_briefing()
+		"event": _open_event(expedition.map.poi_at(expedition.player))
+		"result":
+			var poi := expedition.map.poi_at(expedition.player)
+			_overlay.show_result(poi["event_id"], _pending["index"], _pending["result"], func(): _after_event(poi))
+		"fail": _fail(_pending["reason"])
+		"conclusion": _conclude(_pending["result"])
+	_log.text = restored.get("log", "")
 
 
 func _build_hud() -> void:
@@ -148,6 +164,7 @@ func _show_briefing() -> void:
 	_overlay.art("generated/planet_" + pid)
 	_overlay.body(T.t("planet.%s.intro" % pid))
 	_overlay.button(T.t("ui.descend"), func():
+		_phase = "explore"
 		_overlay.close()
 		Sound.play("signal")
 		_say(T.t("ui.log.descend"), UITheme.ACCENT)
@@ -157,13 +174,20 @@ func _show_briefing() -> void:
 
 
 func _open_event(poi: Dictionary) -> void:
+	_phase = "event"
 	_overlay.present_event(
 		poi["event_id"],
-		func(i: int): return expedition.resolve_choice(poi, i, _rng),
+		func(i: int):
+			var result := expedition.resolve_choice(poi, i, _rng)
+			_phase = "result"
+			_pending = {"index": i, "result": result}
+			return result,
 		func(): _after_event(poi))
 
 
 func _after_event(poi: Dictionary) -> void:
+	_phase = "explore"
+	_pending = {}
 	_say("%s" % T.ev(poi["event_id"], "title"), UITheme.TEXT)
 	if poi["objective"]:
 		_say(T.t("ui.map.goal_done"), UITheme.GOOD)
@@ -175,6 +199,8 @@ func _after_event(poi: Dictionary) -> void:
 
 
 func _fail(reason: String) -> void:
+	_phase = "fail"
+	_pending = {"reason": reason}
 	_overlay.open()
 	_overlay.title(T.t("ui.fail.title"), UITheme.BAD)
 	_overlay.body(T.t("ui.fail.oxygen" if reason == "oxygen" else "ui.fail.morale"))
@@ -193,6 +219,8 @@ func _confirm_abort() -> void:
 
 ## Cierra la salida con un pequeño epílogo del planeta.
 func _conclude(result: String) -> void:
+	_phase = "conclusion"
+	_pending = {"result": result}
 	var pid: String = planet["id"]
 	_overlay.open()
 	if result == "success":
@@ -202,3 +230,8 @@ func _conclude(result: String) -> void:
 		_overlay.title(T.t("ui.planet.aborted"), UITheme.WARN)
 		_overlay.body(T.t("planet.%s.outro_abort" % pid))
 	_overlay.button(T.t("ui.continue"), func(): finished.emit({"result": result, "reason": ""})).grab_focus()
+
+
+func save_state() -> Dictionary:
+	return {"kind": "planet", "expedition": expedition.snapshot(), "rng": _rng.state,
+		"phase": _phase, "pending": _pending, "log": _log.text}

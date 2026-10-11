@@ -7,6 +7,9 @@ signal finished(outcome: Dictionary)
 
 var species_id := ""
 var runner: ContactRunner
+var restored: Dictionary = {}
+var _phase := "intro"
+var _reply: Dictionary = {}
 
 var _species: Dictionary
 var _color := Color.WHITE
@@ -25,11 +28,19 @@ func _ready() -> void:
 	_species = Content.species_by_id(species_id)
 	_color = Color(_species["color"])
 	runner = ContactRunner.new(GameState, _species, Content.encounter_for(species_id))
+	if not restored.is_empty():
+		runner.restore(restored["runner"])
+		_phase = restored["phase"]
+		_reply = restored["reply"]
 	add_child(UITheme.background())
 	_build_left()
 	_build_right()
 	_refresh_bars()
-	_show_intro()
+	match _phase:
+		"intro": _show_intro()
+		"prompt": _show_prompt()
+		"reply": _show_reply()
+		"outcome": _show_outcome()
 
 
 func _build_left() -> void:
@@ -133,6 +144,7 @@ func _show_intro() -> void:
 
 
 func _show_prompt() -> void:
+	_phase = "prompt"
 	_clear_options()
 	var eid: String = runner.encounter["id"]
 	var x := runner.index
@@ -158,7 +170,14 @@ func _on_choose(i: int) -> void:
 	var eid: String = runner.encounter["id"]
 	var x := runner.index
 	var mine := T.t("contact.%s.x%d.o%d" % [eid, x, i])
-	var res := runner.choose(i)
+	_reply = {"mine": mine, "result": runner.choose(i)}
+	_show_reply()
+
+
+func _show_reply() -> void:
+	_phase = "reply"
+	var mine: String = _reply["mine"]
+	var res: Dictionary = _reply["result"]
 	_refresh_bars()
 	_clear_options()
 	_speech.add_theme_color_override("font_color", _color)
@@ -175,6 +194,7 @@ func _after_reply() -> void:
 
 
 func _show_outcome() -> void:
+	_phase = "outcome"
 	_clear_options()
 	var out := runner.apply_outcome()
 	_outcome = out
@@ -196,3 +216,7 @@ func _open_trade() -> void:
 		screen.queue_free()
 		_show_outcome())
 	add_child(screen)
+
+
+func save_state() -> Dictionary:
+	return {"kind": "contact", "runner": runner.snapshot(), "phase": _phase, "reply": _reply}

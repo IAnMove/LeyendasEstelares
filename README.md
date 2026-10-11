@@ -107,6 +107,14 @@ software presenta incompatibilidades. Para contrastarlo, usar un emulador con GP
 de generar el APK; el script falla ante errores gráficos. La validación de una partida completa,
 reanudar tras interrupciones y el consumo en un teléfono se documentan por separado.
 
+## Guardado de expediciones
+
+La partida se guarda después de cada decisión en `user://expedition.save`, con escritura temporal,
+verificación de integridad y una copia de respaldo. **Continuar partida** recupera ruta, inventario,
+mercados, superficie, niebla, conversaciones y resultados pendientes. Una nueva expedición pide
+confirmación antes de sustituir la anterior; terminarla elimina su guardado. Los archivos son locales
+al dispositivo. Las partidas y sus copias no se incluyen en Git ni en las exportaciones.
+
 ## Traducciones
 
 Todos los textos están en **`translations/strings.csv`** (formato estándar de Godot: `keys,en,es`).
@@ -129,6 +137,7 @@ y claves sin uso.
 
 ```
 godot --headless --path . res://tests/run_tests.tscn   # lógica, datos, traducciones y bots de campaña
+godot --headless --path . res://tests/save_test.tscn    # recuperación e idempotencia del guardado
 godot --headless --path . res://tests/ui_test.tscn      # recorre la interfaz con clics y teclas reales
 ```
 

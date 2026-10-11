@@ -11,6 +11,7 @@ func _ready() -> void:
 		_out = args[0]
 	var lang := args[1] if args.size() > 1 else "en"
 	var main: Control = load("res://scenes/main.tscn").instantiate()
+	main.save_path = ""
 	add_child(main)
 	T.set_language(lang, false)
 	Art.set_portrait_version(args[2] if args.size() > 2 else "v2_retro", false)

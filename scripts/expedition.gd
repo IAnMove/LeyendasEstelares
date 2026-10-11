@@ -52,3 +52,13 @@ func resolve_choice(poi: Dictionary, index: int, rng: RandomNumberGenerator) -> 
 	if poi["objective"]:
 		objective_done = true
 	return result
+
+
+func snapshot() -> Dictionary:
+	return {"map": map.snapshot(), "player": player, "objective_done": objective_done}
+
+
+func restore(saved: Dictionary) -> void:
+	map.restore(saved["map"])
+	player = saved["player"]
+	objective_done = saved["objective_done"]

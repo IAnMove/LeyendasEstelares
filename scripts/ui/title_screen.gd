@@ -1,7 +1,10 @@
 class_name TitleScreen
 extends Control
 
+signal resume_pressed
 signal start_pressed
+
+var has_save := false
 signal quit_pressed
 signal language_changed
 
@@ -45,7 +48,16 @@ func _ready() -> void:
 	start.custom_minimum_size.y = 32
 	UITheme.primary(start)
 	start.pressed.connect(func(): start_pressed.emit())
-	box.add_child(start)
+	var actions := HBoxContainer.new()
+	box.add_child(actions)
+	start.size_flags_horizontal = SIZE_EXPAND_FILL
+	actions.add_child(start)
+	if has_save:
+		var resume := UITheme.button(T.t("ui.save.resume"))
+		resume.size_flags_horizontal = SIZE_EXPAND_FILL
+		UITheme.primary(resume)
+		resume.pressed.connect(func(): resume_pressed.emit())
+		actions.add_child(resume)
 	# Selector de idioma: un botón por idioma disponible.
 	var langs := HBoxContainer.new()
 	langs.alignment = BoxContainer.ALIGNMENT_CENTER

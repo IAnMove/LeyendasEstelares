@@ -132,3 +132,16 @@ func scan_tags(id: String) -> Array[String]:
 	if fuel:
 		tags.append("fuel")
 	return tags
+
+
+func snapshot() -> Dictionary:
+	var out := {}
+	for key in ["nodes", "columns", "start_id", "final_id"]:
+		out[key] = get(key)
+	return out.duplicate(true)
+
+
+func restore(saved: Dictionary) -> void:
+	for key in snapshot():
+		if saved.has(key):
+			set(key, saved[key])

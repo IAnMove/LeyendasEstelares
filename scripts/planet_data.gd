@@ -176,3 +176,16 @@ func _try_generate(planet: Dictionary, events: Dictionary, s: int) -> bool:
 		if not dist.has(p["cell"]):
 			return false
 	return dist[beacon_cell] <= int(planet.get("max_beacon_cost", 22))
+
+
+func snapshot() -> Dictionary:
+	var out := {}
+	for key in ["terrain", "revealed", "ship_cell", "beacon_cell", "pois"]:
+		out[key] = get(key)
+	return out.duplicate(true)
+
+
+func restore(saved: Dictionary) -> void:
+	for key in snapshot():
+		if saved.has(key):
+			set(key, saved[key])

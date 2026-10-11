@@ -113,3 +113,16 @@ func apply_outcome() -> Dictionary:
 
 func _signed(n: int) -> String:
 	return ("+%d" % n) if n > 0 else ("−%d" % absi(n))
+
+
+func snapshot() -> Dictionary:
+	var out := {}
+	for key in ["trust", "tension", "index", "broke", "_applied_outcome"]:
+		out[key] = get(key)
+	return out.duplicate(true)
+
+
+func restore(saved: Dictionary) -> void:
+	for key in snapshot():
+		if saved.has(key):
+			set(key, saved[key])

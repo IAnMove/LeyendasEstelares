@@ -9,6 +9,7 @@ var _main: Control
 func _ready() -> void:
 	T.set_language("en", false)
 	_main = load("res://scenes/main.tscn").instantiate()
+	_main.save_path = ""
 	add_child(_main)
 	await _frames()
 

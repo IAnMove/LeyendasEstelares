@@ -100,7 +100,9 @@ static func button(text: String) -> Button:
 	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	b.pressed.connect(func(): Sound.play("click"))
+	b.pressed.connect(func():
+		Sound.play("click")
+		b.get_tree().call_group("checkpoint_owner", "queue_checkpoint"))
 	return b
 
 

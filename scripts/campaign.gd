@@ -72,3 +72,13 @@ func end_reason() -> String:
 				return ""
 		return "fuel"
 	return ""
+
+
+func snapshot() -> Dictionary:
+	return {"sector": sector.snapshot(), "current": current, "jumps": jumps}
+
+
+func restore(saved: Dictionary) -> void:
+	sector.restore(saved["sector"])
+	current = saved["current"]
+	jumps = saved["jumps"]
